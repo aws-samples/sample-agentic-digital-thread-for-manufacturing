@@ -1,0 +1,119 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+[project]
+name = "agentic-digital-thread"
+version = "0.1.24"
+description = "Agentic Digital Thread — manufacturing intelligence reference sample"
+requires-python = ">=3.11"
+dependencies = [
+    # PINNED (do not widen to a range): strands-agents is held at an exact,
+    # regression-tested version. 1.43+/1.44 once regressed the orchestrator
+    # tool-use loop into emitting an assistant-prefill turn that the Claude
+    # Sonnet 4.6 inference profile rejects ("model does not support assistant
+    # message prefill"), breaking /api/ask (see docs/adr/0028). 1.48.0 is the
+    # lowest release that fixes the A2A tenant-isolation advisories
+    # (GHSA-3w55-933p-8pv5, GHSA-4v6f-7vjh-6x4m). Re-test before changing it.
+    "strands-agents==1.48.0",
+    # 0.9.0 widens pillow to <14 so pillow can reach the fixed 13.x line.
+    "strands-agents-tools==0.9.0",
+    # Bedrock Mantle (ADR-0055): the OpenAI-compatible surface that serves the
+    # GPT-5.x family. strands 1.48.0 ships the provider
+    # (models/openai_responses.py + models/_openai_bedrock.py) — these two are
+    # the runtime deps that provider needs (the `strands-agents[openai]` extra),
+    # declared explicitly so the pin above stays exact.
+    "openai==3.3.1",
+    "aws-bedrock-token-generator==1.1.0",
+    "mcp==1.30.0",
+    "mcp-proxy-for-aws==1.1.2",
+    # PostgreSQL wire driver (BSD-3-Clause, pure Python), used through
+    # agents/pgdriver.py. pgdriver reads pg8000's connection internals
+    # (_usock, _transaction_status), so the pin is exact and
+    # tests/integration/test_pgdriver_contract_pg.py gates a bump.
+    "pg8000==1.31.6",
+    # Exact pin (the lock version); it must stay at or above a load-bearing
+    # floor: memory_client.list_sessions passes
+    # filter={"eventFilter": "HAS_EVENTS"} — the ListSessions ``filter``
+    # member first ships in botocore 1.43.0 (boto3 1.42.0 permits botocore
+    # 1.41.x, where every list_sessions call raises ParamValidationError and
+    # the session picker 503s). boto3 1.43.0 requires botocore>=1.43.0.
+    # Pinned by tests/unit/test_memory_session_list.py.
+    "boto3==1.43.79",
+    # Exact pin (the lock version); it must stay at or above a load-bearing
+    # floor: cancelling a streamed /api/ask turn wakes the read
+    # parked in the runtime response body with HTTPResponse.shutdown(), which
+    # first ships in urllib3 2.3.0 (chat_client._shutdown_reads). Without it the
+    # close waits for the runtime's next bytes. Pinned by
+    # tests/unit/test_stream_cancel_unblocks_parked_read.py.
+    "urllib3==2.8.0",
+    "pydantic==2.13.4",
+    "fastapi==0.141.1",
+    "uvicorn==0.52.4",
+    # 1.18.1 is the lowest release with the GHSA-j6g5-3hh3-pgw8 fix
+    # (install_packages() specifier check). The sample pins it. From 1.3 the
+    # Strands session manager stores its session/agent STATE events in the
+    # user's own session stream (stateType metadata), which
+    # memory_client._turn_events keeps out of the Recent sessions reload and
+    # labels. The SDK also migrates session events written by older releases,
+    # but a fresh deployment starts with an empty Memory, so that migration
+    # does not apply.
+    "bedrock-agentcore==1.18.1",
+    "awsiotsdk==1.31.0",
+    "awscrt==0.36.1",
+    "pyjwt[crypto]==2.15.0",  # Cognito JWT verification (agents/auth/cognito.py)
+    "httpx==0.28.1",
+    "pyyaml==6.0.3",
+    "openapi-spec-validator==0.9.0",
+    "apscheduler==3.11.3",
+    "Pillow==13.0.0",
+    # Native "S3 Tables" read connector (ADR-0099). duckdb is the OFFICIAL
+    # package and the only dependency the connector needs: its iceberg/aws/httpfs
+    # extensions read the S3 Tables Iceberg REST catalog directly. No dependency
+    # on any third-party S3 Tables library. The four DuckDB extensions are baked
+    # into the runtime image (Dockerfile.runtime), never installed at runtime.
+    # duckdb 2.0.0 (uploaded 2026-10-21) resolves under the 2026-11-16 lock
+    # cutoff; regenerate the hashed arm64 locks with the `uv pip compile`
+    # commands in requirements/README.md after changing this pin.
+    "duckdb==2.0.0",
+    # DuckDB converts a TIMESTAMP WITH TIME ZONE result to a Python datetime
+    # through pytz; without it every S3 Tables read that returns a timestamptz
+    # value fails with "Required module 'pytz' failed to import".
+    "pytz==2026.6",
+]
+
+[tool.setuptools.packages.find]
+# `packages = ["agents"]` (an explicit list) does NOT recurse, so a built wheel
+# omitted agents.auth / agents.demo / agents.provisioner / agents.context_interview
+# — masked in the image only because the Dockerfile COPYs the source tree into
+# the working directory. Pinned by tests/unit/test_wheel_packaging.py.
+include = ["agents*"]
+
+[tool.setuptools.package-data]
+"agents.demo" = ["*.json", "fixtures/**/*"]
+"agents" = ["*.json"]
+
+[project.optional-dependencies]
+test = [
+    "pytest==9.2.0",
+    "pytest-playwright==0.10.0",
+    "pytest-socket==0.8.1",   # unit lane runs network-blocked 
+    "pytest-xdist==3.8.0",    # unit lane parallelism (-n auto)
+]
+local = [
+    # Bolt driver for the local Memgraph graph backend (GRAPH_BACKEND=local).
+    # Local-dev only — not installed in the deployed image.
+    "neo4j==6.4.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "e2e: end-to-end browser test that runs against a live deployment",
+    "audit: graph-shape audit; runs against a reachable Neptune graph with >=1 onboarded system (skips otherwise)",
+    "integration: cloud+local integration harness (real resolver vs. live Neptune + local Postgres); skips graph cases when GRAPH_IDENTIFIER is unset/unreachable and PG cases when no local Postgres is reachable",
+    "no_offline_secret_stub: opt out of the offline own-secret snapshot default so the real _own_secret_current_version runs",
+]
+
+[project.scripts]
+adt-demo = "agents.main:main"

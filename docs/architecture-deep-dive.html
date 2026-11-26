@@ -1,0 +1,764 @@
+<!-- Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Digital Thread — Architecture Deep Dive</title>
+<meta name="description" content="Agentic Digital Thread (ADT) architecture deep-dive deck: main architecture, knowledge-graph rules engine, plant telemetry path, and the opt-in ERP simulation.">
+<!-- No external font loads (repo policy: no runtime Google Fonts). The font stacks below use locally installed fonts and fall back to system fonts, so the deck renders fully offline. No external dependency exists. -->
+<style>
+  :root{
+    --bg:#16181d;
+    --bg2:#1b1e24;
+    --panel:#1f232b;
+    --panel2:#23272f;
+    --ink:#e8e6e1;
+    --ink-dim:#a9aab2;
+    --ink-faint:#90929c;
+    --line:#33363f;
+    --line-soft:#2a2d35;
+    --hot:#ff8a1e;
+    --hot-deep:#e06a00;
+    --hot-soft:rgba(255,138,30,.12);
+    --ok:#7dc98f;
+    --dot-bg:#0b0c0f;
+    --display:"Saira Condensed","Arial Narrow","Avenir Next Condensed","Helvetica Neue",Arial,sans-serif;
+    --body:"Saira",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --navh:52px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+      var(--bg);
+    background-size:24px 24px,24px 24px,120px 120px,120px 120px;
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:15.5px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  a{color:var(--hot);text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::selection{background:var(--hot);color:#181203}
+  .skip{position:absolute;left:-999px;top:0;background:var(--hot);color:#181203;padding:.5rem 1rem;z-index:99;font-weight:600}
+  .skip:focus{left:0}
+
+  /* ---------- deck chrome ---------- */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;height:var(--navh);
+    background:rgba(22,24,29,.94);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-soft);
+    display:flex;align-items:center;gap:1.2rem;
+    padding:0 clamp(1rem,3vw,2rem);
+  }
+  .nav .mark{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink);white-space:nowrap}
+  .nav .mark b{color:var(--hot);font-weight:800}
+  .nav .sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .nav ol{display:flex;gap:.3rem;list-style:none;margin:0 0 0 auto;padding:0}
+  .nav ol a{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-dim);padding:.35rem .6rem;border:1px solid transparent;border-radius:2px;display:block;
+  }
+  .nav ol a:hover{color:var(--hot);text-decoration:none;background:var(--hot-soft)}
+  .nav ol a[aria-current="true"]{color:var(--hot);border-color:var(--hot)}
+  .nav .kbd{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--ink-faint);white-space:nowrap}
+  .nav .kbd b{color:var(--ink-dim);border:1px solid var(--line);padding:.05em .35em;border-radius:2px;font-weight:400}
+
+  .deck{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;scroll-padding-top:var(--navh)}
+  @media (prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}}
+
+  /* ---------- slide skeleton ---------- */
+  .slide{
+    min-height:100svh;scroll-snap-align:start;
+    padding:calc(var(--navh) + clamp(.8rem,2.2vh,1.6rem)) clamp(1rem,3vw,2.2rem) clamp(.9rem,2.5vh,1.8rem);
+    display:flex;flex-direction:column;gap:clamp(.7rem,1.6vh,1.1rem);
+    max-width:1560px;margin:0 auto;
+  }
+  .slide + .slide{border-top:1px solid var(--line-soft)}
+  .shead{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .shead .no{
+    font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,3.2vw,2.5rem);
+    color:var(--hot);line-height:1;
+  }
+  .shead h2{
+    font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    font-size:clamp(1.35rem,2.6vw,2.05rem);line-height:1.05;margin:0;
+  }
+  .shead .fig{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;margin-left:auto}
+  .badge{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+    padding:.3em .75em;border:1px solid var(--hot);color:var(--hot);background:var(--hot-soft);white-space:nowrap;
+  }
+  .badge.dim{border-color:var(--ink-faint);color:var(--ink-faint);background:transparent}
+
+  .sbody{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:clamp(.9rem,2vw,1.6rem);flex:1;align-items:start}
+
+  /* ---------- diagram canvas ---------- */
+  .canvas{
+    border:1px solid var(--line);background:var(--bg2);
+    padding:clamp(.8rem,1.8vw,1.4rem);position:relative;
+    display:flex;flex-direction:column;gap:clamp(.55rem,1.3vh,.9rem);
+  }
+  .canvas::before,.canvas::after{
+    content:"";position:absolute;width:9px;height:9px;border-color:var(--hot);border-style:solid;
+  }
+  .canvas::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+  .canvas::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+
+  .laneband{border:1px dashed var(--line);background:transparent;padding:.65rem .75rem .75rem;position:relative}
+  .laneband > .ln{
+    position:absolute;top:-.62em;left:.7rem;background:var(--bg2);padding:0 .55em;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--hot);
+  }
+  .laneband.dimlane > .ln{color:var(--ink-faint)}
+
+  /* flow rows: node → node → node */
+  .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;row-gap:.6rem}
+  .node{
+    border:1px solid var(--line);background:var(--panel);padding:.5rem .7rem;position:relative;
+    flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;
+  }
+  .node .nm{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:.03em;text-transform:uppercase;line-height:1.15;display:block}
+  .node .dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.05em;color:var(--ink-faint);display:block;margin-top:.2rem;line-height:1.4}
+  .node.hotn{border-color:var(--hot);background:linear-gradient(180deg,var(--hot-soft),transparent 90%),var(--panel)}
+  .node.hotn .nm{color:var(--hot)}
+  .arr{flex:0 0 clamp(14px,2vw,26px);align-self:center;height:1px;background:var(--ink-faint);position:relative;margin:0 1px}
+  .arr::after{content:"";position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+    border:4px solid transparent;border-left-color:var(--ink-faint);border-right:none}
+  .arr.bi::before{content:"";position:absolute;left:-1px;top:50%;transform:translateY(-50%);
+    border:4px solid transparent;border-right-color:var(--ink-faint);border-left:none}
+
+  /* vertical connectors between lanebands */
+  .vconn{width:1px;height:clamp(16px,2.6vh,26px);background:var(--line);margin:0 auto;position:relative}
+  .vconn::after{content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+    border:4px solid transparent;border-top-color:var(--ink-faint);border-bottom:none}
+  .vconn.bi::before{content:"";position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+    border:4px solid transparent;border-bottom-color:var(--ink-faint);border-top:none}
+  .vconn[data-l]::after{}
+  .vconn .vl{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--hot);white-space:nowrap;text-transform:uppercase;
+  }
+
+  /* numbered dots on the diagram — black callout dots */
+  .dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:1.5em;height:1.5em;border-radius:50%;flex:0 0 auto;
+    background:var(--dot-bg);color:var(--hot);border:1px solid var(--hot);
+    font-family:var(--mono);font-size:.72rem;font-weight:600;line-height:1;
+  }
+  .node .dot,.laneband .dot,.kgbox .dot{position:absolute;top:-.75em;right:-.6em;z-index:2}
+  .laneband .dot{right:.6rem}
+
+  /* mini system chips */
+  .sysgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:.4rem;margin-top:.55rem}
+  .sysgrid .mini{
+    border:1px dashed var(--line);padding:.35rem .3rem;text-align:center;background:var(--bg2);
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;color:var(--ink-dim);text-transform:uppercase;line-height:1.45;
+  }
+  .sysgrid .mini b{display:block;color:var(--ink);font-weight:600;font-size:.66rem}
+  .sysgrid .mini .db{color:var(--hot)}
+
+  .strip{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+  .strip .pl{
+    border:1px solid var(--line-soft);background:var(--panel);padding:.3rem .6rem;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--ink-dim);text-transform:uppercase;
+  }
+  .strip .lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;margin-right:.3rem}
+
+  /* ---------- callout rail ---------- */
+  .rail{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.6rem;counter-reset:co}
+  .rail > li{
+    counter-increment:co;
+    border:1px solid var(--line);background:var(--panel);padding:.7rem .85rem .75rem 3rem;position:relative;
+  }
+  .rail > li::before{
+    content:counter(co);
+    position:absolute;left:.8rem;top:.8rem;
+    width:1.55em;height:1.55em;border-radius:50%;
+    background:var(--dot-bg);color:var(--hot);border:1px solid var(--hot);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:.74rem;font-weight:600;line-height:1;
+  }
+  .rail h3{font-family:var(--display);font-weight:700;font-size:1rem;letter-spacing:.03em;text-transform:uppercase;margin:0 0 .3rem;line-height:1.2}
+  .rail h3 em{color:var(--hot);font-style:normal}
+  .rail p{margin:0;font-size:.8rem;color:var(--ink-dim);line-height:1.5}
+  .rail p + p{margin-top:.35rem}
+  .rail p b{color:var(--ink);font-weight:600}
+  .rail code,.node code,.foot code{font-family:var(--mono);font-size:.85em;color:var(--hot);background:var(--hot-soft);padding:.06em .3em;border-radius:2px;word-break:break-word}
+
+  .foot{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.04em;color:var(--ink-faint);line-height:1.6;
+    border-top:1px solid var(--line-soft);padding-top:.55rem;
+  }
+  .foot b{color:var(--ink-dim);font-weight:600}
+
+  /* ---------- slide 2 specials ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:.35rem}
+  .chip{
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;
+    padding:.28em .6em;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    border-radius:2px;white-space:nowrap;
+  }
+  .chip.edge{border-style:dashed;color:var(--ink-dim);background:var(--bg2)}
+  .chip.hotc{border-color:var(--hot);color:var(--hot);background:var(--hot-soft)}
+  .kgbox{border:1px solid var(--line);background:var(--panel);padding:.65rem .8rem;position:relative}
+  .kgbox h4{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--hot);margin:0 0 .45rem;font-weight:600}
+  .kgbox.notbox{border-color:var(--hot)}
+  .kgbox.notbox h4{color:var(--hot)}
+  .notlist{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.35rem}
+  .notlist li{
+    font-family:var(--mono);font-size:.64rem;color:var(--ink-dim);
+    border:1px dashed var(--line);padding:.28em .6em;text-decoration:line-through;text-decoration-color:var(--hot);text-decoration-thickness:1px;
+  }
+  .notnote{font-size:.74rem;color:var(--ink-dim);margin:.5rem 0 0;line-height:1.45}
+  .notnote b{color:var(--ink)}
+
+  /* self-learning cycle */
+  .cycle{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto auto;gap:.15rem .3rem;align-items:center;justify-items:stretch}
+  .cyc{
+    border:1px solid var(--line);background:var(--bg2);padding:.45rem .6rem;text-align:center;
+  }
+  .cyc .t{font-family:var(--display);font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em;display:block;line-height:1.15}
+  .cyc .s{font-family:var(--mono);font-size:.56rem;color:var(--ink-faint);display:block;margin-top:.15rem;line-height:1.4}
+  .cy-arr{font-family:var(--mono);color:var(--hot);font-size:.8rem;text-align:center;line-height:1}
+  .cycnote{font-family:var(--mono);font-size:.58rem;letter-spacing:.04em;color:var(--ink-faint);margin-top:.45rem;line-height:1.6}
+
+  /* justify / challenge rows */
+  .jc{display:grid;gap:.45rem}
+  .jc .jchead{display:grid;grid-template-columns:9rem 1fr 1fr;gap:.6rem;
+    font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);padding:0 .2rem}
+  .jc .jchead .y{color:var(--ok)}
+  .jc .jchead .c{color:var(--hot)}
+  .jcrow{display:grid;grid-template-columns:9rem 1fr 1fr;gap:.6rem;border:1px solid var(--line-soft);background:var(--panel);padding:.5rem .6rem;align-items:start}
+  .jcrow .ly{font-family:var(--display);font-weight:700;font-size:.86rem;text-transform:uppercase;letter-spacing:.02em;line-height:1.2}
+  .jcrow .ly .src{display:block;font-family:var(--mono);font-size:.56rem;letter-spacing:.08em;color:var(--ink-faint);margin-top:.2rem;text-transform:uppercase;font-weight:400}
+  .jcrow p{margin:0;font-size:.74rem;line-height:1.45;color:var(--ink-dim)}
+  .jcrow .why{border-left:2px solid var(--ok);padding-left:.55rem}
+  .jcrow .cha{border-left:2px solid var(--hot);padding-left:.55rem}
+
+  /* table chips (slide 4) */
+  .tbls{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+  .tbls .tb{
+    font-family:var(--mono);font-size:.6rem;color:var(--ink-dim);
+    border:1px solid var(--line-soft);background:var(--bg2);padding:.22em .5em;white-space:nowrap;
+  }
+  .tbls .tb.hi{color:var(--hot);border-color:var(--hot)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1080px){
+    .sbody{grid-template-columns:1fr}
+    .slide{min-height:0}
+    body{overflow:auto}
+    .deck{height:auto;overflow:visible;scroll-snap-type:none}
+    .sysgrid{grid-template-columns:repeat(3,1fr)}
+    .jc .jchead{display:none}
+    .jcrow{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .flow{flex-direction:column}
+    .arr{transform:rotate(90deg);margin:.2rem auto}
+    .sysgrid{grid-template-columns:repeat(2,1fr)}
+    .nav .sub,.nav .kbd{display:none}
+    .nav ol{flex-wrap:wrap;justify-content:flex-end;row-gap:.2rem}
+    .vconn .vl{white-space:normal;max-width:calc(100vw - 3rem);position:static;display:block;margin:.15rem auto;text-align:center}
+    .badge{white-space:normal;text-align:center}
+    .shead{flex-wrap:wrap;row-gap:.35rem}
+  }
+
+  /* ---------- print: one slide per page ---------- */
+  @media print{
+    :root{--navh:0px}
+    body{background:#fff;color:#111;overflow:visible;font-size:11px}
+    .deck{height:auto;overflow:visible;scroll-snap-type:none}
+    .nav,.skip{display:none}
+    .slide{min-height:0;break-after:page;page-break-after:always;padding:1cm .8cm}
+    .slide:last-of-type{break-after:auto;page-break-after:auto}
+    .canvas,.node,.rail > li,.kgbox,.jcrow,.cyc,.strip .pl,.chip,.tbls .tb,.sysgrid .mini,.laneband{background:#fff;color:#111}
+    .canvas{border-color:#888}
+    .node,.rail > li,.kgbox,.jcrow{border-color:#999}
+    .node .nm,.rail h3,.shead h2,.jcrow .ly,.cyc .t{color:#111}
+    .node .dt,.rail p,.jcrow p,.foot,.notnote,.cyc .s,.cycnote,.strip .pl,.chip,.tbls .tb,.sysgrid .mini{color:#444}
+    .laneband > .ln{background:#fff;color:#b35400}
+    .dot,.rail > li::before{background:#111;color:#fff;border-color:#111}
+    .shead .no,.badge,.rail h3 em,.vconn .vl,.kgbox h4,.cy-arr,.sysgrid .mini .db,.chip.hotc,.tbls .tb.hi{color:#b35400}
+    .badge{border-color:#b35400;background:#fff}
+    .node code,.rail code,.foot code{color:#b35400;background:#f6e8da}
+    .jcrow .why{border-left-color:#3c7a4c}
+    .jcrow .cha{border-left-color:#b35400}
+    a{color:#111}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#s1">Skip to slides</a>
+
+<nav class="nav" aria-label="Deck navigation">
+  <span class="mark">Agentic <b>Digital Thread</b></span>
+  <span class="sub">Architecture deep dive · Fig 01–04</span>
+  <ol aria-label="Slides">
+    <li><a href="#s1" data-slide="s1">1 · Main</a></li>
+    <li><a href="#s2" data-slide="s2">2 · Knowledge graph</a></li>
+    <li><a href="#s3" data-slide="s3">3 · Plant telemetry</a></li>
+    <li><a href="#s4" data-slide="s4">4 · ERP simulation</a></li>
+  </ol>
+  <span class="kbd" aria-hidden="true"><b>↑</b> <b>↓</b> navigate</span>
+</nav>
+
+<main class="deck" id="deck">
+
+  <!-- ============ SLIDE 1 · MAIN ARCHITECTURE ============ -->
+  <section class="slide" id="s1" aria-label="Slide 1 of 4: Main architecture">
+    <div class="shead">
+      <span class="no" aria-hidden="true">01</span>
+      <h2>Main architecture</h2>
+      <span class="badge dim">Base deployment — engine only</span>
+      <span class="fig">Fig. 01 — System topology</span>
+    </div>
+
+    <div class="sbody">
+      <div class="canvas" role="img" aria-label="Main architecture diagram: users reach the ADT app through CloudFront, with AWS WAF and Cognito Authorization at Edge gating browser entry, and an internal ALB; the app invokes the orchestrator runtime on Bedrock AgentCore, which calls system agents through the AgentCore Gateway; system agents query the onboarded manufacturing systems.">
+
+        <div class="laneband">
+          <span class="ln">Customer cloud — app path</span>
+          <div class="flow">
+            <div class="node"><span class="nm">Users</span><span class="dt">Browser · SSE chat</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Amazon CloudFront</span><span class="dt">AWS WAF · Cognito Authorization@Edge</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Internal ALB</span><span class="dt">CloudFront VPC origin — not public</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node hotn"><span class="dot" aria-hidden="true">1</span><span class="nm">ADT app — ECS Fargate</span><span class="dt">FastAPI + SSE</span></div>
+          </div>
+          <div class="flow" style="margin-top:.6rem">
+            <div class="node"><span class="dot" aria-hidden="true">4</span><span class="nm">Amazon DynamoDB</span><span class="dt">Self-learning proposals (adt-proposed-mappings) · prompt library · dashboard cards</span></div>
+            <span class="arr bi" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Amazon Neptune Analytics</span><span class="dt">Knowledge graph — rules engine · openCypher · VPC-private</span></div>
+          </div>
+        </div>
+
+        <div class="vconn" aria-hidden="true"><span class="vl">SigV4 (IAM) — app → orchestrator runtime invoke</span></div>
+
+        <div class="laneband">
+          <span class="ln">Amazon Bedrock AgentCore</span>
+          <div class="flow">
+            <div class="node hotn"><span class="dot" aria-hidden="true">3</span><span class="nm">Orchestrator runtime <code>adt_orchestrator</code></span><span class="dt">AgentCore Runtime · Strands Agents · deep-reasoning model tier</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="dot" aria-hidden="true">2</span><span class="nm">AgentCore Gateway</span><span class="dt">MCP + OAuth2 bearer (Cognito JWT, CUSTOM_JWT authorizer) · semantic tool search · per-system MCP targets</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">AgentCore Memory</span><span class="dt">7-day event TTL · per-user namespaces (facts / preferences / summaries)</span></div>
+          </div>
+        </div>
+
+        <div class="vconn" aria-hidden="true"><span class="vl">Gateway → system agents: Cognito M2M OAuth (client credentials)</span></div>
+
+        <div class="laneband">
+          <span class="ln">Onboarded systems (demo data mode shape)</span>
+          <div class="flow">
+            <div class="node"><span class="nm">System agents</span><span class="dt">Fast / narrow model tier · schema-scoped query composition · per-system override available</span></div>
+          </div>
+          <div class="sysgrid">
+            <span class="mini"><b>ERP</b>Aurora <span class="db">PG</span></span>
+            <span class="mini"><b>MES ×3</b>Milwaukee · Detroit · Cedar&nbsp;Rapids — Aurora <span class="db">PG</span></span>
+            <span class="mini"><b>CMMS</b>RDS <span class="db">PG</span></span>
+            <span class="mini"><b>PLM</b>RDS <span class="db">PG</span></span>
+            <span class="mini"><b>IoT SiteWise</b>live values</span>
+            <span class="mini"><b>HighByte UNS</b>MCP / HTTPS</span>
+          </div>
+        </div>
+
+        <div class="strip" aria-label="Platform services">
+          <span class="lbl">Platform services</span>
+          <span class="pl">Amazon Cognito</span>
+          <span class="pl">Amazon CloudWatch</span>
+          <span class="pl">AWS Secrets Manager</span>
+          <span class="pl">SSM Parameter Store</span>
+        </div>
+      </div>
+
+      <ol class="rail" aria-label="Slide 1 callouts">
+        <li>
+          <h3>Edge to app — <em>no public load balancer</em></h3>
+          <p>Users hit <b>CloudFront (AWS WAF)</b>, where <b>Cognito Authorization@Edge</b> gates browser entry: a Lambda@Edge <code>CheckAuth</code> redirects unauthenticated browsers to the Cognito hosted UI (the same <code>adt-app</code> user pool), while <code>/api/*</code> and <code>/health</code> bypass the edge gate and keep the app's own 401 bearer/session auth. The ALB is <b>internal</b>, reached only through a CloudFront <b>VPC origin</b>. The ADT app is FastAPI + SSE on ECS Fargate.</p>
+        </li>
+        <li>
+          <h3>Three distinct <em>auth hops</em></h3>
+          <p>App → orchestrator runtime: <b>SigV4 (IAM)</b>. Orchestrator → gateway: <b>MCP + OAuth2 bearer</b> — a forwarded user JWT, or service client-credentials for background turns (CUSTOM_JWT authorizer). Gateway → system agents: <b>Cognito M2M OAuth</b> (client credentials); each runtime enforces its own inbound JWT authorizer. Interactive turns additionally carry an <b>app-signed, ≤5-min identity claim</b> verified at each system agent (per-system group policy optional).</p>
+        </li>
+        <li>
+          <h3>Reasoning <em>tiers per task</em> — not one model</h3>
+          <p>The orchestrator runs on a <b>deep-reasoning tier</b> (cross-system planning, answer synthesis, onboarding schema-mapping escalation), by default <b>Claude Sonnet 5.5</b>. System agents run on a <b>fast task tier</b> (narrow, schema-scoped query composition), by default <b>Claude Haiku 5.5</b>. Tiers differ because reasoning depth trades against cost and latency, and the defaults are measured with the golden eval lane, not assumed.</p>
+          <p><b>Swap without code:</b> role catalog default → deployment env → per-system override → admin page (SSM-backed). Both roles switch <b>live</b> — no redeploy, no re-onboard.</p>
+        </li>
+        <li>
+          <h3>Memory &amp; <em>metadata stores</em></h3>
+          <p><b>AgentCore Memory</b>: 7-day event TTL, per-user namespaces (facts / preferences / summaries); only interactive chat writes. <b>DynamoDB</b> holds self-learning proposals, the prompt library, and dashboard cards. <b>Neptune</b> holds rules — never production data (see slide 2). <b>AgentCore Evaluations</b> continuously samples orchestrator traces (~10%) and scores them with built-in judges — quality telemetry, not a CI gate.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="foot"><b>Model catalog footnote:</b> concrete model choices resolve through <code>agents/model_catalog.py</code> — the single source, live-editable from the admin page (role-based defaults, region-resolved inference profiles, per-system overrides). · <b>Edge footnote:</b> all three browser-facing CloudFront distributions (app, ERP dashboard, HighByte UI) carry the standard AWS WAF managed rules and Cognito Authorization@Edge; machine paths (<code>/api/*</code>, <code>/health</code>, HighByte <code>/mcp*</code> <code>/i3x*</code> <code>/data/*</code>) bypass the browser gate and authenticate at the origin.</p>
+  </section>
+
+  <!-- ============ SLIDE 2 · KNOWLEDGE GRAPH DEEP DIVE ============ -->
+  <section class="slide" id="s2" aria-label="Slide 2 of 4: Knowledge graph deep dive">
+    <div class="shead">
+      <span class="no" aria-hidden="true">02</span>
+      <h2>Knowledge graph — rules engine, not a data store</h2>
+      <span class="badge">The centerpiece</span>
+      <span class="fig">Fig. 02 — Neptune Analytics · openCypher</span>
+    </div>
+
+    <div class="sbody">
+      <div class="canvas">
+        <div class="kgbox">
+          <span class="dot" aria-hidden="true">1</span>
+          <h4>Node types</h4>
+          <div class="chips">
+            <span class="chip">System</span>
+            <span class="chip">SchemaEntry (table)</span>
+            <span class="chip">Field (column)</span>
+            <span class="chip hotc">Concept — curated entity + earned field (ADR-0021)</span>
+            <span class="chip">IdentityRule</span>
+            <span class="chip">JoinPath</span>
+            <span class="chip">ValueMapping</span>
+            <span class="chip">AuthorityRule</span>
+            <span class="chip">Plant</span>
+            <span class="chip">Asset · Property · AssetModel (OT hierarchy — metadata only)</span>
+            <span class="chip">MetricDefinition</span>
+            <span class="chip">ConceptOverlay</span>
+          </div>
+          <h4 style="margin-top:.6rem">Edge types</h4>
+          <div class="chips">
+            <span class="chip edge">HAS_SCHEMA</span>
+            <span class="chip edge">HAS_FIELD</span>
+            <span class="chip edge">MAPS_TO (role · confidence)</span>
+            <span class="chip edge">IDENTIFIED_BY (ADR-0040)</span>
+            <span class="chip edge">LINKS_CONCEPT</span>
+            <span class="chip edge">FROM_SYSTEM / TO_SYSTEM</span>
+            <span class="chip edge">LOCATED_AT</span>
+            <span class="chip edge">APPLIES_TO</span>
+            <span class="chip edge">HAS_PARENT · HAS_PROPERTY · INSTANCE_OF · MODELED_BY</span>
+            <span class="chip edge">MAPS_TO_ASSET</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;align-items:stretch">
+          <div class="kgbox notbox">
+            <span class="dot" aria-hidden="true">2</span>
+            <h4>Deliberately not stored</h4>
+            <ul class="notlist">
+              <li>batch numbers</li>
+              <li>order IDs</li>
+              <li>sensor readings</li>
+              <li>any production data</li>
+            </ul>
+            <p class="notnote">The graph holds <b>metadata only</b> — which systems exist, what fields mean, how identifiers translate. SiteWise values are read <b>live</b>, never persisted (ADR-0037).</p>
+          </div>
+
+          <div class="kgbox">
+            <span class="dot" aria-hidden="true">3</span>
+            <h4>Self-learning loop</h4>
+            <div class="cycle" role="img" aria-label="Self-learning cycle: query-time discovery creates a DynamoDB proposal; human review accepts or declines; accepted rules are written to the Neptune graph, which feeds future queries.">
+              <div class="cyc"><span class="t">Discover</span><span class="s">orchestrator finds a match at query time</span></div>
+              <div class="cy-arr" aria-hidden="true">→</div>
+              <div class="cyc"><span class="t">Propose</span><span class="s">DynamoDB · canonical key + confidence</span></div>
+              <div class="cy-arr" aria-hidden="true">↑</div>
+              <div></div>
+              <div class="cy-arr" aria-hidden="true">↓</div>
+              <div class="cyc"><span class="t">Graph</span><span class="s">Neptune · one live node per subject</span></div>
+              <div class="cy-arr" aria-hidden="true">←</div>
+              <div class="cyc"><span class="t">Review</span><span class="s">human accept / decline · user beats agent (ADR-0003)</span></div>
+            </div>
+            <p class="cycnote">Churn controls: quarantine after 3 supersedes · 24 h cooldown · rejection damping (ADR-0042/0043) · auto-accept OFF by default.</p>
+          </div>
+        </div>
+
+        <div class="jc" style="position:relative">
+          <span class="dot" aria-hidden="true" style="position:absolute;top:-.75em;right:.6rem;z-index:2">4</span>
+          <div class="jchead" aria-hidden="true"><span>Layer</span><span class="y">Why this layer exists</span><span class="c">Honest challenge</span></div>
+          <div class="jcrow">
+            <div class="ly">Topology from the graph<span class="src">ADR-0009</span></div>
+            <p class="why">The orchestrator derives systems, plants, and query guidance exclusively from <code>MATCH (s:System)</code> at query time — no plant name or system count hardcoded in prompts, so any onboarded set works.</p>
+            <p class="cha">Static prompt examples and sample questions drift from live discovery; ADR-0009 requires them to be derived from the graph as well, so the demo topology is never embedded in prompt text.</p>
+          </div>
+          <div class="jcrow">
+            <div class="ly">VPC-private graph<span class="src">ADR-0024</span></div>
+            <p class="why">No internet ingress to the rules engine at all.</p>
+            <p class="cha">Laptops can't reach it — local dev substitutes Memgraph (<code>GRAPH_BACKEND=local</code>); graph behavior is verified against a deployed env.</p>
+          </div>
+          <div class="jcrow">
+            <div class="ly">Curated concept map<span class="src">ADR-0021 → 0040</span></div>
+            <p class="why">A complete curated entity vocabulary keeps mapping quality measurable (0.90 floor) and stops concept-minting noise.</p>
+            <p class="cha">A sanctioned exception to demo-separation, open for revisiting; ADR-0040 generalizes identity rules to any system.</p>
+          </div>
+          <div class="jcrow">
+            <div class="ly">Response integrity<span class="src">ADR-0046 / 0047</span></div>
+            <p class="why">Typed-evidence capture makes a deterministic answer gate possible.</p>
+            <p class="cha">Default is <code>report-only</code> — capture runs in shadow and answers stay model-authored; <code>annotate</code> (grounding score + zero-evidence block) is the recommended production posture, <code>enforce</code> the opt-in strict gate.</p>
+          </div>
+        </div>
+      </div>
+
+      <ol class="rail" aria-label="Slide 2 callouts">
+        <li>
+          <h3>A <em>vocabulary</em>, not a warehouse</h3>
+          <p>A closed vocabulary of node labels and edge types describes systems, schemas, field meanings, identity rules, join paths, authority, the OT asset hierarchy, and deployment-defined metric definitions — enough to translate identifiers between systems and plan cross-system queries. <code>docs/graph-shape-contract.md</code> is the canonical inventory, and the graph carries its own metamodel (<code>MetaNode</code> / <code>MetaEdge</code>) so drift is visible.</p>
+        </li>
+        <li>
+          <h3>The <em>contract</em></h3>
+          <p>No production data ever lands in the graph. Batch numbers, order IDs, and sensor readings stay in the systems of record; the graph tells the orchestrator <b>where and how</b> to fetch them live.</p>
+        </li>
+        <li>
+          <h3>Learning with a <em>human gate</em></h3>
+          <p>Query-time discoveries become DynamoDB proposals with confidence scores. Humans accept or decline in the review UI — a user decision always beats the agent (superseded state + version). Only accepted rules reach Neptune, one live node per subject.</p>
+        </li>
+        <li>
+          <h3>Every layer <em>argued, not assumed</em></h3>
+          <p>Each design layer carries a written justification and an honest counter-argument in the ADR log — including which layer local dev can't reach (the VPC-private graph) and which exceptions remain open for revisiting.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="foot"><b>Backing:</b> Neptune Analytics graph <code>adt</code> (a retained pre-rename resource name — see the glossary) · openCypher via the <code>neptune-graph</code> ExecuteQuery data plane · <code>public_connectivity=False</code>. Proposal store: DynamoDB <code>adt-proposed-mappings</code> (status + subject-key GSIs).</p>
+  </section>
+
+  <!-- ============ SLIDE 3 · PLANT TELEMETRY ============ -->
+  <section class="slide" id="s3" aria-label="Slide 3 of 4: Plant telemetry path">
+    <div class="shead">
+      <span class="no" aria-hidden="true">03</span>
+      <h2>Plant telemetry path</h2>
+      <span class="badge">Opt-in: --highbyte</span>
+      <span class="fig">Fig. 03 — OT / UNS layer</span>
+    </div>
+
+    <div class="sbody">
+      <div class="canvas" role="img" aria-label="Plant telemetry diagram: four OPC UA simulators behind per-site internal network load balancers feed the HighByte Intelligence Hub, whose pipeline writes to AWS IoT SiteWise. Web access to HighByte goes through CloudFront, with AWS WAF and Cognito Authorization at Edge on the UI paths, to an internal ALB.">
+
+        <div class="laneband">
+          <span class="ln">Simulated plant floor — private subnets</span>
+          <div class="flow">
+            <div class="node"><span class="dot" aria-hidden="true">1</span><span class="nm">4× OPC UA simulators</span><span class="dt">Milwaukee · Detroit · Cedar Rapids · Indianapolis CSVs — ECS Fargate</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Per-site internal NLBs</span><span class="dt">four NLBs, one per site — not internet-facing</span></div>
+          </div>
+          <div class="strip" style="margin-top:.55rem">
+            <span class="lbl">Endpoint</span>
+            <span class="pl" style="text-transform:none">opc.tcp://&lt;nlb&gt;:26543/UA/ManufacturingServer</span>
+          </div>
+        </div>
+
+        <div class="vconn" aria-hidden="true"><span class="vl">OPC UA connections</span></div>
+
+        <div class="laneband">
+          <span class="ln">Unified namespace</span>
+          <div class="flow">
+            <div class="node hotn"><span class="dot" aria-hidden="true">2</span><span class="nm">HighByte Intelligence Hub</span><span class="dt">Public Docker Hub image 4.5.3 · ECS Fargate + EFS (/usr/local/highbyte/appData)</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="dot" aria-hidden="true">3</span><span class="nm">AWS IoT SiteWise</span><span class="dt">pipeline writeSiteWise · 24 asset models · ~170 assets</span></div>
+          </div>
+        </div>
+
+        <div class="vconn bi" aria-hidden="true"><span class="vl">Web / API access</span></div>
+
+        <div class="laneband dimlane">
+          <span class="ln">HighByte web access (CloudFront — WAF + Authorization@Edge on UI paths)</span>
+          <div class="flow">
+            <div class="node"><span class="dot" aria-hidden="true">4</span><span class="nm">Amazon CloudFront</span><span class="dt">default → UI origin :45245 (edge sign-in; function 302 / → /ui/) · /mcp* /i3x* /i3X* /data/* → shared origin :8885 (no edge auth; bearer at origin)</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Internal ALB</span><span class="dt">ingress locked to the CloudFront VPC-origin service SG</span></div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="rail" aria-label="Slide 3 callouts">
+        <li>
+          <h3>Private <em>OT edge</em></h3>
+          <p>The simulated OPC UA servers (Milwaukee · Detroit · Cedar Rapids · Indianapolis) sit in private subnets behind <b>four per-site internal NLBs</b> — nothing internet-facing. The Indianapolis server carries the <code>5-Axis-Milling-CMX-441</code> bearing-degradation cycle live (ADR-0083). Endpoint: <code>opc.tcp://&lt;nlb&gt;:26543/UA/ManufacturingServer</code>. Demo connections are unencrypted/anonymous — enable OPC UA message security for production OT.</p>
+        </li>
+        <li>
+          <h3>Unmodified <em>vendor image</em></h3>
+          <p>HighByte runs the public Docker Hub image <code>highbyte/intelligence-hub:4.5.3</code>, with <b>no ECR repository or build pipeline</b>. A busybox init container seeds settings onto EFS; app state lives at <code>/usr/local/highbyte/appData</code>.</p>
+        </li>
+        <li>
+          <h3>One shared <em>service port</em></h3>
+          <p><b>MCP + REST + docs share :8885</b>; the UI is on <b>:45245</b>. Health check: <code>/data/doc</code>. The pipeline writes 24 asset models / ~170 assets into IoT SiteWise.</p>
+        </li>
+        <li>
+          <h3>Web access — <em>VPC origins again</em></h3>
+          <p>CloudFront carries the standard AWS WAF managed rules and gates the UI paths with <b>Cognito Authorization@Edge</b> (its own <code>highbyte-ui-users</code> pool); it routes the default behavior to the UI origin and the machine paths <code>/mcp*</code> <code>/i3x*</code> <code>/i3X*</code> <code>/data/*</code> — which bypass edge auth and authenticate with a bearer token at the origin — to the shared origin. The internal ALB accepts ingress only from the CloudFront VPC-origin service security group.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="foot"><b>Note:</b> the HighByte distribution is protected like the app and ERP-dashboard distributions: AWS WAF managed rules plus Cognito Authorization@Edge on browser paths. The hub runs with <code>ACCEPT_EULA=Y</code> only after the deployer reads and accepts the HighByte EULA (<code>--accept-highbyte-eula</code>, once); the deployer supplies any license via the HighByte UI.</p>
+  </section>
+
+  <!-- ============ SLIDE 4 · ERP SIMULATION ============ -->
+  <section class="slide" id="s4" aria-label="Slide 4 of 4: ERP simulation">
+    <div class="shead">
+      <span class="no" aria-hidden="true">04</span>
+      <h2>ERP simulation</h2>
+      <span class="badge">Opt-in: --simulator (demo data, not the product) · ADR-0030</span>
+      <span class="fig">Fig. 04 — Live demo data</span>
+    </div>
+
+    <div class="sbody">
+      <div class="canvas" role="img" aria-label="ERP simulation diagram: an EventBridge one-minute schedule triggers the simulation orchestrator Lambda, which writes to an Aurora Serverless v2 PostgreSQL database; a Streamlit dashboard reads it through CloudFront with edge authentication; cleanup and seed Lambdas plus an SSM-only bastion support operations.">
+
+        <div class="laneband">
+          <span class="ln">Simulation engine</span>
+          <div class="flow">
+            <div class="node"><span class="dot" aria-hidden="true">1</span><span class="nm">Amazon EventBridge</span><span class="dt">rate(1 minute)</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Simulation orchestrator Lambda</span><span class="dt">{"action":"single_cycle"} · container image · ARM64</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node hotn"><span class="dot" aria-hidden="true">2</span><span class="nm">Aurora Serverless v2 — PostgreSQL</span><span class="dt">db erp_simulation · 30 tables · 12 schema files</span></div>
+          </div>
+          <div class="tbls" aria-label="Representative table names">
+            <span class="tb hi">customer_orders</span>
+            <span class="tb">order_line_items</span>
+            <span class="tb">purchase_orders</span>
+            <span class="tb">po_receipts</span>
+            <span class="tb">inventory_items</span>
+            <span class="tb">inventory_locations</span>
+            <span class="tb">inventory_balances</span>
+            <span class="tb">inventory_transactions</span>
+            <span class="tb">bill_of_materials</span>
+            <span class="tb">production_runs</span>
+            <span class="tb">production_materials</span>
+            <span class="tb">shipments</span>
+            <span class="tb">invoices</span>
+            <span class="tb">payments</span>
+            <span class="tb">customers</span>
+            <span class="tb">suppliers</span>
+            <span class="tb">products</span>
+            <span class="tb hi">mes_work_orders</span>
+            <span class="tb">mes_* ×5</span>
+            <span class="tb">sites</span>
+            <span class="tb">product_site_routing</span>
+            <span class="tb">simulation_config</span>
+            <span class="tb">simulation_events</span>
+          </div>
+        </div>
+
+        <div class="vconn bi" aria-hidden="true"><span class="vl">reads</span></div>
+
+        <div class="laneband">
+          <span class="ln">ERP dashboard</span>
+          <div class="flow">
+            <div class="node"><span class="dot" aria-hidden="true">3</span><span class="nm">CloudFront (WAF) + Cognito Authorization@Edge</span><span class="dt">SAR cloudfront-authorization-at-edge v2.3.2 · Lambda@Edge check / parse / refresh</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Internal ALB :80</span><span class="dt">CloudFront VPC origin</span></div>
+            <span class="arr" aria-hidden="true"></span>
+            <div class="node"><span class="nm">Streamlit — ECS Fargate</span><span class="dt">:8501</span></div>
+          </div>
+        </div>
+
+        <div class="laneband dimlane">
+          <span class="ln">Support</span>
+          <div class="flow">
+            <div class="node"><span class="nm">Cleanup Lambda</span><span class="dt">dashboard Reset button</span></div>
+            <span class="arr" aria-hidden="true" style="visibility:hidden"></span>
+            <div class="node"><span class="nm">Seed Lambda</span><span class="dt">deploy-time · container images from ECR</span></div>
+            <span class="arr" aria-hidden="true" style="visibility:hidden"></span>
+            <div class="node"><span class="dot" aria-hidden="true">4</span><span class="nm">Bastion EC2</span><span class="dt">SSM Session Manager only</span></div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="rail" aria-label="Slide 4 callouts">
+        <li>
+          <h3>One <em>scheduled</em> Lambda</h3>
+          <p>EventBridge <code>rate(1 minute)</code> triggers <b>only</b> the simulation orchestrator with <code>{"action":"single_cycle"}</code>. Cleanup is wired to the dashboard's Reset button; seed runs at deploy time. All three are ARM64 container-image Lambdas from ECR.</p>
+        </li>
+        <li>
+          <h3>A real <em>relational surface</em></h3>
+          <p><b>30 tables across 12 schema files</b> span ERP and MES domains — orders, inventory, suppliers, BOMs, production, shipping/financial, <code>mes_*</code>, and simulation bookkeeping — across four simulated sites (Milwaukee · Detroit · Cedar Rapids · Indianapolis). "Orders" resolves to <code>customer_orders</code>.</p>
+        </li>
+        <li>
+          <h3>Auth at the <em>edge</em>, not the ALB</h3>
+          <p>Cognito login happens at CloudFront via the SAR <b>cloudfront-authorization-at-edge</b> app (v2.3.2, Lambda@Edge check/parse/refresh). The ALB stays internal behind a WAF-protected CloudFront VPC origin.</p>
+        </li>
+        <li>
+          <h3><em>Ops access</em> without exposure</h3>
+          <p>The bastion EC2 instance is reachable only through <b>SSM Session Manager</b> — no inbound SSH, no public IP path to the database.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="foot"><b>Not the product:</b> this stack exists so the demo has live data — it onboards through the same dynamic path as any customer system (ADR-0030). <b>Flags are not sticky:</b> an environment that should keep the demo data must pass <code>--seed</code>/<code>--simulator</code> on every deploy, or CDK removes the simulator stacks (including the Aurora data).</p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var deck=document.getElementById("deck");
+  var slides=Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var navLinks=Array.prototype.slice.call(document.querySelectorAll(".nav a[data-slide]"));
+  var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function currentIndex(){
+    var top=deck.scrollTop,best=0,bestd=Infinity;
+    slides.forEach(function(s,i){
+      var d=Math.abs(s.offsetTop-top);
+      if(d<bestd){bestd=d;best=i;}
+    });
+    return best;
+  }
+  function go(i){
+    if(i<0||i>=slides.length)return;
+    slides[i].scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});
+  }
+
+  document.addEventListener("keydown",function(e){
+    if(e.altKey||e.ctrlKey||e.metaKey)return;
+    var t=e.target;
+    if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"))return;
+    switch(e.key){
+      case "ArrowDown": case "ArrowRight": case "PageDown":
+        e.preventDefault(); go(currentIndex()+1); break;
+      case "ArrowUp": case "ArrowLeft": case "PageUp":
+        e.preventDefault(); go(currentIndex()-1); break;
+      case "Home": e.preventDefault(); go(0); break;
+      case "End": e.preventDefault(); go(slides.length-1); break;
+    }
+  });
+
+  navLinks.forEach(function(a){
+    a.addEventListener("click",function(e){
+      var s=document.getElementById(a.getAttribute("data-slide"));
+      if(s){e.preventDefault();s.scrollIntoView({behavior:reduced?"auto":"smooth",block:"start"});
+        if(history.replaceState)history.replaceState(null,"","#"+s.id);}
+    });
+  });
+
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          navLinks.forEach(function(a){
+            a.setAttribute("aria-current",a.getAttribute("data-slide")===en.target.id?"true":"false");
+          });
+        }
+      });
+    },{root:deck,threshold:0.5});
+    slides.forEach(function(s){io.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

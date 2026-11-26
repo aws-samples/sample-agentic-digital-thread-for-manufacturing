@@ -1,0 +1,298 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+/* SessionDrilldown waterfall timeline — colocated component CSS (same
+ * precedent as chat/session-menu.css). Colocated because the drilldown
+ * mounts on BOTH hosts (index #agents-view and the admin AgentCore tab) and
+ * admin.html does not load styles/dashboard.css where the other fleet-*
+ * styles live. Uses only existing design tokens from base.css. */
+
+/* ---- section toggle ---------------------------------------------------- */
+
+/* Shared waterfall column template: keeps the tick grid (.sdd-ticks) and the
+ * span rows (.sdd-row) pinned to identical column geometry. */
+.sdd-ticks,
+.sdd-row {
+  --sdd-grid: minmax(9rem, 11rem) 1fr 4.5rem;
+}
+
+.sdd-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: color 120ms ease-out, border-color 120ms ease-out;
+}
+.sdd-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.sdd-toggle-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- sessions list ------------------------------------------------------ */
+
+.sdd-session-list {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 13.5rem; /* ~6 rows before scrolling */
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+.sdd-session-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1.4fr) 5.5rem 5rem minmax(4.5rem, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.72rem;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+}
+.sdd-session-row:hover { background: var(--surface2); color: var(--text2); }
+.sdd-session-row[aria-pressed='true'] {
+  border-left-color: var(--accent); /* selected: left accent rail */
+  background: var(--surface2);
+  color: var(--text);
+}
+.sdd-session-id {
+  font-family: 'IBM Plex Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.sdd-session-time,
+.sdd-session-spans {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+/* Paired token in/out mini-bar (in = cyan, out = amber). */
+.sdd-token-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.sdd-token-mini span {
+  display: block;
+  height: 3px;
+  border-radius: 1px;
+  min-width: 2px;
+}
+.sdd-token-mini .sdd-token-in { background: var(--accent); }
+.sdd-token-mini .sdd-token-out { background: var(--amber); }
+.sdd-err-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.66rem;
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ---- summary strip ------------------------------------------------------ */
+
+.sdd-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0 0 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.sdd-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.35rem 0.9rem;
+  border-right: 1px solid var(--border);
+}
+.sdd-stat:last-child { border-right: none; }
+.sdd-stat dt {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.sdd-stat dd {
+  margin: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.sdd-stat dd.sdd-stat-error { color: var(--red); }
+
+/* ---- waterfall ---------------------------------------------------------- */
+
+.sdd-waterfall {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  padding: 0.35rem 0;
+}
+.sdd-wf-scroll {
+  max-height: 21.5rem; /* ~14 dense rows before scrolling */
+  overflow-y: auto;
+  position: relative;
+}
+/* Vertical time ticks at 25/50/75% of the wall-clock window. Rendered INSIDE
+ * .sdd-wf-list (position: relative) so inset-0 spans the FULL content height
+ * — the grid stays behind every row on long, scrolled traces. The ticks live
+ * inside the track column only (label + duration columns are excluded via
+ * the shared --sdd-grid column template). */
+.sdd-ticks {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: var(--sdd-grid);
+  pointer-events: none;
+}
+.sdd-ticks-track { position: relative; grid-column: 2; }
+.sdd-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+  opacity: 0.55;
+}
+.sdd-tick-label {
+  position: absolute;
+  top: 2px;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--muted);
+  opacity: 0.8;
+  background: var(--surface);
+  padding: 0 3px;
+  white-space: nowrap;
+}
+.sdd-wf-list {
+  position: relative; /* rows paint above the tick grid */
+  margin: 0;
+  padding: 1rem 0 0.25rem; /* headroom for tick labels */
+}
+.sdd-row {
+  display: grid;
+  grid-template-columns: var(--sdd-grid);
+  align-items: center;
+  gap: 0;
+  min-height: 24px;
+  padding: 1px 0;
+  transition: background-color 120ms ease-out;
+  animation: sdd-row-enter 180ms ease-out both;
+}
+.sdd-row:hover { background: var(--surface2); }
+.sdd-row-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text2);
+  padding: 0 0.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.sdd-track { position: relative; height: 22px; min-width: 0; }
+.sdd-bar {
+  position: absolute;
+  top: 3px;
+  height: 12px;
+  border-radius: 2px;
+  min-width: 2px;
+}
+/* Kind → color: llm/model = cyan, tool = violet-blue, other = slate. */
+.sdd-kind-llm .sdd-bar {
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 75%, transparent);
+}
+.sdd-kind-tool .sdd-bar {
+  background: color-mix(in srgb, #a78bfa 34%, transparent);
+  border: 1px solid color-mix(in srgb, #a78bfa 72%, transparent);
+}
+.sdd-kind-other .sdd-bar {
+  background: color-mix(in srgb, #64748b 32%, transparent);
+  border: 1px solid color-mix(in srgb, #64748b 68%, transparent);
+}
+.sdd-bar--error { border: 1px solid var(--red) !important; }
+.sdd-err-glyph {
+  color: var(--red);
+  font-size: 0.62rem;
+  margin-left: 0.3rem;
+  vertical-align: 1px;
+}
+/* Thin stacked in/out token attribution under the main bar — subtle. */
+.sdd-sub {
+  position: absolute;
+  bottom: 2px;
+  height: 3px;
+  display: flex;
+  border-radius: 1px;
+  overflow: hidden;
+  opacity: 0.65;
+}
+.sdd-sub-in { background: var(--accent); }
+.sdd-sub-out { background: var(--amber); }
+.sdd-dur {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.64rem;
+  color: var(--muted);
+  text-align: right;
+  padding: 0 0.6rem;
+  white-space: nowrap;
+}
+
+/* ---- loading skeleton ---------------------------------------------------- */
+
+.sdd-skeleton { padding: 0.25rem 0; }
+.sdd-skeleton-row {
+  height: 18px;
+  margin: 4px 0;
+  border-radius: 3px;
+  background: var(--surface2);
+}
+
+/* ---- motion ------------------------------------------------------------- */
+
+@keyframes sdd-row-enter {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sdd-row { animation: none !important; }
+  .sdd-row,
+  .sdd-session-row,
+  .sdd-toggle { transition: none !important; }
+}

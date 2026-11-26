@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!-- Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Agentic Digital Thread</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <!-- Ported from static/login.html: page-scoped CSS variable overrides -->
+  <style>
+    :root {
+      --bg: #0d1117; --surface: #161b22; --surface2: #21262d; --surface3: #30363d;
+      --border: #30363d; --text: #f0f6fc; --muted: #7d8590;
+      --accent: #00d8ff; --accent2: #58a6ff; --green: #3fb950; --red: #f85149;
+    }
+    /* #root is transparent to layout (login.css centers on body.login-page). */
+    #root { display: contents; }
+  </style>
+</head>
+<body class="login-page">
+  <div id="root"></div>
+  <script type="module" src="/src/main-login.tsx"></script>
+</body>
+</html>

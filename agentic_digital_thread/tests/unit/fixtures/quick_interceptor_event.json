@@ -1,0 +1,23 @@
+{
+  "_comment": "ADR-0079: REQUEST-interceptor input for an MCP target, shape from the AgentCore developer guide (Types of interceptors). <delegated_jwt> is filled in by the test that loads this file with an UNSIGNED test JWT (payload sub=delegated-user-42, act.client_id=example-client). Replace with a keys-only sanitized live capture after the enabling deploy (V2).",
+  "interceptorInputVersion": "1.0",
+  "mcp": {
+    "rawGatewayRequest": {"body": "<raw_request_body>"},
+    "gatewayRequest": {
+      "path": "/mcp",
+      "httpMethod": "POST",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer <delegated_jwt>",
+        "Mcp-Session-Id": "<session_id>",
+        "User-Agent": "<client_user_agent>"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "tools/call",
+        "params": {"name": "query-bridge___submit_query", "arguments": {"question": "what changed?"}}
+      }
+    }
+  }
+}

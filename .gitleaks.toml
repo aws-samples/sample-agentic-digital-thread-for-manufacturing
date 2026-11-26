@@ -1,0 +1,31 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# gitleaks configuration — extends the default ruleset with an allowlist for
+# the repo's KNOWN-FAKE credential sentinels. Every entry below was verified
+# against the source (scan triage 2026-08-04); none is a real secret.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Verified non-secrets: documented example keys, sentinel fixtures, and secret NAMES"
+paths = [
+  # gitleaks flags the fingerprints inside its own ignore file
+  '''\.gitleaksignore$''',
+]
+regexes = [
+  # AWS's official documentation example access key — used deliberately by the
+  # credential-redaction and env-strip tests as a realistic-shaped input. The
+  # last letter sits in a one-character class so the regex matches exactly
+  # that key while this file holds no key-shaped literal of its own.
+  '''AKIAIOSFODNN7EXAMPL[E]''',
+  # base64("AWS:public") — ECR Public's well-known anonymous auth token.
+  '''QVdTOnB1YmxpYw==''',
+  # Offline test fixtures / sentinels (annotated nosec at their definitions).
+  '''placeholder-secret''',
+  '''s3cr3t-VALUE''',
+  '''abc-123-secret-internals''',
+  # AWS Secrets Manager secret NAME (not a value) — the demo-password secret id.
+  '''adt-demo-password''',
+]

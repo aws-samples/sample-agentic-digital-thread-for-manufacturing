@@ -1,0 +1,13 @@
+# Build context for the OPC UA server image (highbyte/components/opc-server/Dockerfile).
+# ALLOWLIST: everything is excluded except what that Dockerfile COPYs, so the
+# CDK asset staging carries only the server sources and the three gzip datasets
+# — never the HighByte setup Lambda, the SiteWise tooling or any local residue.
+*
+!components/opc-server/**
+!datasets/site1_milwaukee_bottling.csv.gz
+!datasets/site2_detroit_automotive.csv.gz
+!datasets/site3_cedarrapids_food.csv.gz
+!datasets/site4_indianapolis_machining.csv.gz
+# Local residue that the allowlist above would otherwise re-include.
+components/opc-server/node_modules/
+components/opc-server/datasets/

@@ -1,0 +1,41 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+   SPDX-License-Identifier: MIT-0 */
+
+/* Split '+ New' button (SessionMenu.tsx). Base .session-menu-trigger styling
+   (border, colors, hover/expanded accent) lives in styles/dashboard.css —
+   this file only fuses the two segments into one visual control. */
+.session-menu-wrap {
+  display: inline-flex;
+  align-items: stretch;
+}
+.session-menu-trigger--new,
+.session-menu-trigger--caret {
+  position: relative; /* let the hovered/focused segment's border win */
+}
+.session-menu-trigger--new {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.session-menu-trigger--caret {
+  margin-left: -1px; /* overlap the shared border */
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  width: 24px;
+  padding-left: 0;
+  padding-right: 0;
+  justify-content: center;
+}
+.session-menu-trigger--new:hover,
+.session-menu-trigger--new:focus-visible,
+.session-menu-trigger--caret:hover,
+.session-menu-trigger--caret:focus-visible,
+.session-menu-trigger--caret[aria-expanded='true'] {
+  z-index: 1; /* raise the accent border above the overlapped sibling edge */
+}
+
+/* Session dropdown enter — .session-menu (styles/dashboard.css) toggles via
+   [hidden]; restoring display restarts the shared item-enter rise
+   (keyframe from base.css, loaded wherever SessionMenu renders). */
+.session-menu {
+  animation: item-enter-motion var(--motion-fast) var(--ease-enter) both;
+}

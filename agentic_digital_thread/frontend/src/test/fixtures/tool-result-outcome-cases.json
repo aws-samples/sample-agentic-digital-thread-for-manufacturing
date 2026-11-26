@@ -1,0 +1,305 @@
+{
+  "_comment": "Shared tool-result outcome fixture. `ui` = frontend classifyToolResult outcome (frontend/src/test/tool-result-outcome-parity.test.ts); `server` = query_intelligence.is_failed_result verdict (tests/unit/test_tool_result_outcome_parity.py). A case where (ui is failed/empty) != server MUST set `divergent: true` with a note.",
+  "cases": [
+    {
+      "id": "erp-honest-absence-verbatim",
+      "note": "LIVE 2026-09-24: 8 successful ERP queries; prose answer mentions 'no results' / 'does not exist' deep in the text. Was rendered as a red 'failed' node.",
+      "text": "Based on my investigation of the ERP system, I found that **there are currently no suppliers linked to production batches with quality failures** in the database.\n\nHere's what I discovered:\n\n1. **Material Lots Quality Status**: All 43 material lots in the system have a quality_status of \"APPROVED\" — there are no lots with failed, rejected, or other non-approved quality statuses.\n\n2. **Notes and Defect Information**: I searched for quality failure indicators across multiple tables:\n   - material_lots table: No notes documenting quality issues\n   - lot_mes_tracking table: No notes containing keywords like \"fail,\" \"reject,\" \"defect,\" or \"quality\"\n   - inventory_transactions table: No transaction notes indicating rejections or quality problems\n\n3. **Expiry Date Analysis**: While I checked for expired lots as a quality concern indicator, no material lots have expiry dates recorded in the system.\n\n**Conclusion**: The current ERP data shows a clean quality record with all received material lots approved and no documented quality failures, defects, or rejections associated with any suppliers' production batches. There are no results to display for this query as the condition criteria (quality failures) does not exist in the current dataset.\n",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "error-envelope",
+      "text": "Error: connection refused",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "query-failed-envelope",
+      "text": "Query failed after 3 attempts",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "traceback-envelope",
+      "text": "Traceback (most recent call last):\n  File \"x.py\", line 1\nValueError: bad",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "long-answer-leading-error",
+      "text": "Error: relation \"lot_quality\" does not exist\n\nBased on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Supplier A had no matching purchase order, but lot L-1 was returned.",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "no-records-envelope",
+      "text": "No records found.",
+      "ui": "empty",
+      "server": true
+    },
+    {
+      "id": "no-rows-envelope",
+      "text": "The query returned no rows",
+      "ui": "empty",
+      "server": true
+    },
+    {
+      "id": "empty-result-envelope",
+      "text": "Empty result set",
+      "ui": "empty",
+      "server": true
+    },
+    {
+      "id": "error-word-in-data",
+      "text": "top defect reason: error code E42",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "marker-inside-table-cell",
+      "text": "3 records found\n| lot | note |\n|---|---|\n| L-1 | no results logged |\n| L-2 | Error: sensor offline |",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "marker-beyond-head-single-line",
+      "text": "Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Supplier A had no matching purchase order, but lot L-1 was returned.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "error-on-later-line-of-long-answer",
+      "text": "Here is the supplier summary for the requested window.\n\nBased on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Supplier A had no matching purchase order, but lot L-1 was returned.\n\nNote: an earlier attempt logged Error: timeout, the retry succeeded.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "word-boundary-no-resultsets",
+      "text": "Checked 12 tables; no resultsets were cached.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "camelcase-valueerror",
+      "text": "ValueError: invalid literal for int() with base 10: 'L-1'",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "camelcase-operationalerror",
+      "text": "OperationalError: could not connect to server: Connection refused",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "mcp-exception-colon",
+      "text": "McpException: MCP server 'https://example.invalid/invocations' is not reachable",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "wrapped-traceback-long",
+      "text": "Tool execution error\nTraceback (most recent call last):\n  File \"/app/agents/tool_0.py\", line 0, in handler\n    result = run_query(sql)\n  File \"/app/agents/tool_1.py\", line 10, in handler\n    result = run_query(sql)\n  File \"/app/agents/tool_2.py\", line 20, in handler\n    result = run_query(sql)\n  File \"/app/agents/tool_3.py\", line 30, in handler\n    result = run_query(sql)\n  File \"/app/agents/tool_4.py\", line 40, in handler\n    result = run_query(sql)\n  File \"/app/agents/tool_5.py\", line 50, in handler\n    result = run_query(sql)\nagents.pgdriver.UndefinedTable: relation \"lot_quality\" does not exist",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "preamble-then-error-long",
+      "text": "Querying lot_quality for plant CR.\nError: relation \"lot_quality\" does not exist\n\nBased on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Based on my investigation of the ERP database, here are my findings. Supplier A had no matching purchase order, but lot L-1 was returned.",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "markdown-rule-is-not-a-table",
+      "text": "Query failed to execute\n---\nDetails: | code | QF-1 |",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "explore-graph-rejected-query",
+      "note": "LIVE 2026-10-02: Neptune rejected 3 of 9 explore_graph queries in one turn; the tool used to answer 'No nodes/edges matched' and the turn scored 9/9 grounded. The rejection envelope leads with the error.",
+      "text": "{\"error\": \"Graph query failed (ValidationException): Unknown function 'keys'\", \"results\": [], \"query_failed\": true, \"note\": \"The graph engine rejected this openCypher, so the result says nothing about what the graph contains. This is NOT an empty result. Correct the query against the GRAPH SCHEMA and run it again. The graph holds system metadata and rules only, never business records: rows such as orders, shipments or batches come from the owning system's agent.\"}",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "explore-graph-union-mismatch-summary",
+      "note": "LIVE 2026-10-03 (fresh workshop account): the trace summary of a Neptune-rejected UNION whose branches returned different column names. A failed graph query, never 'No matching entities found'.",
+      "text": "Error: Graph query failed (ValidationException): All sub queries in an UNION must have the same column names (line 2, column 1",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "explore-graph-union-refused-before-submit",
+      "note": "explore_graph's pre-submit UNION refusal (branches return different names; live 2026-10-04 shape: unaliased columns). Pinned to the code by tests/unit/test_explore_graph_prechecks.py.",
+      "text": "{\"error\": \"Graph query failed (UNION column mismatch, not run): branch 1 returns [a.name, a.asset_type]; branch 2 returns [m.name, m.model_type]. Every UNION branch must RETURN the same column names in the same order; alias every column with the same plain name in every branch (e.g. RETURN a.name AS name in each branch).\", \"results\": [], \"query_failed\": true, \"union_columns\": [[\"a.name\", \"a.asset_type\"], [\"m.name\", \"m.model_type\"]], \"note\": \"The graph engine rejected this openCypher, so the result says nothing about what the graph contains. This is NOT an empty result. Correct the query against the GRAPH SCHEMA and run it again. The graph holds system metadata and rules only, never business records: rows such as orders, shipments or batches come from the owning system's agent.\"}",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "explore-graph-regex-refused-before-submit",
+      "note": "explore_graph's pre-submit refusal of =~ (Neptune: 'RegexMatch is not supported in this release', live 2026-10-04). Pinned to the code by tests/unit/test_explore_graph_prechecks.py.",
+      "text": "{\"error\": \"Graph query failed (regular-expression match is not supported, not run): use toLower(x) CONTAINS 'text', STARTS WITH or ENDS WITH instead of =~.\", \"results\": [], \"query_failed\": true, \"note\": \"The graph engine rejected this openCypher, so the result says nothing about what the graph contains. This is NOT an empty result. Correct the query against the GRAPH SCHEMA and run it again. The graph holds system metadata and rules only, never business records: rows such as orders, shipments or batches come from the owning system's agent.\"}",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "explore-graph-dotted-alias-refused-before-submit",
+      "note": "explore_graph's pre-submit refusal of AS md.id (Neptune: \"Invalid input '.': expected an identifier character\", live 2026-10-04). Pinned to the code by tests/unit/test_explore_graph_prechecks.py.",
+      "text": "{\"error\": \"Graph query failed (dotted alias, not run): an alias must be a plain name, e.g. AS md_id, not AS md.id.\", \"results\": [], \"query_failed\": true, \"note\": \"The graph engine rejected this openCypher, so the result says nothing about what the graph contains. This is NOT an empty result. Correct the query against the GRAPH SCHEMA and run it again. The graph holds system metadata and rules only, never business records: rows such as orders, shipments or batches come from the owning system's agent.\"}",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "short-honest-absence-prose",
+      "note": "A SHORT answer that says there is nothing is honestly 'empty' (amber no-data), never 'failed'.",
+      "text": "The supplier-to-quality-failure linkage does not exist in this dataset; there are no results to display.",
+      "ui": "empty",
+      "server": true
+    },
+    {
+      "id": "absence-phrase-without-sql-shape",
+      "text": "Checked all 43 lots: the linkage you asked about does not exist in ERP.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-short-answer-with-cut-line",
+      "note": "A SHORT Mode A answer followed by the fixed engine line _run_mode_a_query appends when a tool result was cut by rows (2026-10-11). The line starts inside the 240-char envelope head, so it must not classify a successful answer as failed or empty (server half: tests/unit/test_mode_a_result_cut_line.py).",
+      "text": "The query matched 1,193 rows across 25 groups; 14 groups are listed.\n\n[engine] 1 of 1 tool results this turn was cut off: 500 rows came back and the rows after them were not returned. A list of distinct values, a count, or an earliest or latest value read off these rows is not the full result.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-short-answer-with-window-cut-line",
+      "note": "The same engine line for a cut with no row count (a SiteWise history window or asset-list cut, possibly with nothing returned). Must classify exactly like the row-count form.",
+      "text": "The readings rose through the morning shift.\n\n[engine] 1 of 2 tool results this turn was cut off: the full rows or time window did not come back. A list of distinct values, a count, or an earliest or latest value read off the returned data is not the full result.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-prose-with-no-data-line",
+      "note": "Test event 32 (2026-10-15): a system agent whose every query failed answered in prose, and Sources showed its chips as normal. _run_query now appends the fixed engine line when no query the call ran returned data; both classifiers read that exact line anywhere in the result (server half: tests/unit/test_sources_honesty.py).",
+      "text": "The source returned a service error on each attempt, so no values came back.\n\n[engine] No query this call ran returned data (transport_error).",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "mode-a-prose-with-no-rows-line",
+      "note": "The same engine line when every query ran and returned no rows: an empty result, not a failure.",
+      "text": "Nothing matched.\n\n[engine] No query this call ran returned data (no rows).",
+      "ui": "empty",
+      "server": true
+    },
+    {
+      "id": "mode-a-long-prose-with-no-data-line",
+      "note": "The engine line past the 240-char envelope head of a long prose answer still classifies it: it is code-authored, so it is matched anywhere.",
+      "text": "The source was asked for the current values of each listed asset, then again for a shorter window, then once more for a single asset. Each request came back with an upstream service error, so the answer below falls back to the latest values recorded elsewhere.\n\n[engine] No query this call ran returned data (transport_error, tool_error).",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "business-record-status-failed",
+      "note": "A real record whose own business status field says failed (a check that failed), returned successfully. Data, never a failed call.",
+      "text": "{\"record_id\": \"R-1\", \"status\": \"failed\", \"measurement\": 12.3, \"limit\": 10.0}",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-business-record-status-failed",
+      "note": "The system agent's answer about that record: no engine no-data line is added (pinned to _run_mode_a_query by tests/unit/test_sources_honesty.py).",
+      "text": "Record R-1 failed its check: 12.3 against a limit of 10.0.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-envelope-with-request-id",
+      "note": "A structural error envelope with a request id ({status: error, message, request_id}) is still a failed call: the request id is a diagnostic envelope field, not business data, so the answer carries the engine no-data line (pinned to _run_mode_a_query by tests/unit/test_sources_honesty.py).",
+      "text": "The source returned a service error on each attempt, so no values came back.\n\n[engine] No query this call ran returned data (tool_error).",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "mode-a-envelope-with-http-status",
+      "note": "The same for an error envelope carrying an HTTP status ({status: error, message, http_status}).",
+      "text": "The source returned a service error on each attempt, so no values came back.\n\n[engine] No query this call ran returned data (tool_error).",
+      "ui": "failed",
+      "server": true
+    },
+    {
+      "id": "business-event-weak-fields",
+      "note": "A quality event whose every field also reads as a generic diagnostic name (status, code, description, timestamp). No strong error signal, so it is a record: data, never a failed call.",
+      "text": "{\"status\": \"failed\", \"code\": \"QC-9\", \"description\": \"failed check\", \"timestamp\": \"2026-01-01\"}",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-business-event-weak-fields",
+      "note": "The system agent's answer about that event: no engine no-data line is added (pinned to _run_mode_a_query by tests/unit/test_sources_honesty.py).",
+      "text": "Quality event QC-9 failed its check on 2026-01-01.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "business-event-titled",
+      "note": "The same for a check carrying title, type and path beside a failed status.",
+      "text": "{\"status\": \"failed\", \"title\": \"Bore check\", \"type\": \"dimensional\", \"path\": \"/area-1/station-2\"}",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "mode-a-business-event-titled",
+      "note": "The system agent's answer about that check: no engine no-data line.",
+      "text": "The dimensional bore check at /area-1/station-2 failed.",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "trace-summary-annotated-json-array",
+      "note": "Trace summary of a Mode A JSON-array answer the engine wrapped with its cut note: the summarizer unwraps it, so it reads as the plain array does.",
+      "text": "2 items: a, b",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "trace-summary-annotated-sitewise-map",
+      "note": "Trace summary of a Mode A SiteWise-map answer carrying the engine cut note: the note is ignored during shape dispatch.",
+      "text": "2 time-series: 2 data points total",
+      "ui": "success",
+      "server": false
+    },
+    {
+      "id": "sql-relation-missing",
+      "text": "relation \"lot_quality\" does not exist",
+      "ui": "failed",
+      "server": false,
+      "divergent": true,
+      "note": "UI-only transient needle (self-recovered SQL error); the server wasted-call set is deliberately narrower."
+    },
+    {
+      "id": "athena-column-not-found",
+      "text": "COLUMN_NOT_FOUND: line 1:8: Column 'lot_no' cannot be resolved",
+      "ui": "failed",
+      "server": false,
+      "divergent": true,
+      "note": "UI-only transient needle."
+    },
+    {
+      "id": "mcp-auth-blip-no-colon",
+      "text": "McpException - MCP invocation failed: Authorization error when sending message",
+      "ui": "failed",
+      "server": false,
+      "divergent": true,
+      "note": "UI-only; the server retries it via orchestrator _AUTH_TOOL_ERROR_MARKERS instead."
+    },
+    {
+      "id": "blank-result",
+      "text": "",
+      "ui": "empty",
+      "server": false,
+      "divergent": true,
+      "note": "UI renders blank as 'No data returned'; is_failed_result('') stays False (not a marker)."
+    }
+  ]
+}

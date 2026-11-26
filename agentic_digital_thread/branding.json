@@ -1,0 +1,18 @@
+{
+  "company": "Agentic Digital Thread",
+  "tagline": "Manufacturing Intelligence",
+  "plants": {
+    "milwaukee": "Milwaukee",
+    "detroit": "Detroit",
+    "cedar-rapids": "Cedar Rapids"
+  },
+  "systems": {
+    "erp": "ERP",
+    "mes-mil": "Milwaukee MES",
+    "mes-det": "Detroit MES",
+    "mes-cr": "Cedar Rapids MES",
+    "cmms": "CMMS",
+    "plm": "PLM",
+    "sitewise": "AWS IoT SiteWise (i3X)"
+  }
+}

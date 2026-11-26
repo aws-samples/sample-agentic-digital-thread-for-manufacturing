@@ -1,0 +1,26 @@
+cdk/
+.git/
+*.png
+reference/
+artifacts/
+.kiro/
+agentic_digital_thread.egg-info/
+# Any depth: tests and imports write agents/**/__pycache__, and a root-only
+# rule would let that bytecode change the image asset hashes.
+**/__pycache__/
+**/*.pyc
+# Caches a pytest run leaves where it runs; none of these images COPY them.
+**/.pytest_cache/
+**/.hypothesis/
+.env
+data/mqtt/*.csv
+data/mqtt/*.json
+frontend/node_modules/
+frontend/dist/
+
+# Never COPY'd by Dockerfile / Dockerfile.runtime:
+# keeps each CDK asset staging of this context ~25 MB smaller (2026-09 review).
+tests/
+scripts/
+deploy.sh
+update-links.sh

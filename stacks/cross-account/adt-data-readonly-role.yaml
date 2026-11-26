@@ -1,0 +1,490 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0
+#
+# ADT cross-account READ-ONLY data-access role.
+#
+# Deploys into the data account (444455556666), in the Region where the data
+# lives — resource ARNs resolve through ${AWS::Region}/${AWS::Partition}. Lets an ADT
+# deployment running in the Demo account (111122223333) assume a least-privilege,
+# READ-ONLY role to onboard REAL data from the data account via Amazon Athena
+# (Glue federated S3 Tables catalog) and AWS IoT SiteWise.
+#
+# Discovery that scoped this policy (read-only, 2026-07-01, data profile):
+#   * Athena workgroup  : example-workgroup
+#       ResultConfiguration.OutputLocation =
+#         s3://amzn-s3-demo-athena-results/results/
+#       BytesScannedCutoffPerQuery = 1 GB, EnforceWorkGroupConfiguration = true.
+#   * Data catalog      : AwsDataCatalog (type GLUE) in account 444455556666.
+#   * Database          : federated_process_db — a Glue FEDERATED database:
+#       FederatedDatabase.Identifier = arn:aws:s3tables:us-east-1:777788889999:bucket/*
+#       ConnectionType               = aws:s3tables
+#       TargetDatabase.CatalogId     = 777788889999:s3tablescatalog/amzn-s3-demo-table-bucket
+#       TargetDatabase.DatabaseName  = owner_process_db
+#       ownerAccountId               = 777788889999  (the S3 Tables data-lake account)
+#     => the data lives in Amazon S3 Tables (Apache Iceberg) MANAGED storage in a
+#        THIRD account (777788889999), surfaced cross-account via the aws:s3tables
+#        Glue federation. There is NO plain customer data S3 bucket to read directly;
+#        Athena reads the table data through the s3tables API + Lake Formation.
+#   * Governance        : Lake Formation governs federated_process_db. Existing
+#        roles hold explicit LF DESCRIBE grants; the DB also carries an
+#        IAM_ALLOWED_PRINCIPALS ALL fallback. IAM (this template) is necessary but
+#        NOT sufficient for the FEDERATED table data — the assumed role ALSO needs a
+#        Lake Formation grant (SELECT/DESCRIBE on federated_process_db + tables).
+#        See docs/cross-account-onboarding.md ("Lake Formation grant" + "How to widen").
+#
+# This template is additive and READ-ONLY. It creates one IAM role and the
+# customer managed policies attached to it, and nothing else. The policies are
+# managed policies, not inline ones, and live and die with this stack.
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  ADT cross-account READ-ONLY data-access role (assumed by the Demo account
+  111122223333 to onboard REAL data via Athena + IoT SiteWise). Least
+  privilege, read-only. Additive; creates only an IAM role and its managed
+  policies.
+
+Parameters:
+  TrustedAccountId:
+    Type: String
+    AllowedPattern: '^[0-9]{12}$'
+    Description: >-
+      AWS account ID allowed to assume this role (the ADT Demo / deploy-target
+      account). No default: a deploy must name the account it trusts. Trust
+      starts at account-root; tighten to the deployed ECS task role / AgentCore
+      runtime role ARN post-deploy (see the doc).
+
+  ExternalId:
+    Type: String
+    NoEcho: true
+    MinLength: 16
+    Description: >-
+      The sts:ExternalId the caller MUST present on every AssumeRole call
+      (confused-deputy protection). Use a value unique to this customer, at
+      least 16 characters. AWS does not treat an external ID as a secret;
+      keeping it out of logs and source control is good hygiene. Change it by
+      redeploying with a new value. No default.
+
+  RoleName:
+    Type: String
+    Default: ADTCrossAccountDataReadOnly
+    Description: Name of the created IAM role.
+
+  DataAccountId:
+    Type: String
+    Default: ''
+    AllowedPattern: '^([0-9]{12})?$'
+    Description: >-
+      The data account ID, used to scope the Athena and Glue ARNs. Empty (the
+      default) means the account this stack is deployed in, which is the data
+      account.
+
+  S3TablesAccountId:
+    Type: String
+    Default: ''
+    AllowedPattern: '^([0-9]{12})?$'
+    Description: >-
+      Set only when the tables are in Amazon S3 Tables: the account that owns
+      the federated S3 Tables catalog (the S3 Tables data-lake account, per the
+      Glue FederatedDatabase identifier; this account's ID when the tables are
+      here). It scopes the S3TablesRead policy: read-only Glue access to that
+      account's S3 Tables catalog, plus direct s3tables reads on one table
+      bucket when S3TableBucketName is set. Empty (the default) means no S3
+      Tables access: the S3TablesRead policy is left out.
+
+  AthenaWorkgroup:
+    Type: String
+    Default: example-workgroup
+    Description: Athena workgroup the role may run/read queries in.
+
+  AthenaResultsBucket:
+    Type: String
+    Default: amzn-s3-demo-athena-results
+    Description: S3 bucket holding the Athena workgroup query results.
+
+  DataBucketName:
+    Type: String
+    Default: ''
+    AllowedPattern: '^([a-z0-9][a-z0-9.-]{1,61}[a-z0-9])?$'
+    ConstraintDescription: an S3 bucket name (3 to 63 lowercase letters, digits, dots or hyphens), or empty
+    Description: >-
+      Set only when the tables are over a plain Amazon S3 bucket: that one
+      bucket's name. The role then reads that bucket and its objects
+      (s3:GetObject, s3:ListBucket, s3:GetBucketLocation), nothing else. Empty
+      (the default) means no data-bucket access: the DataBucketRead policy is
+      left out. More buckets or prefixes still mean adding statements by hand.
+
+  GlueDatabaseName:
+    Type: String
+    Default: federated_process_db
+    Description: The federated Glue database the role may read metadata from.
+
+  S3TablesCatalogPath:
+    Type: String
+    Default: s3tablescatalog/amzn-s3-demo-table-bucket
+    Description: >-
+      Sub-catalog path of the federated S3 Tables catalog in the OWNING
+      S3-Tables account, in the form s3tablescatalog/<table-bucket-name>. Glue
+      metadata reads for the federated database resolve against this
+      owning-account catalog, so its Glue ARNs are in the S3TablesRead policy.
+      Used only when S3TablesAccountId is set.
+
+  S3TableBucketName:
+    Type: String
+    Default: ''
+    AllowedPattern: '^([a-z0-9][a-z0-9-]{1,61}[a-z0-9])?$'
+    ConstraintDescription: an S3 table bucket name (3 to 63 lowercase letters, digits or hyphens), or empty
+    Description: >-
+      Set only when the S3 Tables catalog uses IAM access control rather than
+      Lake Formation, and only with S3TablesAccountId: the one table bucket
+      the tables are in (the bucket named in S3TablesCatalogPath). The role
+      then gets the s3tables reads Athena uses on that bucket and its tables,
+      nothing else. Empty (the default) means no s3tables grant; under Lake
+      Formation access control the role reads through Lake Formation instead.
+
+  S3TablesDatabaseName:
+    Type: String
+    Default: owner_process_db
+    Description: >-
+      Namespace/database name in the owning-account S3 Tables catalog
+      (TargetDatabase.DatabaseName). Used to scope owning-account Glue ARNs,
+      only when S3TablesAccountId is set.
+
+Conditions:
+  # An empty DataAccountId means the account this stack is deployed in.
+  DataAccountIdIsEmpty: !Equals [!Ref DataAccountId, '']
+  # An empty S3TablesAccountId means no S3 Tables access.
+  S3TablesAccountIdIsEmpty: !Equals [!Ref S3TablesAccountId, '']
+  # An empty S3TableBucketName means no s3tables grant (Lake Formation mode).
+  S3TableBucketNameIsEmpty: !Equals [!Ref S3TableBucketName, '']
+  # An empty DataBucketName means no plain S3 data-bucket access.
+  DataBucketNameIsEmpty: !Equals [!Ref DataBucketName, '']
+  # The S3TablesRead and DataBucketRead policies exist only when set.
+  S3TablesAccountIdIsSet: !Not [!Condition S3TablesAccountIdIsEmpty]
+  DataBucketNameIsSet: !Not [!Condition DataBucketNameIsEmpty]
+
+Resources:
+  CrossAccountDataReadOnlyRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: >-
+              Explicit role name is the documented cross-account contract:
+              the ADT deploy account references
+              arn:aws:iam::<data-account>:role/ADTCrossAccountDataReadOnly by
+              name throughout docs/cross-account-onboarding.md (onboarding
+              config, Lake Formation grants, s3tables resource policy).
+    Properties:
+      RoleName: !Ref RoleName
+      Description: >-
+        READ-ONLY cross-account data access for ADT onboarding (Athena + Glue
+        catalog + S3 Tables or one S3 data bucket + IoT SiteWise). Assumed by the
+        ADT Demo account.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              # Trust the Demo account root at bootstrap. TIGHTEN post-deploy to the
+              # concrete ECS task-role / AgentCore runtime-role ARN (see the doc).
+              AWS: !Sub 'arn:${AWS::Partition}:iam::${TrustedAccountId}:root'
+            Action: 'sts:AssumeRole'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalId
+
+  AthenaReadExecutePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: >-
+              The one '*' statement grants only athena:ListDataCatalogs, which has no resource-level permission support. Every other statement
+              in this policy is resource-scoped.
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Workgroup-scoped run/read of queries in example-workgroup only.
+          - Sid: AthenaWorkgroupReadExecute
+            Effect: Allow
+            Action:
+              - 'athena:StartQueryExecution'
+              - 'athena:StopQueryExecution'
+              - 'athena:GetQueryExecution'
+              - 'athena:GetQueryResults'
+              - 'athena:GetQueryResultsStream'
+              - 'athena:GetWorkGroup'
+              - 'athena:ListQueryExecutions'
+            Resource:
+              - !Sub
+                - 'arn:${AWS::Partition}:athena:${AWS::Region}:${DataAccount}:workgroup/${AthenaWorkgroup}'
+                - DataAccount: !If [DataAccountIdIsEmpty, !Ref 'AWS::AccountId', !Ref DataAccountId]
+          # Catalog/metadata reads scoped to the account's data catalog.
+          - Sid: AthenaCatalogMetadataRead
+            Effect: Allow
+            Action:
+              - 'athena:GetDataCatalog'
+              - 'athena:ListDatabases'
+              - 'athena:GetDatabase'
+              - 'athena:ListTableMetadata'
+              - 'athena:GetTableMetadata'
+            Resource:
+              - !Sub
+                - 'arn:${AWS::Partition}:athena:${AWS::Region}:${DataAccount}:datacatalog/AwsDataCatalog'
+                - DataAccount: !If [DataAccountIdIsEmpty, !Ref 'AWS::AccountId', !Ref DataAccountId]
+          # ListDataCatalogs has no resource-level support -> "*".
+          - Sid: AthenaListDataCatalogs
+            Effect: Allow
+            Action:
+              - 'athena:ListDataCatalogs'
+            Resource: '*'
+
+  GlueCatalogReadPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Read-only Glue catalog access to THIS (data) account's catalog and
+          # the federated database federated_process_db (and its table/*). The
+          # owning S3 Tables account's catalog is in the S3TablesRead policy.
+          - Sid: GlueCatalogReadOnly
+            Effect: Allow
+            Action:
+              - 'glue:GetCatalog'
+              - 'glue:GetCatalogs'
+              - 'glue:GetDatabase'
+              - 'glue:GetDatabases'
+              - 'glue:GetTable'
+              - 'glue:GetTables'
+              - 'glue:GetTableVersion'
+              - 'glue:GetTableVersions'
+              - 'glue:GetPartition'
+              - 'glue:GetPartitions'
+              - 'glue:BatchGetPartition'
+              - 'glue:SearchTables'
+            Resource:
+              - !Sub
+                - 'arn:${AWS::Partition}:glue:${AWS::Region}:${DataAccount}:catalog'
+                - DataAccount: !If [DataAccountIdIsEmpty, !Ref 'AWS::AccountId', !Ref DataAccountId]
+              - !Sub
+                - 'arn:${AWS::Partition}:glue:${AWS::Region}:${DataAccount}:database/${GlueDatabaseName}'
+                - DataAccount: !If [DataAccountIdIsEmpty, !Ref 'AWS::AccountId', !Ref DataAccountId]
+              - !Sub
+                - 'arn:${AWS::Partition}:glue:${AWS::Region}:${DataAccount}:table/${GlueDatabaseName}/*'
+                - DataAccount: !If [DataAccountIdIsEmpty, !Ref 'AWS::AccountId', !Ref DataAccountId]
+
+  # Only when S3TablesAccountId is set: an empty value means no S3 Tables
+  # access, so the whole policy is left out (a policy needs at least one
+  # statement, so the condition is on the policy, not on each statement).
+  S3TablesReadPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: S3TablesAccountIdIsSet
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # The OWNING S3 Tables account's Glue catalog. For an aws:s3tables
+          # FEDERATED database, Athena and Glue resolve the table metadata
+          # (glue:GetTables/GetDatabase/GetTable/...) against the OWNING
+          # account's catalog, not the data-account catalog. Confirmed by the
+          # 2026-07-01 smoke test:
+          #   AccessDeniedException ... glue:GetTables on resource:
+          #   arn:aws:glue:us-east-1:777788889999:catalog
+          # So the role also reads the owning account's top-level catalog, its
+          # s3tablescatalog sub-catalog for the table bucket, and that bucket's
+          # databases and tables (both the s3tablescatalog/<bucket>/... forms
+          # Athena resolves and the bare owner_process_db forms). This is
+          # IDENTITY-based metadata read only; the table DATA plane is still
+          # gated by the owner's s3tables resource policy and Lake Formation
+          # grant (owner side, outside this template).
+          - Sid: GlueS3TablesCatalogReadOnly
+            Effect: Allow
+            Action:
+              - 'glue:GetCatalog'
+              - 'glue:GetCatalogs'
+              - 'glue:GetDatabase'
+              - 'glue:GetDatabases'
+              - 'glue:GetTable'
+              - 'glue:GetTables'
+              - 'glue:GetTableVersion'
+              - 'glue:GetTableVersions'
+              - 'glue:GetPartition'
+              - 'glue:GetPartitions'
+              - 'glue:BatchGetPartition'
+              - 'glue:SearchTables'
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:catalog'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:catalog/s3tablescatalog'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:catalog/${S3TablesCatalogPath}'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:database/${S3TablesCatalogPath}/*'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:table/${S3TablesCatalogPath}/*/*'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:database/${S3TablesDatabaseName}'
+              - !Sub 'arn:${AWS::Partition}:glue:${AWS::Region}:${S3TablesAccountId}:table/${S3TablesDatabaseName}/*'
+          # Direct s3tables reads, only when S3TableBucketName is set: the
+          # IAM access-control mode of the S3 Tables catalog, where Athena
+          # needs s3tables permissions on the calling role (Athena User
+          # Guide, "Register S3 table bucket catalogs and query Tables from
+          # Athena", Option 1). Under Lake Formation access control (Option
+          # 2) the role reads through lakeformation:GetDataAccess and the
+          # Lake Formation grants, so S3TableBucketName stays empty. Scoped
+          # to the one named table bucket and its tables, never bucket/*,
+          # and only the reads from that page's list (GetTableBucket,
+          # GetNamespace and ListNamespaces, ListTables on the table bucket;
+          # GetTable, GetTableData on its tables). Cross-account access is
+          # additionally mediated by the owner's table bucket policy.
+          - !If
+            - S3TableBucketNameIsEmpty
+            - !Ref 'AWS::NoValue'
+            - Sid: S3TablesReadOnly
+              Effect: Allow
+              Action:
+                - 's3tables:GetTableBucket'
+                - 's3tables:GetNamespace'
+                - 's3tables:ListNamespaces'
+                - 's3tables:ListTables'
+                - 's3tables:GetTable'
+                - 's3tables:GetTableData'
+              Resource:
+                - !Sub 'arn:${AWS::Partition}:s3tables:${AWS::Region}:${S3TablesAccountId}:bucket/${S3TableBucketName}'
+                - !Sub 'arn:${AWS::Partition}:s3tables:${AWS::Region}:${S3TablesAccountId}:bucket/${S3TableBucketName}/table/*'
+
+  LakeFormationDataAccessPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: >-
+              The one '*' statement grants only lakeformation:GetDataAccess (Lake Formation credential vending), which has no resource-level permission support. Every other statement
+              in this policy is resource-scoped.
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # federated_process_db is Lake Formation governed. GetDataAccess
+          # (LF credential vending for governed/federated reads) has no
+          # resource-level support -> "*". NOTE: this IAM permission is
+          # necessary but not sufficient — the role ALSO needs an explicit LF
+          # data grant (SELECT/DESCRIBE) on the DB + tables (see the doc).
+          - Sid: LakeFormationGetDataAccess
+            Effect: Allow
+            Action:
+              - 'lakeformation:GetDataAccess'
+            Resource: '*'
+
+  # Only when DataBucketName is set: read-only access to the one plain S3
+  # bucket the tables are over. An empty value means no data-bucket access,
+  # so the whole policy is left out (as for S3TablesRead, so no Statement
+  # list is ever empty). The actions are the source-data reads Athena lists
+  # for querying a bucket (Athena User Guide, "Configure cross-account
+  # access in Athena to Amazon S3 buckets"): GetObject, ListBucket and
+  # GetBucketLocation. Nothing here writes, and the bucket is never a
+  # wildcard (the parameter's AllowedPattern admits a bucket name only).
+  DataBucketReadPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: DataBucketNameIsSet
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DataBucketReadOnly
+            Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:ListBucket'
+              - 's3:GetBucketLocation'
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:s3:::${DataBucketName}'
+              - !Sub 'arn:${AWS::Partition}:s3:::${DataBucketName}/*'
+
+  S3ResultsReadWritePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Athena query-results bucket. The table DATA lives in S3 Tables
+          # managed storage (the s3tables API above) or in the one data bucket
+          # of DataBucketRead; this statement is only for query output.
+          #
+          # Athena requires the EXECUTING principal to WRITE query output to the
+          # workgroup's results location, and it pre-checks that write before
+          # planning. The 2026-07-01 re-smoke-test (after the Glue fix) surfaced:
+          #   "Access denied when writing output to url:
+          #    s3://amzn-s3-demo-athena-results/results/<qid>.csv"
+          # So Get/List (read the produced results) are not sufficient — the
+          # role also needs PutObject + multipart-upload writes on this bucket.
+          # This is a WRITE, but ONLY to the workgroup's scratch/results bucket;
+          # it does NOT mutate any data SOURCE (the role stays read-only over all
+          # data). Without it the federated query fails at the output pre-check
+          # before ever reaching the S3 Tables layer.
+          - Sid: AthenaResultsBucketReadWrite
+            Effect: Allow
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+              - 's3:AbortMultipartUpload'
+              - 's3:GetBucketLocation'
+              - 's3:ListBucket'
+              - 's3:ListBucketMultipartUploads'
+              - 's3:ListMultipartUploadParts'
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:s3:::${AthenaResultsBucket}'
+              - !Sub 'arn:${AWS::Partition}:s3:::${AthenaResultsBucket}/*'
+
+  SiteWiseReadPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: >-
+              The one '*' statement grants only the iotsitewise Describe*/List* and asset-property reads, which have no resource-level permission support. Every other statement
+              in this policy is resource-scoped.
+    Properties:
+      Roles:
+        - !Ref CrossAccountDataReadOnlyRole
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # AWS IoT SiteWise asset-discovery + property reads. Describe*/List*
+          # (and the asset-property Get/BatchGet reads) do not support
+          # resource-level permissions, so they must be granted on "*".
+          - Sid: SiteWiseReadOnly
+            Effect: Allow
+            Action:
+              - 'iotsitewise:Describe*'
+              - 'iotsitewise:List*'
+              - 'iotsitewise:GetAssetPropertyValue'
+              - 'iotsitewise:GetAssetPropertyValueHistory'
+              - 'iotsitewise:GetAssetPropertyAggregates'
+              - 'iotsitewise:BatchGetAssetPropertyValue'
+              - 'iotsitewise:BatchGetAssetPropertyValueHistory'
+            Resource: '*'
+
+
+Outputs:
+  RoleArn:
+    Description: ARN of the created cross-account read-only role.
+    Value: !GetAtt CrossAccountDataReadOnlyRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+  RoleName:
+    Description: Name of the created role.
+    Value: !Ref CrossAccountDataReadOnlyRole

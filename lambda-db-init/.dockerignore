@@ -1,0 +1,10 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# Build context for the database-init image (lambda-db-init/Dockerfile).
+# Bytecode written when tests load handler.py must not change the image asset hash.
+**/__pycache__/
+**/*.pyc
+# Nor the caches a pytest run leaves where it runs.
+**/.pytest_cache/
+**/.hypothesis/

@@ -1,0 +1,2746 @@
+{
+  "about": "The /api/ask SSE frames of one live turn and the GET /api/memory/events output for its reopened session; written by tests/unit/test_reload_evidence_cards.py, read by src/test/session-reload-evidence.test.tsx.",
+  "scenarios": {
+    "open": {
+      "question": "Which firing batches ran hot last week?",
+      "live": [
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furoka",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furoka",
+            "summary": "the batches are kept in two systems",
+            "input": "the batches are kept in two systems"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "explore_graph"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furokb",
+            "n": 0,
+            "input": {
+              "question": "hot batches"
+            }
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furokc",
+            "n": 0,
+            "input": {
+              "question": "their parcels"
+            }
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furokb",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furokc",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furokd",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furokd",
+            "summary": "5 rows",
+            "input": "5 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furokb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-c0feae7d7434",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furokc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-9a665d1408be",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furokd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-4edcdd8000da",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-e38dc659264c",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": "token",
+          "data": {
+            "text": "Three batches ran hot [1][2][3]."
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "streamBytes": 0,
+            "streamMB": 0.0,
+            "streamLines": 0
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "text": ""
+          }
+        }
+      ],
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which firing batches ran hot last week?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": [],
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furokb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-c0feae7d7434",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furokc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-9a665d1408be",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furokd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-4edcdd8000da",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-e38dc659264c",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the graph first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the graph first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furoka",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "HIDDEN_INPUT hot"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furoka",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "the batches are kept in two systems"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal\nTool call: parcel-desk___query_parcel_desk",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furokb",
+                "tool": "furnace-journal___query_furnace_journal",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furokc",
+                "tool": "parcel-desk___query_parcel_desk",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furokb",
+                "tool": "furnace-journal___query_furnace_journal",
+                "status": "success",
+                "summary": "3 rows"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furokc",
+                "tool": "parcel-desk___query_parcel_desk",
+                "status": "success",
+                "summary": "3 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furokd",
+                "tool": "furnace-journal___query_furnace_journal",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furokd",
+                "tool": "furnace-journal___query_furnace_journal",
+                "status": "success",
+                "summary": "5 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Three batches ran hot [1][2][3].",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Three batches ran hot [1][2][3]."
+              }
+            ]
+          }
+        ],
+        "sessionId": "sess-furnace-open-kept",
+        "totalCount": 8
+      }
+    },
+    "renamed": {
+      "question": "Which mash runs missed their gravity target?",
+      "live": [
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_breoka",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_breoka",
+            "summary": "the batches are kept in two systems",
+            "input": "the batches are kept in two systems"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "explore_graph"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_breokb",
+            "n": 0,
+            "input": {
+              "question": "hot batches"
+            }
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "cask-register___query_cask_register",
+            "tool_id": "tooluse_breokc",
+            "n": 0,
+            "input": {
+              "question": "their parcels"
+            }
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_breokb",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "brew-log___query_brew_log"
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "cask-register___query_cask_register",
+            "tool_id": "tooluse_breokc",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "cask-register___query_cask_register"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_breokd",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_breokd",
+            "summary": "5 rows",
+            "input": "5 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "brew-log___query_brew_log"
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_breokb",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-69b9429b59cf",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_breokc",
+                  "source_system": "cask-register",
+                  "tool_name": "cask-register___query_cask_register",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-f07796d6c476",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_breokd",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-a20741c8732c",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-1849a4b771e7",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": "token",
+          "data": {
+            "text": "Three batches ran hot [1][2][3]."
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "streamBytes": 0,
+            "streamMB": 0.0,
+            "streamLines": 0
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "text": ""
+          }
+        }
+      ],
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which mash runs missed their gravity target?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": [],
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_breokb",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-69b9429b59cf",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_breokc",
+                  "source_system": "cask-register",
+                  "tool_name": "cask-register___query_cask_register",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-f07796d6c476",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_breokd",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-a20741c8732c",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-1849a4b771e7",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the graph first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the graph first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breoka",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "HIDDEN_INPUT hot"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breoka",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "the batches are kept in two systems"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log\nTool call: cask-register___query_cask_register",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breokb",
+                "tool": "brew-log___query_brew_log",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breokc",
+                "tool": "cask-register___query_cask_register",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breokb",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "3 rows"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breokc",
+                "tool": "cask-register___query_cask_register",
+                "status": "success",
+                "summary": "3 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breokd",
+                "tool": "brew-log___query_brew_log",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breokd",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "5 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Three batches ran hot [1][2][3].",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Three batches ran hot [1][2][3]."
+              }
+            ]
+          }
+        ],
+        "sessionId": "sess-brewing-open-kept",
+        "totalCount": 8
+      }
+    },
+    "two_frames": {
+      "question": "Which mash runs missed their gravity target?",
+      "live": [
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_bretka",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_bretka",
+            "summary": "the batches are kept in two systems",
+            "input": "the batches are kept in two systems"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "explore_graph"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_bretkb",
+            "n": 0,
+            "input": {
+              "question": "hot batches"
+            }
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "cask-register___query_cask_register",
+            "tool_id": "tooluse_bretkc",
+            "n": 0,
+            "input": {
+              "question": "their parcels"
+            }
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_bretkb",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "brew-log___query_brew_log"
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "cask-register___query_cask_register",
+            "tool_id": "tooluse_bretkc",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "cask-register___query_cask_register"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_bretkd",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "brew-log___query_brew_log",
+            "tool_id": "tooluse_bretkd",
+            "summary": "5 rows",
+            "input": "5 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "brew-log___query_brew_log"
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_bretkb",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-f0087f146fb0",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_bretkc",
+                  "source_system": "cask-register",
+                  "tool_name": "cask-register___query_cask_register",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-d04e092a14e6",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-dd76115e8a92",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_bretkb",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-f0087f146fb0",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_bretkc",
+                  "source_system": "cask-register",
+                  "tool_name": "cask-register___query_cask_register",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-d04e092a14e6",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_bretkd",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-4fa5388e28a9",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false
+            }
+          }
+        },
+        {
+          "event": "token",
+          "data": {
+            "text": "Three batches ran hot [1][2][3]."
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "streamBytes": 0,
+            "streamMB": 0.0,
+            "streamLines": 0
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "text": ""
+          }
+        }
+      ],
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which mash runs missed their gravity target?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": [],
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_bretkb",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-f0087f146fb0",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_bretkc",
+                  "source_system": "cask-register",
+                  "tool_name": "cask-register___query_cask_register",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-d04e092a14e6",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_bretkd",
+                  "source_system": "brew-log",
+                  "tool_name": "brew-log___query_brew_log",
+                  "entity": {
+                    "table": "mash_runs",
+                    "columns": [
+                      "run_ref",
+                      "gravity"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "run_ref starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-4fa5388e28a9",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-dd76115e8a92",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the graph first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the graph first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_bretka",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "HIDDEN_INPUT hot"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_bretka",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "the batches are kept in two systems"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log\nTool call: cask-register___query_cask_register",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_bretkb",
+                "tool": "brew-log___query_brew_log",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_bretkc",
+                "tool": "cask-register___query_cask_register",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_bretkb",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "3 rows"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_bretkc",
+                "tool": "cask-register___query_cask_register",
+                "status": "success",
+                "summary": "3 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_bretkd",
+                "tool": "brew-log___query_brew_log",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_bretkd",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "5 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Three batches ran hot [1][2][3].",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Three batches ran hot [1][2][3]."
+              }
+            ]
+          }
+        ],
+        "sessionId": "sess-brewing-two-kept",
+        "totalCount": 8
+      }
+    },
+    "gated": {
+      "question": "Which firing batches ran hot last week?",
+      "live": [
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furgka",
+            "n": 0,
+            "input": null
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furgka",
+            "summary": "{\"app_status\":\"success\",\"row_count\":3}",
+            "input": null
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "explore_graph"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furgkb",
+            "n": 0,
+            "input": null
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furgkb",
+            "summary": "{\"app_status\":\"success\",\"row_count\":3}",
+            "input": null
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furgkc",
+            "n": 0,
+            "input": null
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furgkc",
+            "summary": "{\"app_status\":\"success\",\"row_count\":3}",
+            "input": null
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furgkd",
+            "n": 0,
+            "input": null
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furgkd",
+            "summary": "{\"app_status\":\"success\",\"row_count\":3}",
+            "input": null
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furgkb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-3c28a1813ab8",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furgkc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-3a8dccf058a7",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furgkd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-120f2ba0d31b",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-92b49ed3f243",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": "token",
+          "data": {
+            "text": "Three batches ran hot [1][2][3]."
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "streamBytes": 0,
+            "streamMB": 0.0,
+            "streamLines": 0
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "text": ""
+          }
+        }
+      ],
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which firing batches ran hot last week?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": [],
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furgkb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 0"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-3c28a1813ab8",
+                  "result_shape": {
+                    "rows": 3,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furgkc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 1"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-3a8dccf058a7",
+                  "result_shape": {
+                    "rows": 4,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furgkd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "firings",
+                    "columns": [
+                      "batch_code",
+                      "peak_temp"
+                    ]
+                  },
+                  "scope": {
+                    "filters": [
+                      "batch_code starts with K",
+                      "call 2"
+                    ],
+                    "window": {
+                      "start": "2026-10-17T00:00:00Z",
+                      "end": "2026-10-24T00:00:00Z"
+                    }
+                  },
+                  "query_ref": "q-120f2ba0d31b",
+                  "result_shape": {
+                    "rows": 5,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "batch identity rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "verified"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-92b49ed3f243",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furgka",
+                "tool": "explore_graph"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furgka",
+                "tool": "explore_graph",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"explore_graph\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal\nTool call: parcel-desk___query_parcel_desk",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furgkb",
+                "tool": "furnace-journal___query_furnace_journal"
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furgkc",
+                "tool": "parcel-desk___query_parcel_desk"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furgkb",
+                "tool": "furnace-journal___query_furnace_journal",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"furnace-journal___query_furnace_journal\"}"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furgkc",
+                "tool": "parcel-desk___query_parcel_desk",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"parcel-desk___query_parcel_desk\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furgkd",
+                "tool": "furnace-journal___query_furnace_journal"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furgkd",
+                "tool": "furnace-journal___query_furnace_journal",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"furnace-journal___query_furnace_journal\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": []
+          },
+          {
+            "role": "user",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:08+00:00",
+            "blocks": []
+          }
+        ],
+        "sessionId": "sess-furnace-gated-kept",
+        "totalCount": 9
+      }
+    },
+    "api_read": {
+      "question": "Which firing batches ran hot last week?",
+      "live": [
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furaka",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "explore_graph",
+            "tool_id": "tooluse_furaka",
+            "summary": "the batches are kept in two systems",
+            "input": "the batches are kept in two systems"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "explore_graph"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furakb",
+            "n": 0,
+            "input": {
+              "question": "hot batches"
+            }
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furakc",
+            "n": 0,
+            "input": {
+              "question": "their parcels"
+            }
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furakb",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk",
+            "tool_id": "tooluse_furakc",
+            "summary": "3 rows",
+            "input": "3 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "parcel-desk___query_parcel_desk"
+          }
+        },
+        {
+          "event": "tool_start",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furakd",
+            "n": 0,
+            "input": {}
+          }
+        },
+        {
+          "event": "tool_result",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal",
+            "tool_id": "tooluse_furakd",
+            "summary": "5 rows",
+            "input": "5 rows"
+          }
+        },
+        {
+          "event": "tool_end",
+          "data": {
+            "tool": "furnace-journal___query_furnace_journal"
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furakb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-fae783cb5040",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furakc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-82890198e8db",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furakd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-d61cf6e6dbfc",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-35b98a7efe4e",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "event": "token",
+          "data": {
+            "text": "Three batches ran hot [1][2][3]."
+          }
+        },
+        {
+          "event": "metadata",
+          "data": {
+            "streamBytes": 0,
+            "streamMB": 0.0,
+            "streamLines": 0
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "text": ""
+          }
+        }
+      ],
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which firing batches ran hot last week?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": [],
+            "provenance": {
+              "records": [
+                {
+                  "citation_num": 1,
+                  "tool_id": "tooluse_furakb",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-fae783cb5040",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 2,
+                  "tool_id": "tooluse_furakc",
+                  "source_system": "parcel-desk",
+                  "tool_name": "parcel-desk___query_parcel_desk",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-82890198e8db",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                },
+                {
+                  "citation_num": 3,
+                  "tool_id": "tooluse_furakd",
+                  "source_system": "furnace-journal",
+                  "tool_name": "furnace-journal___query_furnace_journal",
+                  "entity": {
+                    "table": "",
+                    "columns": []
+                  },
+                  "scope": {
+                    "filters": [],
+                    "window": null
+                  },
+                  "query_ref": "q-d61cf6e6dbfc",
+                  "result_shape": {
+                    "rows": null,
+                    "truncated": false,
+                    "partial_reason": ""
+                  },
+                  "kg_route": {
+                    "rules_applied": [
+                      {
+                        "id": "ir-77",
+                        "label": "unit rule"
+                      }
+                    ],
+                    "value_mappings": []
+                  },
+                  "captured_at": "2026-10-24T21:00:00Z",
+                  "verification": "partial"
+                }
+              ],
+              "truncated": false,
+              "graph_queries": [
+                {
+                  "query_ref": "q-35b98a7efe4e",
+                  "tool_name": "explore_graph"
+                }
+              ]
+            }
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the graph first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the graph first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furaka",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "HIDDEN_INPUT hot"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furaka",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "the batches are kept in two systems"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal\nTool call: parcel-desk___query_parcel_desk",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furakb",
+                "tool": "furnace-journal___query_furnace_journal",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furakc",
+                "tool": "parcel-desk___query_parcel_desk",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furakb",
+                "tool": "furnace-journal___query_furnace_journal",
+                "status": "success",
+                "summary": "3 rows"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furakc",
+                "tool": "parcel-desk___query_parcel_desk",
+                "status": "success",
+                "summary": "3 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: furnace-journal___query_furnace_journal",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_furakd",
+                "tool": "furnace-journal___query_furnace_journal",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_furakd",
+                "tool": "furnace-journal___query_furnace_journal",
+                "status": "success",
+                "summary": "5 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Three batches ran hot [1][2][3].",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Three batches ran hot [1][2][3]."
+              }
+            ]
+          }
+        ],
+        "sessionId": "sess-furnace-api-kept",
+        "totalCount": 8
+      }
+    },
+    "legacy": {
+      "question": "Which mash runs missed their gravity target?",
+      "live": null,
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which mash runs missed their gravity target?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the graph first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the graph first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breola",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "HIDDEN_INPUT hot"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breola",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "the batches are kept in two systems"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log\nTool call: cask-register___query_cask_register",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breolb",
+                "tool": "brew-log___query_brew_log",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breolc",
+                "tool": "cask-register___query_cask_register",
+                "input": {
+                  "question": "HIDDEN_INPUT q"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result\nTool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breolb",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "3 rows"
+              },
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breolc",
+                "tool": "cask-register___query_cask_register",
+                "status": "success",
+                "summary": "3 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: brew-log___query_brew_log",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_breold",
+                "tool": "brew-log___query_brew_log",
+                "input": {}
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_breold",
+                "tool": "brew-log___query_brew_log",
+                "status": "success",
+                "summary": "5 rows"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Three batches ran hot [1][2][3].",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Three batches ran hot [1][2][3]."
+              }
+            ]
+          }
+        ],
+        "sessionId": "sess-brewing-open-legacy",
+        "totalCount": 8
+      }
+    }
+  }
+}

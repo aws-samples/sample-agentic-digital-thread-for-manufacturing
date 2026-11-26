@@ -1,0 +1,14 @@
+{
+  "source": "an ERP system-agent call recorded on a test deployment of the demo data (its per-batch rows and its grand total, as the call's own result printed them)",
+  "sql": "SELECT si.batch_id, c.customer_id, c.customer_code, c.company_name, SUM(si.quantity_shipped) as total_quantity, SUM(si.quantity_shipped * p.list_price) as total_value FROM shipment_items si JOIN shipments s ON si.shipment_id = s.shipment_id JOIN customers c ON s.customer_id = c.customer_id JOIN products p ON si.product_id = p.product_id WHERE si.batch_id IN ('RUN-20261031-92001', 'RUN-20261101-90001', 'RUN-20261101-92004', 'RUN-20261102-91002', 'RUN-20261102-91005') GROUP BY si.batch_id, c.customer_id, c.customer_code, c.company_name ORDER BY si.batch_id, c.customer_code",
+  "rows": [
+    ["RUN-20261031-92001", "CUST-MCH-0004", "Example Corp Industrial Gear", 20, "6800.00"],
+    ["RUN-20261101-90001", "CUST-MCH-0001", "AnyCompany Drivetrain Assembly", 12, "4080.00"],
+    ["RUN-20261101-90001", "CUST-MCH-0002", "Example Corp Aerospace Structures", 10, "3400.00"],
+    ["RUN-20261101-90001", "CUST-MCH-0003", "AnyCompany Precision Parts", 8, "2720.00"],
+    ["RUN-20261101-92004", "CUST-MCH-0003", "AnyCompany Precision Parts", 20, "6800.00"],
+    ["RUN-20261102-91002", "CUST-MCH-0003", "AnyCompany Precision Parts", 20, "6800.00"],
+    ["RUN-20261102-91005", "CUST-MCH-0002", "Example Corp Aerospace Structures", 20, "6800.00"]
+  ],
+  "grand_total": [110, "37400.00"]
+}

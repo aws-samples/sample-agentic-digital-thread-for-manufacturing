@@ -1,0 +1,58 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# Local development infrastructure for the ADT app (hybrid stack).
+# Runs ONLY PostgreSQL — the app + agents run natively on the host
+# (uvicorn --reload) and call real Bedrock + Neptune in the cloud.
+# See docs/local-development.md and docs/adr/0022-hybrid-local-development-stack.md.
+#
+#   docker compose -f docker-compose.local.yml up -d
+#
+# On first start, the official postgres image runs every *.sql in
+# /docker-entrypoint-initdb.d in alphabetical order. The repo's seed files are
+# already numbered (001_schemas.sql … 009_historian.sql), so mounting
+# lambda-adt-seed/ there seeds all schemas (erp_*, mes_*, cmms_*, plm_*,
+# iot_historian) into a single database with no extra script. Seeding only runs
+# when the data volume is empty — use `make db-reset` to re-seed from scratch.
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: adt-local-postgres
+    environment:
+      POSTGRES_USER: postgres
+      # Required local-only credential. Set it in the shell or .env.local and
+      # do not reuse it for any non-development environment.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment or .env.local}
+      # "adt_demo" here is the fictitious demo company's database — demo content, not engine identity (see rename plan)
+      POSTGRES_DB: adt_demo
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - adt-pgdata:/var/lib/postgresql/data
+      # Auto-seed on first init (read-only). initdb runs *.sql here in order.
+      - ./lambda-adt-seed:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d adt_demo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Local knowledge graph — openCypher over Bolt. A stand-in for Amazon Neptune
+  # Analytics so the knowledge-graph onboarding + analytics flows are testable
+  # locally (set GRAPH_BACKEND=local). Real Neptune remains the fidelity gate.
+  # Data is in-memory (ephemeral) — core concepts re-seed on app startup. See
+  # docs/adr/0024-neptune-private-graph-not-reachable-locally.md.
+  memgraph:
+    image: memgraph/memgraph:3.12.0
+    container_name: adt-local-memgraph
+    command: ["--telemetry-enabled=false"]
+    ports:
+      # Loopback ONLY — never 0.0.0.0 (matches the Postgres binding above and
+      # tests/integration/docker-compose.yml). Memgraph has no auth configured
+      # here, so an all-interfaces bind would expose the graph to the LAN.
+      - "127.0.0.1:7687:7687"
+
+volumes:
+  adt-pgdata:
+    name: adt-local-pgdata

@@ -1,0 +1,952 @@
+{
+ "parameters": {
+  "all": {
+   "DataAccountId": "444455556666",
+   "DataBucketName": "amzn-s3-demo-data-bucket",
+   "S3TableBucketName": "example-table-bucket",
+   "S3TablesAccountId": "777788889999"
+  },
+  "data_account": {
+   "DataAccountId": "444455556666"
+  },
+  "data_bucket": {
+   "DataBucketName": "amzn-s3-demo-data-bucket"
+  },
+  "defaults": {},
+  "s3_tables": {
+   "S3TablesAccountId": "777788889999"
+  },
+  "s3_tables_bucket": {
+   "S3TableBucketName": "example-table-bucket",
+   "S3TablesAccountId": "777788889999"
+  }
+ },
+ "policies": {
+  "all": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:444455556666:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:444455556666:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "DataBucketRead": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:ListBucket",
+       "s3:GetBucketLocation"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-data-bucket",
+       "arn:<Partition>:s3:::amzn-s3-demo-data-bucket/*"
+      ],
+      "Sid": "DataBucketReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:444455556666:catalog",
+       "arn:<Partition>:glue:<Region>:444455556666:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:444455556666:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3TablesRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:777788889999:catalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog/<TABLE_BUCKET>",
+       "arn:<Partition>:glue:<Region>:777788889999:database/s3tablescatalog/<TABLE_BUCKET>/*",
+       "arn:<Partition>:glue:<Region>:777788889999:table/s3tablescatalog/<TABLE_BUCKET>/*/*",
+       "arn:<Partition>:glue:<Region>:777788889999:database/<S3_TABLES_DB>",
+       "arn:<Partition>:glue:<Region>:777788889999:table/<S3_TABLES_DB>/*"
+      ],
+      "Sid": "GlueS3TablesCatalogReadOnly"
+     },
+     {
+      "Action": [
+       "s3tables:GetTableBucket",
+       "s3tables:GetNamespace",
+       "s3tables:ListNamespaces",
+       "s3tables:ListTables",
+       "s3tables:GetTable",
+       "s3tables:GetTableData"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3tables:<Region>:777788889999:bucket/example-table-bucket",
+       "arn:<Partition>:s3tables:<Region>:777788889999:bucket/example-table-bucket/table/*"
+      ],
+      "Sid": "S3TablesReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  },
+  "data_account": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:444455556666:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:444455556666:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:444455556666:catalog",
+       "arn:<Partition>:glue:<Region>:444455556666:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:444455556666:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  },
+  "data_bucket": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "DataBucketRead": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:ListBucket",
+       "s3:GetBucketLocation"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-data-bucket",
+       "arn:<Partition>:s3:::amzn-s3-demo-data-bucket/*"
+      ],
+      "Sid": "DataBucketReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:<AccountId>:catalog",
+       "arn:<Partition>:glue:<Region>:<AccountId>:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:<AccountId>:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  },
+  "defaults": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:<AccountId>:catalog",
+       "arn:<Partition>:glue:<Region>:<AccountId>:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:<AccountId>:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  },
+  "s3_tables": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:<AccountId>:catalog",
+       "arn:<Partition>:glue:<Region>:<AccountId>:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:<AccountId>:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3TablesRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:777788889999:catalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog/<TABLE_BUCKET>",
+       "arn:<Partition>:glue:<Region>:777788889999:database/s3tablescatalog/<TABLE_BUCKET>/*",
+       "arn:<Partition>:glue:<Region>:777788889999:table/s3tablescatalog/<TABLE_BUCKET>/*/*",
+       "arn:<Partition>:glue:<Region>:777788889999:database/<S3_TABLES_DB>",
+       "arn:<Partition>:glue:<Region>:777788889999:table/<S3_TABLES_DB>/*"
+      ],
+      "Sid": "GlueS3TablesCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  },
+  "s3_tables_bucket": {
+   "AthenaReadExecute": {
+    "Statement": [
+     {
+      "Action": [
+       "athena:StartQueryExecution",
+       "athena:StopQueryExecution",
+       "athena:GetQueryExecution",
+       "athena:GetQueryResults",
+       "athena:GetQueryResultsStream",
+       "athena:GetWorkGroup",
+       "athena:ListQueryExecutions"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:workgroup/example-workgroup"
+      ],
+      "Sid": "AthenaWorkgroupReadExecute"
+     },
+     {
+      "Action": [
+       "athena:GetDataCatalog",
+       "athena:ListDatabases",
+       "athena:GetDatabase",
+       "athena:ListTableMetadata",
+       "athena:GetTableMetadata"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:athena:<Region>:<AccountId>:datacatalog/AwsDataCatalog"
+      ],
+      "Sid": "AthenaCatalogMetadataRead"
+     },
+     {
+      "Action": [
+       "athena:ListDataCatalogs"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "AthenaListDataCatalogs"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "GlueCatalogRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:<AccountId>:catalog",
+       "arn:<Partition>:glue:<Region>:<AccountId>:database/federated_process_db",
+       "arn:<Partition>:glue:<Region>:<AccountId>:table/federated_process_db/*"
+      ],
+      "Sid": "GlueCatalogReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "LakeFormationDataAccess": {
+    "Statement": [
+     {
+      "Action": [
+       "lakeformation:GetDataAccess"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "LakeFormationGetDataAccess"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3ResultsReadWrite": {
+    "Statement": [
+     {
+      "Action": [
+       "s3:GetObject",
+       "s3:PutObject",
+       "s3:AbortMultipartUpload",
+       "s3:GetBucketLocation",
+       "s3:ListBucket",
+       "s3:ListBucketMultipartUploads",
+       "s3:ListMultipartUploadParts"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results",
+       "arn:<Partition>:s3:::amzn-s3-demo-athena-results/*"
+      ],
+      "Sid": "AthenaResultsBucketReadWrite"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "S3TablesRead": {
+    "Statement": [
+     {
+      "Action": [
+       "glue:GetCatalog",
+       "glue:GetCatalogs",
+       "glue:GetDatabase",
+       "glue:GetDatabases",
+       "glue:GetTable",
+       "glue:GetTables",
+       "glue:GetTableVersion",
+       "glue:GetTableVersions",
+       "glue:GetPartition",
+       "glue:GetPartitions",
+       "glue:BatchGetPartition",
+       "glue:SearchTables"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:glue:<Region>:777788889999:catalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog",
+       "arn:<Partition>:glue:<Region>:777788889999:catalog/s3tablescatalog/<TABLE_BUCKET>",
+       "arn:<Partition>:glue:<Region>:777788889999:database/s3tablescatalog/<TABLE_BUCKET>/*",
+       "arn:<Partition>:glue:<Region>:777788889999:table/s3tablescatalog/<TABLE_BUCKET>/*/*",
+       "arn:<Partition>:glue:<Region>:777788889999:database/<S3_TABLES_DB>",
+       "arn:<Partition>:glue:<Region>:777788889999:table/<S3_TABLES_DB>/*"
+      ],
+      "Sid": "GlueS3TablesCatalogReadOnly"
+     },
+     {
+      "Action": [
+       "s3tables:GetTableBucket",
+       "s3tables:GetNamespace",
+       "s3tables:ListNamespaces",
+       "s3tables:ListTables",
+       "s3tables:GetTable",
+       "s3tables:GetTableData"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+       "arn:<Partition>:s3tables:<Region>:777788889999:bucket/example-table-bucket",
+       "arn:<Partition>:s3tables:<Region>:777788889999:bucket/example-table-bucket/table/*"
+      ],
+      "Sid": "S3TablesReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   },
+   "SiteWiseRead": {
+    "Statement": [
+     {
+      "Action": [
+       "iotsitewise:Describe*",
+       "iotsitewise:List*",
+       "iotsitewise:GetAssetPropertyValue",
+       "iotsitewise:GetAssetPropertyValueHistory",
+       "iotsitewise:GetAssetPropertyAggregates",
+       "iotsitewise:BatchGetAssetPropertyValue",
+       "iotsitewise:BatchGetAssetPropertyValueHistory"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "SiteWiseReadOnly"
+     }
+    ],
+    "Version": "2012-10-17"
+   }
+  }
+ }
+}

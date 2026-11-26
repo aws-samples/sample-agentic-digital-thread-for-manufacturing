@@ -1,0 +1,41 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# Digest-pinned (multi-arch index) for reproducible builds: the index the 3.12-slim tag served on
+# 2026-10-12. This image runs no OS package upgrade at build time, so move the digest forward to
+# pick up base-image fixes.
+FROM --platform=linux/arm64 public.ecr.aws/docker/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+# IMAGE_TYPE: runtime  ← AgentCore system agent runtime. Push ONLY to adt-system-agent ECR repo.
+# checkov:skip=CKV_DOCKER_2: Bedrock AgentCore runtime manages health checks internally
+LABEL image.type="agentcore-runtime"
+
+WORKDIR /app
+
+COPY pyproject.toml .
+COPY requirements/runtime-py312-linux-arm64.lock /tmp/runtime-requirements.lock
+COPY branding.json .
+COPY agents/ agents/
+COPY data/ data/
+
+RUN python -m pip install --no-cache-dir --require-hashes \
+        -r /tmp/runtime-requirements.lock && \
+    python -m pip install --no-cache-dir --no-deps . && \
+    useradd -m -u 1000 bedrock_agentcore
+
+# Native "S3 Tables" read connector (DuckDB): bake the DuckDB extensions at
+# build time so a system-agent task NEVER downloads extension code at runtime
+# (agents/duckdb_tools keeps auto-install off). The only dependency is the
+# official `duckdb` package (in the hashed lock); these are its extensions.
+# S3T_DUCKDB_EXTENSION_DIR points the connector at this baked dir.
+ENV S3T_DUCKDB_EXTENSION_DIR=/opt/duckdb/extensions
+RUN mkdir -p /opt/duckdb/extensions \
+    && python -c "import duckdb; c = duckdb.connect(config={'extension_directory': '/opt/duckdb/extensions'}); [c.execute(f'INSTALL {e}') for e in ('aws', 'httpfs', 'avro', 'iceberg')]" \
+    && chmod -R a+rX /opt/duckdb
+
+USER bedrock_agentcore
+
+# 8080 = orchestrator (BedrockAgentCoreApp), 8000 = system agent (FastMCP/MCP protocol)
+EXPOSE 8080 8000
+
+# No HEALTHCHECK — AgentCore manages health checks internally
+
+CMD ["opentelemetry-instrument", "python", "-m", "agents.runtime_app"]

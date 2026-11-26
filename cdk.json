@@ -1,0 +1,62 @@
+{
+  "app": "python3 app.py",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "requirements*.txt",
+      "**/__pycache__",
+      "**/*.pyc",
+      "cdk.out",
+      "tests/",
+      ".kiro/"
+    ]
+  },
+  "context": {
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ],
+    "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
+    "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
+    "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": true,
+    "@aws-cdk/aws-iam:minimizePolicies": true,
+    "@aws-cdk/core:validateSnapshotRemovalPolicy": true,
+    "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": true,
+    "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": true,
+    "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": true,
+    "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": true,
+    "vpc": {
+      "cidr": "10.0.0.0/16",
+      "max_azs": 2,
+      "nat_gateways": 1,
+      "public_subnet_cidr_mask": 24,
+      "private_subnet_cidr_mask": 24
+    },
+    "database": {
+      "database_name": "erp_simulation",
+      "engine_version": "15.15",
+      "min_capacity": 0.5,
+      "max_capacity": 2,
+      "backup_retention_days": 7,
+      "deletion_protection": false
+    },
+    "lambda": {
+      "timeout_seconds": 300,
+      "memory_mb": 512,
+      "schedule": "rate(1 minute)"
+    },
+    "dashboard": {
+      "cpu": 512,
+      "memory_mb": 1024,
+      "desired_count": 1
+    },
+    "bedrock_model": "global.anthropic.claude-sonnet-5-5",
+    "crossAccountDataRoleArn": ""
+  }
+}

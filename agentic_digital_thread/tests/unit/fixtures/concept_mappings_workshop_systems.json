@@ -1,0 +1,1380 @@
+{
+ "source": "concept mappings of the four onboarded workshop MES systems and the PLM, as the graph serves them (2026-10-18)",
+ "systems": {
+  "mes-ind": [
+   {
+    "concept": "downtime",
+    "field": "downtime_events.downtime_category",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "downtime_events.downtime_reason",
+    "role": "correlate"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.duration_minutes",
+    "role": "measure"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "downtime_events.line_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "operator",
+    "field": "downtime_events.resolved_by",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "downtime_events.start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "downtime_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "line_status.line",
+    "role": "identifier"
+   },
+   {
+    "concept": "machine-speed",
+    "field": "line_status.line_speed",
+    "role": "measure"
+   },
+   {
+    "concept": "machine-state",
+    "field": "line_status.machine_state",
+    "role": "measure"
+   },
+   {
+    "concept": "runtime-hours",
+    "field": "line_status.runtime_hours",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "line_status.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "line_status.state_since",
+    "role": "measure"
+   },
+   {
+    "concept": "throughput",
+    "field": "line_status.throughput",
+    "role": "measure"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "material_consumption.consumption_time",
+    "role": "measure"
+   },
+   {
+    "concept": "material",
+    "field": "material_consumption.item_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "lot-number",
+    "field": "material_consumption.lot_number",
+    "role": "identifier"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "material_consumption.planned_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.variance_percentage",
+    "role": "derive"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.variance_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "material_consumption.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "cycle-time",
+    "field": "production_events.duration_seconds",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_events.event_time",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "production_events.operator_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "production_events.reason_code",
+    "role": "correlate"
+   },
+   {
+    "concept": "work-order",
+    "field": "production_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-category",
+    "field": "production_lines.product_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_runs.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.run_number",
+    "role": "correlate"
+   },
+   {
+    "concept": "product",
+    "field": "production_runs.sku",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "production_runs.status",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "quality_checks.check_time",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.check_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.fail_count",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "quality_checks.inspector_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.pass_count",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-yield-rate",
+    "field": "quality_checks.pass_rate",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.sample_size",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "quality_checks.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "actual-quantity",
+    "field": "work_orders.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "availability",
+    "field": "work_orders.availability",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-metric",
+    "field": "work_orders.good_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "work_orders.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "oee-score",
+    "field": "work_orders.oee_percentage",
+    "role": "measure"
+   },
+   {
+    "concept": "performance",
+    "field": "work_orders.performance",
+    "role": "measure"
+   },
+   {
+    "concept": "product",
+    "field": "work_orders.product_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "work_orders.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "scrap-waste",
+    "field": "work_orders.reject_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "schedule",
+    "field": "work_orders.scheduled_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "work_orders.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "work_orders.status",
+    "role": "measure"
+   },
+   {
+    "concept": "target-machine-speed",
+    "field": "work_orders.target_rate_per_minute",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_number",
+    "role": "correlate"
+   }
+  ],
+  "mes-mil": [
+   {
+    "concept": "downtime",
+    "field": "downtime_events.downtime_category",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "downtime_events.downtime_reason",
+    "role": "correlate"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.duration_minutes",
+    "role": "measure"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "downtime_events.line_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "operator",
+    "field": "downtime_events.resolved_by",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "downtime_events.start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "downtime_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "line_status.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "machine-speed",
+    "field": "line_status.line_speed",
+    "role": "measure"
+   },
+   {
+    "concept": "machine-state",
+    "field": "line_status.machine_state",
+    "role": "measure"
+   },
+   {
+    "concept": "runtime-hours",
+    "field": "line_status.runtime_hours",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "line_status.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "line_status.state_since",
+    "role": "measure"
+   },
+   {
+    "concept": "throughput",
+    "field": "line_status.throughput",
+    "role": "measure"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "material_consumption.consumption_time",
+    "role": "measure"
+   },
+   {
+    "concept": "material",
+    "field": "material_consumption.item_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "lot-number",
+    "field": "material_consumption.lot_number",
+    "role": "correlate"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "material_consumption.planned_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "material_consumption.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_events.event_time",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "production_events.operator_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "production_events.reason_code",
+    "role": "correlate"
+   },
+   {
+    "concept": "work-order",
+    "field": "production_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-category",
+    "field": "production_lines.product_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_runs.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.run_number",
+    "role": "correlate"
+   },
+   {
+    "concept": "product",
+    "field": "production_runs.sku",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "production_runs.status",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "quality_checks.check_time",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.check_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.fail_count",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "quality_checks.inspector_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.pass_count",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-yield-rate",
+    "field": "quality_checks.pass_rate",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.sample_size",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "quality_checks.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "actual-quantity",
+    "field": "work_orders.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "availability",
+    "field": "work_orders.availability",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-metric",
+    "field": "work_orders.good_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "work_orders.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "oee-score",
+    "field": "work_orders.oee_percentage",
+    "role": "measure"
+   },
+   {
+    "concept": "performance",
+    "field": "work_orders.performance",
+    "role": "measure"
+   },
+   {
+    "concept": "product",
+    "field": "work_orders.product_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "work_orders.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "scrap-waste",
+    "field": "work_orders.reject_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "schedule",
+    "field": "work_orders.scheduled_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "work_orders.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "work_orders.status",
+    "role": "measure"
+   },
+   {
+    "concept": "target-machine-speed",
+    "field": "work_orders.target_rate_per_minute",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_number",
+    "role": "correlate"
+   }
+  ],
+  "mes-det": [
+   {
+    "concept": "downtime",
+    "field": "downtime_events.downtime_category",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "downtime_events.downtime_reason",
+    "role": "correlate"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.duration_minutes",
+    "role": "measure"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "downtime_events.line_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "operator",
+    "field": "downtime_events.resolved_by",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "downtime_events.start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "downtime_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "line_status.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "machine-speed",
+    "field": "line_status.line_speed",
+    "role": "measure"
+   },
+   {
+    "concept": "machine-state",
+    "field": "line_status.machine_state",
+    "role": "measure"
+   },
+   {
+    "concept": "runtime-hours",
+    "field": "line_status.runtime_hours",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "line_status.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "line_status.state_since",
+    "role": "measure"
+   },
+   {
+    "concept": "throughput",
+    "field": "line_status.throughput",
+    "role": "measure"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "material_consumption.consumption_time",
+    "role": "measure"
+   },
+   {
+    "concept": "material",
+    "field": "material_consumption.item_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "lot-number",
+    "field": "material_consumption.lot_number",
+    "role": "correlate"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "material_consumption.planned_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "material_consumption.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_events.event_time",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "production_events.operator_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "production_events.reason_code",
+    "role": "correlate"
+   },
+   {
+    "concept": "work-order",
+    "field": "production_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-category",
+    "field": "production_lines.product_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_runs.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.run_number",
+    "role": "identifier"
+   },
+   {
+    "concept": "product",
+    "field": "production_runs.sku",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "production_runs.status",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "quality_checks.check_time",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.check_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.fail_count",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "quality_checks.inspector_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.pass_count",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-yield-rate",
+    "field": "quality_checks.pass_rate",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.sample_size",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "quality_checks.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "actual-quantity",
+    "field": "work_orders.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "availability",
+    "field": "work_orders.availability",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-metric",
+    "field": "work_orders.good_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "work_orders.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "oee-score",
+    "field": "work_orders.oee_percentage",
+    "role": "measure"
+   },
+   {
+    "concept": "performance",
+    "field": "work_orders.performance",
+    "role": "measure"
+   },
+   {
+    "concept": "product",
+    "field": "work_orders.product_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "work_orders.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "scrap-waste",
+    "field": "work_orders.reject_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "schedule",
+    "field": "work_orders.scheduled_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "work_orders.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "work_orders.status",
+    "role": "measure"
+   },
+   {
+    "concept": "target-machine-speed",
+    "field": "work_orders.target_rate_per_minute",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_number",
+    "role": "identifier"
+   }
+  ],
+  "mes-cr": [
+   {
+    "concept": "downtime",
+    "field": "downtime_events.downtime_category",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "downtime_events.downtime_reason",
+    "role": "correlate"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.duration_minutes",
+    "role": "measure"
+   },
+   {
+    "concept": "downtime",
+    "field": "downtime_events.end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "downtime_events.line_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "operator",
+    "field": "downtime_events.resolved_by",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "downtime_events.start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "downtime_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-line",
+    "field": "line_status.line",
+    "role": "identifier"
+   },
+   {
+    "concept": "machine-speed",
+    "field": "line_status.line_speed",
+    "role": "measure"
+   },
+   {
+    "concept": "machine-state",
+    "field": "line_status.machine_state",
+    "role": "measure"
+   },
+   {
+    "concept": "runtime-hours",
+    "field": "line_status.runtime_hours",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "line_status.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "line_status.state_since",
+    "role": "measure"
+   },
+   {
+    "concept": "throughput",
+    "field": "line_status.throughput",
+    "role": "measure"
+   },
+   {
+    "concept": "material-consumption",
+    "field": "material_consumption.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "material_consumption.consumption_time",
+    "role": "measure"
+   },
+   {
+    "concept": "material",
+    "field": "material_consumption.item_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "lot-number",
+    "field": "material_consumption.lot_number",
+    "role": "identifier"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "material_consumption.planned_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "material_consumption.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_events.event_time",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "production_events.operator_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "failure-mode",
+    "field": "production_events.reason_code",
+    "role": "correlate"
+   },
+   {
+    "concept": "work-order",
+    "field": "production_events.work_order_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "specification",
+    "field": "production_lines.capacity_per_hour",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_lines.line_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-category",
+    "field": "production_lines.product_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "site",
+    "field": "production_lines.site_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "production_runs.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "production_runs.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "production_runs.run_number",
+    "role": "correlate"
+   },
+   {
+    "concept": "product",
+    "field": "production_runs.sku",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "production_runs.status",
+    "role": "correlate"
+   },
+   {
+    "concept": "event-time",
+    "field": "quality_checks.check_time",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.check_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.fail_count",
+    "role": "measure"
+   },
+   {
+    "concept": "operator",
+    "field": "quality_checks.inspector_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.pass_count",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-yield-rate",
+    "field": "quality_checks.pass_rate",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "quality_checks.sample_size",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "quality_checks.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_end_time",
+    "role": "measure"
+   },
+   {
+    "concept": "actual-quantity",
+    "field": "work_orders.actual_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "work_orders.actual_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "availability",
+    "field": "work_orders.availability",
+    "role": "measure"
+   },
+   {
+    "concept": "quality-metric",
+    "field": "work_orders.good_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "production-line",
+    "field": "work_orders.line",
+    "role": "correlate"
+   },
+   {
+    "concept": "oee-score",
+    "field": "work_orders.oee_percentage",
+    "role": "measure"
+   },
+   {
+    "concept": "performance",
+    "field": "work_orders.performance",
+    "role": "measure"
+   },
+   {
+    "concept": "product",
+    "field": "work_orders.product_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "production-run",
+    "field": "work_orders.production_run_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "scrap-waste",
+    "field": "work_orders.reject_quantity",
+    "role": "measure"
+   },
+   {
+    "concept": "schedule",
+    "field": "work_orders.scheduled_start_time",
+    "role": "measure"
+   },
+   {
+    "concept": "site",
+    "field": "work_orders.site",
+    "role": "correlate"
+   },
+   {
+    "concept": "order-status",
+    "field": "work_orders.status",
+    "role": "correlate"
+   },
+   {
+    "concept": "target-machine-speed",
+    "field": "work_orders.target_rate_per_minute",
+    "role": "measure"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "work-order",
+    "field": "work_orders.work_order_number",
+    "role": "correlate"
+   }
+  ],
+  "plm": [
+   {
+    "concept": "supplier",
+    "field": "bom_items.approved_vendors",
+    "role": "correlate"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "bom_items.bom_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "material",
+    "field": "bom_items.child_item",
+    "role": "correlate"
+   },
+   {
+    "concept": "schedule",
+    "field": "bom_items.effectivity_date",
+    "role": "measure"
+   },
+   {
+    "concept": "specification",
+    "field": "bom_items.material_spec",
+    "role": "correlate"
+   },
+   {
+    "concept": "material",
+    "field": "bom_items.parent_item",
+    "role": "correlate"
+   },
+   {
+    "concept": "bill-of-materials",
+    "field": "bom_items.quantity_per",
+    "role": "measure"
+   },
+   {
+    "concept": "product",
+    "field": "products.item_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "product",
+    "field": "products.item_name",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-category",
+    "field": "products.item_type",
+    "role": "correlate"
+   },
+   {
+    "concept": "lifecycle-state",
+    "field": "products.lifecycle_state",
+    "role": "measure"
+   },
+   {
+    "concept": "event-time",
+    "field": "products.release_date",
+    "role": "measure"
+   },
+   {
+    "concept": "product-revision",
+    "field": "products.revision",
+    "role": "measure"
+   },
+   {
+    "concept": "inspection",
+    "field": "specifications.inspection_method",
+    "role": "correlate"
+   },
+   {
+    "concept": "product",
+    "field": "specifications.item_id",
+    "role": "correlate"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.nominal",
+    "role": "measure"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.parameter",
+    "role": "correlate"
+   },
+   {
+    "concept": "product-revision",
+    "field": "specifications.revision",
+    "role": "measure"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.spec_class",
+    "role": "correlate"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.spec_id",
+    "role": "identifier"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.tolerance_max",
+    "role": "measure"
+   },
+   {
+    "concept": "specification",
+    "field": "specifications.tolerance_min",
+    "role": "measure"
+   }
+  ]
+ }
+}

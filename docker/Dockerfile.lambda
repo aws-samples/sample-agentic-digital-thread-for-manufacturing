@@ -1,0 +1,36 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# Lambda Container Dockerfile for ERP Beverage Simulation
+# This container runs the ERP simulation orchestrator as an AWS Lambda function
+#
+# Requirements: 2.3, 9.2
+# 
+# Build context should be the distribution package root
+# Usage: docker build -f docker/Dockerfile.lambda -t erp-lambda .
+#
+# checkov:skip=CKV_DOCKER_2: AWS Lambda manages container health checks internally
+# checkov:skip=CKV_DOCKER_3: AWS Lambda runs containers as a managed sandbox user (sbx_user1051)
+
+# Digest-pinned (manifest list) for reproducible builds: the list the 3.11 tag served on 2026-10-12.
+# Move the digest forward to pick up base-image fixes.
+FROM public.ecr.aws/lambda/python:3.11@sha256:67d572c2eb30da5fdaa720bcdc56460cb4d1a54ef8c980c70eafc5f799cb1e96
+
+# Install the exact Python 3.11 ARM64 deployment lock; direct requirements remain
+# the human-maintained resolver input.
+COPY requirements/erp-simulation-py311-linux-arm64.lock /tmp/requirements.lock
+RUN pip install --no-cache-dir --require-hashes --only-binary=:all: \
+    -r /tmp/requirements.lock
+
+# Copy the erp_simulation module
+COPY erp_simulation/ ${LAMBDA_TASK_ROOT}/erp_simulation/
+
+# Copy Lambda handlers (the story-history custom resource reuses this image
+# with its own CMD override; see stacks/erp_lambda_stack.py)
+COPY lambda_/lambda_function.py ${LAMBDA_TASK_ROOT}/
+COPY lambda_/lambda_story_history.py ${LAMBDA_TASK_ROOT}/
+
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Set the Lambda handler
+CMD ["lambda_function.lambda_handler"]

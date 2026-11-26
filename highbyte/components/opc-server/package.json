@@ -1,0 +1,16 @@
+{
+    "name": "adt-opcua-sim-server",
+    "version": "1.0.0",
+    "private": true,
+    "main": "server.mjs",
+    "scripts": {
+        "start": "node server.mjs dataset.csv"
+    },
+    "dependencies": {
+        "@aws-sdk/client-ssm": "3.1088.0",
+        "node-opcua": "2.187.32"
+    },
+    "devDependencies": {
+        "@types/node": "18.16.18"
+    }
+}

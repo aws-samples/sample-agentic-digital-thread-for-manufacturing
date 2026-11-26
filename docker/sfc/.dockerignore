@@ -1,0 +1,6 @@
+# Build context for the SFC image (docker/sfc/Dockerfile).
+# ALLOWLIST: everything is excluded except what that Dockerfile COPYs from the
+# context — the config stacks/sfc_stack.py generates at synth. The SFC bundles
+# are downloaded and SHA-512-verified inside the build, never staged here.
+*
+!sfc-config.json

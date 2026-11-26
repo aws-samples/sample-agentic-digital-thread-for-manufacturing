@@ -1,0 +1,85 @@
+{
+  "_comment": "Trace sample-line parity cases. Each is a system call whose short structural `summary` (of `answer`) is classified a success, and whose stored `sample_line` names an id that reads like an error marker. The line travels as its own field: the server keeps it out of `summary` (tests/unit/test_trace_sample_line_channel.py) and the UI shows it below the summary without classifying it (frontend/src/test/trace-sample-line.test.tsx). `appended_outcome` is how the UI classifier reads summary + blank line + sample line, which is why the line must not be appended. `record` is the sample record the engine renders `sample_line` from. `coverage_cases` are calls whose stored telemetry-coverage lines travel as their own field too: `outcome` is how the summary alone classifies, `prefixed_outcome` how coverage lines in front of it did.",
+  "cases": [
+    {
+      "id": "time-series-sensor-error",
+      "answer": "{\"readings\": [{\"t\": \"2026-05-11T09:20:00Z\", \"v\": 1.5}]}",
+      "summary": "1 time-series: 1 data points total",
+      "sample_line": "[engine] Telemetry samples, not every value: rig-5d1e / sensor_error: 3 of 720 values read returned (first, last, lowest and highest value read included, the rest at evenly spaced positions in the series).",
+      "appended_outcome": "failed",
+      "record": {
+        "asset": "rig-5d1e",
+        "property": "sensor_error",
+        "returned": 3,
+        "read": 720,
+        "kind": "i3x"
+      }
+    },
+    {
+      "id": "fields-comm-exception",
+      "answer": "{\"asset\": \"plc-7\", \"readings\": [1, 2]}",
+      "summary": "Result with 2 fields: asset, readings",
+      "sample_line": "[engine] Telemetry samples, not every value: plc-7 / comm_exception: 24 of 457 stored values returned (this app's history tool returns at most 24 values per series per read, whatever the window or max_results; only a window holding no more than 24 stored values returns every one; first and last value read included, the rest picked toward evenly spaced times between them, so spacing is uneven where the data has gaps).",
+      "appended_outcome": "failed",
+      "record": {
+        "asset": "plc-7",
+        "property": "comm_exception",
+        "returned": 24,
+        "read": 457,
+        "kind": "direct"
+      }
+    },
+    {
+      "id": "channels-sensor-error",
+      "answer": "[{\"elementId\": \"rig-5d1e:sensor_error\", \"result\": {\"values\": [{\"value\": 1.0, \"quality\": \"GOOD\", \"timestamp\": \"2026-05-11T09:20:00Z\"}]}}]",
+      "summary": "1 element(s), 1 channel(s), 1 point(s)",
+      "sample_line": "[engine] Telemetry samples, not every value: rig-5d1e / sensor_error: 3 of 720 values read returned (first, last, lowest and highest value read included, the rest at evenly spaced positions in the series).",
+      "appended_outcome": "failed",
+      "record": {
+        "asset": "rig-5d1e",
+        "property": "sensor_error",
+        "returned": 3,
+        "read": 720,
+        "kind": "i3x"
+      }
+    },
+    {
+      "id": "records-found-comm-exception",
+      "answer": "{\"columns\": [\"t\", \"v\"], \"rows\": [[\"2026-05-11T09:20:00Z\", 1.5]], \"row_count\": 1}",
+      "summary": "1 record found: 2026-05-11T09:20:00Z",
+      "sample_line": "[engine] Telemetry samples, not every value: plc-7 / comm_exception: 24 of 457 stored values returned (this app's history tool returns at most 24 values per series per read, whatever the window or max_results; only a window holding no more than 24 stored values returns every one; first and last value read included, the rest picked toward evenly spaced times between them, so spacing is uneven where the data has gaps).",
+      "appended_outcome": "success",
+      "record": {
+        "asset": "plc-7",
+        "property": "comm_exception",
+        "returned": 24,
+        "read": 457,
+        "kind": "direct"
+      }
+    }
+  ],
+  "coverage_cases": [
+    {
+      "id": "coverage-names-an-error-id",
+      "answer": "{\"readings\": [{\"t\": \"2026-05-11T09:20:00Z\", \"v\": 1.5}]}",
+      "summary": "1 time-series: 1 data points total",
+      "telemetry_coverage": [
+        "Telemetry read: rig-5d1e / sensor_error:raw, 2026-05-11T09:14Z to 2026-05-11T10:14Z, 24 points (samples 2026-05-11T09:14Z to 2026-05-11T10:13Z)"
+      ],
+      "outcome": "success",
+      "prefixed_outcome": "failed"
+    },
+    {
+      "id": "coverage-pushes-a-failure-out",
+      "answer": "Error executing query: table line_events was not found.",
+      "summary": "Error executing query: table line_events was not found.",
+      "telemetry_coverage": [
+        "Telemetry read: rig-5d1e / axis-u, 2026-05-11T09:14Z to 2026-05-11T10:14Z, 24 points (samples 2026-05-11T09:14Z to 2026-05-11T10:13Z)",
+        "Telemetry read: rig-5d1e / axis-v, 2026-05-11T09:14Z to 2026-05-11T10:14Z, 24 points (samples 2026-05-11T09:14Z to 2026-05-11T10:13Z)",
+        "Telemetry read: rig-5d1e / axis-w, 2026-05-11T09:14Z to 2026-05-11T10:14Z, 24 points (samples 2026-05-11T09:14Z to 2026-05-11T10:13Z)"
+      ],
+      "outcome": "failed",
+      "prefixed_outcome": "success"
+    }
+  ]
+}

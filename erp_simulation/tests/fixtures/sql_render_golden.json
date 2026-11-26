@@ -1,0 +1,536 @@
+{
+ "console_login._grant_select": [
+  [
+   "TEXT:SELECT nspname FROM pg_namespace WHERE nspname NOT IN ('pg_catalog', 'information_schema') AND nspname NOT LIKE 'pg\\_toast%' AND nspname NOT LIKE 'pg\\_temp%' AND has_schema_privilege(oid, 'USAGE') ORDER BY nspname",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('GRANT USAGE ON SCHEMA '), Identifier('public'), SQL(' TO '), Identifier('erp_console')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('GRANT SELECT ON ALL TABLES IN SCHEMA '), Identifier('public'), SQL(' TO '), Identifier('erp_console')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('GRANT USAGE ON SCHEMA '), Identifier('cmms_indianapolis'), SQL(' TO '), Identifier('erp_console')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('GRANT SELECT ON ALL TABLES IN SCHEMA '), Identifier('cmms_indianapolis'), SQL(' TO '), Identifier('erp_console')])",
+   "None"
+  ]
+ ],
+ "console_login._upsert_role existing": [
+  [
+   "TEXT:SELECT 1 FROM pg_roles WHERE rolname = %s",
+   "('erp_console',)"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' WITH LOGIN NOCREATEDB NOCREATEROLE CONNECTION LIMIT '), Literal(5), SQL(' PASSWORD '), Literal('SCRAM-SHA-256$4096:verifier')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' SET default_transaction_read_only = on')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' SET statement_timeout = '), Literal('15s')])",
+   "None"
+  ]
+ ],
+ "console_login._upsert_role new": [
+  [
+   "TEXT:SELECT 1 FROM pg_roles WHERE rolname = %s",
+   "('erp_console',)"
+  ],
+  [
+   "COMPOSED:Composed([SQL('CREATE ROLE '), Identifier('erp_console'), SQL(' LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS CONNECTION LIMIT '), Literal(5)])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' WITH LOGIN NOCREATEDB NOCREATEROLE CONNECTION LIMIT '), Literal(5), SQL(' PASSWORD '), Literal('SCRAM-SHA-256$4096:verifier')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' SET default_transaction_read_only = on')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('ALTER ROLE '), Identifier('erp_console'), SQL(' SET statement_timeout = '), Literal('15s')])",
+   "None"
+  ]
+ ],
+ "finance._since_last_cycle": [
+  [
+   "TEXT:\n    SELECT COALESCE(SUM(total_amount), 0)\n    FROM invoices\n    WHERE invoice_date >= (\n        SELECT COALESCE(MAX(event_timestamp), NOW() - INTERVAL '1 hour')\n        FROM simulation_events\n        WHERE cycle_number < (SELECT COALESCE(MAX(cycle_number), 0) FROM simulation_events)\n    )\n",
+   "None"
+  ],
+  [
+   "TEXT:\n    SELECT COALESCE(SUM(amount), 0)\n    FROM payments\n    WHERE payment_date >= (\n        SELECT COALESCE(MAX(event_timestamp), NOW() - INTERVAL '1 hour')\n        FROM simulation_events\n        WHERE cycle_number < (SELECT COALESCE(MAX(cycle_number), 0) FROM simulation_events)\n    )\n",
+   "None"
+  ]
+ ],
+ "mes constants": [
+  [
+   "_CORP_BRIDGE_OPEN",
+   "TEXT:status_hint IN ('open', 'in_progress') AND wo_number LIKE 'WO-MES-%%'"
+  ],
+  [
+   "_CORP_BRIDGE_CANDIDATES_FROM_SQL",
+   "TEXT:\n    SELECT wo_number, description FROM cmms_maintenance.work_orders_raw\n    WHERE status_hint IN ('open', 'in_progress') AND wo_number LIKE 'WO-MES-%%' AND wo_number >= %(start)s\n    ORDER BY wo_number\n    LIMIT %(limit)s\n"
+  ],
+  [
+   "_CORP_BRIDGE_CANDIDATES_BEFORE_SQL",
+   "TEXT:\n    SELECT wo_number, description FROM cmms_maintenance.work_orders_raw\n    WHERE status_hint IN ('open', 'in_progress') AND wo_number LIKE 'WO-MES-%%' AND wo_number < %(start)s\n    ORDER BY wo_number\n    LIMIT %(limit)s\n"
+  ]
+ ],
+ "mes._bridge_candidates": [
+  [
+   "TEXT:\n    SELECT wonum, description, reported_date, reported_by, actual_start FROM cmms_indianapolis.work_orders\n    WHERE wonum LIKE %(prefix)s AND status = ANY(%(open_statuses)s) AND reported_date < %(loop_start)s\n      AND wonum >= %(start)s\n    ORDER BY wonum\n    LIMIT %(limit)s\n",
+   "{'prefix': 'IND-%', 'open_statuses': ['WAPPR'], 'loop_start': '2026-09-21 13:33:20', 'start': 'IND-00000000', 'limit': 200}"
+  ],
+  [
+   "TEXT:\n    SELECT wonum, description, reported_date, reported_by, actual_start FROM cmms_indianapolis.work_orders\n    WHERE wonum LIKE %(prefix)s AND status = ANY(%(open_statuses)s) AND reported_date < %(loop_start)s\n      AND wonum < %(start)s\n    ORDER BY wonum\n    LIMIT %(limit)s\n",
+   "{'prefix': 'IND-%', 'open_statuses': ['WAPPR'], 'loop_start': '2026-09-21 13:33:20', 'start': 'IND-00000000', 'limit': 200}"
+  ]
+ ],
+ "mes._corp_bridge_candidates": [
+  [
+   "TEXT:\n    SELECT wo_number, description FROM cmms_maintenance.work_orders_raw\n    WHERE status_hint IN ('open', 'in_progress') AND wo_number LIKE 'WO-MES-%%' AND wo_number >= %(start)s\n    ORDER BY wo_number\n    LIMIT %(limit)s\n",
+   "{'start': 'WO-MES-IND-00000000', 'limit': 200}"
+  ],
+  [
+   "TEXT:\n    SELECT wo_number, description FROM cmms_maintenance.work_orders_raw\n    WHERE status_hint IN ('open', 'in_progress') AND wo_number LIKE 'WO-MES-%%' AND wo_number < %(start)s\n    ORDER BY wo_number\n    LIMIT %(limit)s\n",
+   "{'start': 'WO-MES-IND-00000000', 'limit': 200}"
+  ]
+ ],
+ "mes._insert_indianapolis_cmms_work_order": [
+  [
+   "TEXT:\n            SELECT asset_num FROM cmms_indianapolis.assets\n            WHERE asset_num LIKE %s\n            ORDER BY (asset_type = %s) DESC, asset_num\n            LIMIT 1\n        ",
+   "('1001-%', '')"
+  ],
+  [
+   "TEXT:\n            INSERT INTO cmms_indianapolis.work_orders\n                (wonum, asset_num, work_type, description, status, priority,\n                 reported_by, reported_date, target_start, sched_start, failure_code, crew,\n                 actual_start)\n            VALUES (%s, %s, %s, %s, 'WAPPR', %s, 'MES bridge', NOW(), NOW(), NOW(), %s, 'IND-MECH-A', %s)\n            ON CONFLICT (wonum) DO NOTHING\n        ",
+   "('IND-0F0E0D0C', '1001-CNC-200', 'EM', 'MES-triggered: Vibration alarm on IND-LINE-1 (site INDIANAPOLIS_MACHINING) \u2014 MES downtime event 0f0e0d0c-0b0a-4908-8706-050403020100', 1, 'Vibration alarm', None)"
+  ]
+ ],
+ "mes.complete_bridge_work_orders": [
+  [
+   "TEXT:\n    WITH plan AS (\n        SELECT * FROM unnest(%(wonums)s::varchar[], %(starts)s::timestamp[], %(finishes)s::timestamp[],\n                             %(authors)s::varchar[], %(descriptions)s::varchar[])\n            AS p(wonum, actual_start, actual_finish, author, description)\n    ), completed AS (\n        UPDATE cmms_indianapolis.work_orders AS wo\n        SET status = %(status)s, actual_start = p.actual_start, actual_finish = p.actual_finish\n        FROM plan p\n        WHERE wo.wonum = p.wonum AND wo.wonum LIKE %(prefix)s\n          AND wo.status = ANY(%(open_statuses)s) AND wo.reported_date < %(loop_start)s\n          AND wo.reported_by = %(reported_by)s AND wo.description = p.description\n        RETURNING wo.wonum, GREATEST(p.actual_finish, wo.reported_date) AS log_date,\n                  COALESCE(p.author, %(default_author)s) AS author\n    )\n    INSERT INTO cmms_indianapolis.work_order_log (wonum, log_date, author, log_type, entry)\n    SELECT wonum, log_date, left(author, 60), 'COMPLETE', %(entry)s FROM completed\n",
+   "{'prefix': 'IND-%', 'open_statuses': ['WAPPR', 'APPR', 'INPRG', 'WMATL'], 'loop_start': datetime.datetime(2026, 9, 21, 14, 13, 20), 'status': 'COMP', 'wonums': ['IND-0F0E0D0C'], 'starts': ['2026-09-21 10:00:00'], 'finishes': ['2026-09-21 11:00:00'], 'authors': ['tech'], 'descriptions': ['desc'], 'reported_by': 'MES bridge', 'default_author': 'Maintenance planner', 'entry': 'MES downtime resolved; repair completed and the line returned to production.'}"
+  ]
+ ],
+ "mes.complete_condition_work_orders": [
+  [
+   "TEXT:\n            WITH completed AS (\n                UPDATE cmms_indianapolis.work_orders AS wo\n                SET status = %(status)s,\n                    actual_start = COALESCE(wo.sched_start, wo.reported_date),\n                    actual_finish = LEAST(COALESCE(wo.sched_start, wo.reported_date)\n                                          + %(repair_seconds)s * INTERVAL '1 second', %(now)s)\n                WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s\n                  AND wo.status = ANY(%(open_statuses)s) AND wo.reported_date < %(loop_start)s\n                RETURNING wo.wonum, wo.actual_finish\n            )\n            INSERT INTO cmms_indianapolis.work_order_log (wonum, log_date, author, log_type, entry)\n            SELECT wonum, actual_finish, %(author)s, 'COMPLETE', %(entry)s FROM completed\n        ",
+   "{'status': 'COMP', 'repair_seconds': 1200, 'now': datetime.datetime(2026, 9, 26, 14, 13, 20), 'asset': '1001-CMX-441', 'prefix': 'VIB-CMX-%', 'open_statuses': ['WAPPR', 'APPR', 'INPRG', 'WMATL'], 'loop_start': datetime.datetime(2026, 9, 21, 14, 13, 20), 'author': 'Maintenance planner', 'entry': 'The order was still open when the bearing failed. Bearing set replaced in the repair stop; machine returned to service.'}"
+  ]
+ ],
+ "mes.indianapolis_bridge_asset": [
+  [
+   "TEXT:\n            SELECT asset_num FROM cmms_indianapolis.assets\n            WHERE asset_num LIKE %s\n            ORDER BY (asset_type = %s) DESC, asset_num\n            LIMIT 1\n        ",
+   "('1001-%', '')"
+  ]
+ ],
+ "mes.insert_condition_work_order": [
+  [
+   "TEXT:\n            INSERT INTO cmms_indianapolis.work_orders\n                (wonum, asset_num, work_type, description, status, priority,\n                 reported_by, reported_date, target_start, sched_start, failure_code, crew)\n            VALUES (%s, %s, 'CM', %s, 'WAPPR', 1, 'Condition monitor', %s, %s, %s, 'BEARING', %s)\n            ON CONFLICT (wonum) DO NOTHING\n        ",
+   "('VIB-CMX-000007', '1001-CMX-441', 'Condition monitor: spindle vibration alarm. BPFO band 0.70 mm/s at 312 Hz exceeded 0.70 mm/s on 5-Axis-Milling-CMX-441 (spindle 6200 rpm); 1x 0.83 mm/s, crest factor 5.0, kurtosis 6.4. Outer-race bearing defect developing; replace spindle bearing.', datetime.datetime(2026, 9, 21, 14, 13, 20), datetime.datetime(2026, 9, 21, 14, 13, 20), datetime.datetime(2026, 9, 21, 15, 13, 20), 'IND-MECH-A')"
+  ]
+ ],
+ "production._replenishment_candidates": [
+  [
+   "TEXT:\n    WITH pipeline_production AS (\n        SELECT product_id, site,\n               COALESCE(SUM(planned_quantity), 0) as total_pipeline\n        FROM production_runs\n        WHERE status IN ('PLANNED', 'RELEASED', 'IN_PROGRESS')\n        GROUP BY product_id, site\n    )\n    SELECT p.product_id, p.sku, p.product_name,\n           COALESCE(ib.quantity_on_hand, 0) as current_inventory,\n           COALESCE(pp.total_pipeline, 0) as pipeline_production,\n           s.site_code\n    FROM products p\n    JOIN inventory_items ii ON p.product_id = ii.product_id AND ii.item_type = 'FINISHED_GOOD'\n    JOIN product_site_routing psr ON p.category = psr.product_category AND psr.is_active = TRUE\n    JOIN sites s ON psr.site_id = s.site_id AND s.is_active = TRUE AND s.site_code != 'BOTTLING_PLANT'\n    LEFT JOIN inventory_locations il ON il.location_code = (\n        CASE s.site_code WHEN 'MILWAUKEE_BOTTLING' THEN 'MKE-FG' WHEN 'DETROIT_AUTOPARTS' THEN 'DET-FG' WHEN 'CEDARRAPIDS_FOOD' THEN 'CR-FG' WHEN 'INDIANAPOLIS_MACHINING' THEN 'IND-FG' WHEN 'BOTTLING_PLANT' THEN 'FG-WAREHOUSE' ELSE 'FG-WAREHOUSE' END\n    ) AND il.is_active = TRUE\n    LEFT JOIN inventory_balances ib ON ii.item_id = ib.item_id AND ib.location_id = il.location_id\n    LEFT JOIN pipeline_production pp ON p.product_id = pp.product_id AND pp.site = s.site_code\n    WHERE p.is_active = TRUE\n      AND (COALESCE(ib.quantity_on_hand, 0) + COALESCE(pp.total_pipeline, 0)) < %s\n    ORDER BY (COALESCE(ib.quantity_on_hand, 0) + COALESCE(pp.total_pipeline, 0)) ASC\n",
+   "(1000,)"
+  ]
+ ],
+ "production.complete_production backlog": [
+  [
+   "TEXT:\n    SELECT pr.run_id, pr.run_number, pr.actual_quantity, p.sku, pr.site,\n           fg.location_code, fg.location_id, fi.item_id\n    FROM production_runs pr\n    JOIN products p ON p.product_id = pr.product_id\n    CROSS JOIN LATERAL (\n        SELECT il.location_id, il.location_code\n        FROM inventory_locations il\n        WHERE il.location_code = (CASE pr.site WHEN 'MILWAUKEE_BOTTLING' THEN 'MKE-FG' WHEN 'DETROIT_AUTOPARTS' THEN 'DET-FG' WHEN 'CEDARRAPIDS_FOOD' THEN 'CR-FG' WHEN 'INDIANAPOLIS_MACHINING' THEN 'IND-FG' WHEN 'BOTTLING_PLANT' THEN 'FG-WAREHOUSE' ELSE 'FG-WAREHOUSE' END) AND il.is_active = TRUE\n        LIMIT 1\n    ) fg\n    CROSS JOIN LATERAL (\n        SELECT ii.item_id\n        FROM inventory_items ii\n        WHERE ii.product_id = pr.product_id AND ii.item_type = 'FINISHED_GOOD'\n        LIMIT 1\n    ) fi\n    WHERE pr.status = 'COMPLETED'\n      AND pr.actual_quantity IS NOT NULL\n      AND NOT EXISTS (\n          SELECT 1 FROM inventory_transactions it\n          WHERE it.reference_type = 'PRODUCTION_RUN'\n            AND it.reference_id = pr.run_id\n            AND it.transaction_type = 'RECEIPT'\n      )\n    ORDER BY pr.actual_end_time NULLS FIRST, pr.run_number\n    LIMIT %s\n    FOR UPDATE OF pr SKIP LOCKED\n",
+   "(200,)"
+  ]
+ ],
+ "schema_manager.drop_all_tables": [
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('payments'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('invoice_line_items'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('invoices'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('shipment_items'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('shipments'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('mes_downtime_events'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('mes_material_consumption'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('mes_quality_checks'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('mes_production_events'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('mes_work_orders'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('production_materials'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('production_runs'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('po_receipts'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('po_line_items'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('purchase_orders'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('order_line_items'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('customer_orders'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('bill_of_materials'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('inventory_transactions'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('inventory_balances'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('inventory_locations'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('inventory_items'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('products'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('suppliers'), SQL(' CASCADE')])",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('DROP TABLE IF EXISTS '), Identifier('customers'), SQL(' CASCADE')])",
+   "None"
+  ]
+ ],
+ "simulate_local._fast_forward": [
+  [
+   "TEXT:SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public' AND data_type LIKE 'timestamp%'",
+   "None"
+  ],
+  [
+   "COMPOSED:Composed([SQL('UPDATE public.'), Identifier('customer_orders'), SQL(' SET '), Identifier('order_date'), SQL(' = '), Identifier('order_date'), SQL(' - %s::interval WHERE '), Identifier('order_date'), SQL(' IS NOT NULL')])",
+   "('6 hours',)"
+  ],
+  [
+   "COMPOSED:Composed([SQL('UPDATE public.'), Identifier('shipments'), SQL(' SET '), Identifier('ship_date'), SQL(' = '), Identifier('ship_date'), SQL(' - %s::interval WHERE '), Identifier('ship_date'), SQL(' IS NOT NULL')])",
+   "('6 hours',)"
+  ]
+ ],
+ "story_history constants": [
+  [
+   "_UPSERT_CMMS_WORK_ORDER_SQL",
+   "TEXT:\n    INSERT INTO cmms_indianapolis.work_orders AS wo (wonum, asset_num, work_type, description, status,\n        priority, pm_num, reported_by, reported_date, target_start, sched_start,\n        actual_start, actual_finish, failure_code, crew)\n    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)\n    ON CONFLICT (wonum) DO UPDATE SET status = EXCLUDED.status,\n        reported_date = EXCLUDED.reported_date, target_start = EXCLUDED.target_start,\n        sched_start = EXCLUDED.sched_start, actual_start = EXCLUDED.actual_start,\n        actual_finish = EXCLUDED.actual_finish\n    WHERE (wo.reported_date, wo.target_start, wo.sched_start, wo.actual_start, wo.actual_finish)\n        IS DISTINCT FROM (EXCLUDED.reported_date, EXCLUDED.target_start, EXCLUDED.sched_start,\n                          EXCLUDED.actual_start, EXCLUDED.actual_finish)\n"
+  ],
+  [
+   "_DELETE_STALE_LOG_SQL",
+   "TEXT:\n    DELETE FROM cmms_indianapolis.work_order_log\n    WHERE wonum = %s AND log_type = %s\n      AND (log_date, author, entry) IS DISTINCT FROM (%s::timestamp, %s::varchar, %s::text)\n"
+  ],
+  [
+   "_INSERT_LOG_SQL",
+   "TEXT:\n    INSERT INTO cmms_indianapolis.work_order_log (wonum, log_date, author, log_type, entry)\n    SELECT %s, %s, %s, %s, %s WHERE NOT EXISTS (\n        SELECT 1 FROM cmms_indianapolis.work_order_log WHERE wonum = %s AND log_type = %s)\n"
+  ],
+  [
+   "_PURGE_CONDITION_SCOPE",
+   "TEXT:SELECT wonum FROM cmms_indianapolis.work_orders WHERE asset_num = %s AND wonum LIKE %s AND reported_date < %s"
+  ],
+  [
+   "_PURGE_CONDITION_LOG_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum IN (SELECT wonum FROM cmms_indianapolis.work_orders WHERE asset_num = %s AND wonum LIKE %s AND reported_date < %s)"
+  ],
+  [
+   "_PURGE_CONDITION_WO_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum IN (SELECT wonum FROM cmms_indianapolis.work_orders WHERE asset_num = %s AND wonum LIKE %s AND reported_date < %s)"
+  ],
+  [
+   "_PAST_STOP_PROOF",
+   "TEXT:JOIN unnest(%(wonums)s::varchar[], %(ids)s::text[]) AS p(wonum, downtime_id) ON p.wonum = wo.wonum"
+  ],
+  [
+   "_OWNED_PAST_STOP_SCOPE",
+   "TEXT:SELECT wo.wonum FROM cmms_indianapolis.work_orders wo JOIN unnest(%(wonums)s::varchar[], %(ids)s::text[]) AS p(wonum, downtime_id) ON p.wonum = wo.wonum WHERE wo.reported_by = %(reporter)s AND right(wo.description, length(p.downtime_id)) = p.downtime_id"
+  ],
+  [
+   "_DELETE_PAST_STOP_LOG_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum IN (SELECT wo.wonum FROM cmms_indianapolis.work_orders wo JOIN unnest(%(wonums)s::varchar[], %(ids)s::text[]) AS p(wonum, downtime_id) ON p.wonum = wo.wonum WHERE wo.reported_by = %(reporter)s AND right(wo.description, length(p.downtime_id)) = p.downtime_id)"
+  ],
+  [
+   "_DELETE_PAST_STOP_WO_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum IN (SELECT wo.wonum FROM cmms_indianapolis.work_orders wo JOIN unnest(%(wonums)s::varchar[], %(ids)s::text[]) AS p(wonum, downtime_id) ON p.wonum = wo.wonum WHERE wo.reported_by = %(reporter)s AND right(wo.description, length(p.downtime_id)) = p.downtime_id)"
+  ],
+  [
+   "_FOREIGN_PAST_STOP_ORDERS_SQL",
+   "TEXT:SELECT wo.wonum FROM cmms_indianapolis.work_orders wo JOIN unnest(%(wonums)s::varchar[], %(ids)s::text[]) AS p(wonum, downtime_id) ON p.wonum = wo.wonum WHERE wo.reported_by IS DISTINCT FROM %(reporter)s OR right(wo.description, length(p.downtime_id)) IS DISTINCT FROM p.downtime_id ORDER BY wo.wonum"
+  ],
+  [
+   "_ALIGN_PM_SCHEDULE_SQL",
+   "TEXT:\n    UPDATE cmms_indianapolis.pm_schedules SET last_completion_date = %s::date, next_due_date = %s::date\n    WHERE pm_num = %s AND asset_num = %s\n      AND (last_completion_date IS DISTINCT FROM %s::date OR next_due_date IS DISTINCT FROM %s::date)\n"
+  ],
+  [
+   "_FROZEN_ERA_SCOPE",
+   "TEXT:wo.asset_num = %(asset)s AND wo.reported_date < %(anchor)s AND wo.wonum <> ALL(%(history)s) AND wo.wonum NOT LIKE %(condition)s"
+  ],
+  [
+   "_SUPERSEDE_FROZEN_ORDERS_SQL",
+   "TEXT:\n    WITH superseded AS (\n        UPDATE cmms_indianapolis.work_orders AS wo SET status = 'CAN'\n        FROM unnest(%(priors)s::varchar[], %(entries)s::text[]) AS m(prior, entry)\n        WHERE wo.status = m.prior AND wo.asset_num = %(asset)s AND wo.reported_date < %(anchor)s AND wo.wonum <> ALL(%(history)s) AND wo.wonum NOT LIKE %(condition)s\n        RETURNING wo.wonum, m.entry\n    )\n    INSERT INTO cmms_indianapolis.work_order_log (wonum, log_date, author, log_type, entry)\n    SELECT wonum, %(log_date)s, %(author)s, 'UPDATE', entry FROM superseded\n"
+  ],
+  [
+   "_MARK_SUPERSEDED_SQL",
+   "TEXT:\n    UPDATE cmms_indianapolis.work_orders AS wo SET description = wo.description || %(suffix)s\n    WHERE wo.asset_num = %(asset)s AND wo.status = 'CAN'\n      AND right(wo.description, length(%(suffix)s)) <> %(suffix)s\n      AND length(wo.description || %(suffix)s) <= %(width)s\n      AND wo.wonum IN (SELECT wonum FROM cmms_indianapolis.work_order_log WHERE entry = ANY(%(entries)s))\n"
+  ],
+  [
+   "_MARK_PRIOR_ERA_SQL",
+   "TEXT:\n    UPDATE cmms_indianapolis.work_orders AS wo SET description = %(prefix)s || wo.description\n    WHERE wo.status = 'COMP' AND wo.asset_num = %(asset)s AND wo.reported_date < %(anchor)s AND wo.wonum <> ALL(%(history)s) AND wo.wonum NOT LIKE %(condition)s\n      AND left(wo.description, length(%(prefix)s)) <> %(prefix)s\n      AND length(%(prefix)s || wo.description) <= %(width)s\n"
+  ],
+  [
+   "_PLANT_PM_OPEN_SCOPE",
+   "TEXT:wo.pm_num = ANY(%(pm_nums)s) AND wo.status = m.prior AND wo.reported_date < %(anchor)s AND wo.wonum <> ALL(%(close_wonums)s)"
+  ],
+  [
+   "_SUPERSEDE_PLANT_PM_ORDERS_SQL",
+   "TEXT:\n    WITH superseded AS (\n        UPDATE cmms_indianapolis.work_orders AS wo SET status = 'CAN'\n        FROM unnest(%(priors)s::varchar[], %(entries)s::text[]) AS m(prior, entry)\n        WHERE wo.pm_num = ANY(%(pm_nums)s) AND wo.status = m.prior AND wo.reported_date < %(anchor)s AND wo.wonum <> ALL(%(close_wonums)s)\n        RETURNING wo.wonum, m.entry\n    )\n    INSERT INTO cmms_indianapolis.work_order_log (wonum, log_date, author, log_type, entry)\n    SELECT wonum, %(log_date)s, %(author)s, 'UPDATE', entry FROM superseded\n"
+  ],
+  [
+   "_MARK_PLANT_PM_SUPERSEDED_SQL",
+   "TEXT:\n    UPDATE cmms_indianapolis.work_orders AS wo SET description = wo.description || %(suffix)s\n    WHERE wo.pm_num = ANY(%(pm_nums)s) AND wo.status = 'CAN'\n      AND wo.wonum <> ALL(%(close_wonums)s)\n      AND right(wo.description, length(%(suffix)s)) <> %(suffix)s\n      AND length(wo.description || %(suffix)s) <= %(width)s\n      AND wo.wonum IN (SELECT wonum FROM cmms_indianapolis.work_order_log WHERE entry = ANY(%(entries)s))\n"
+  ],
+  [
+   "_RESTORE_SUPERSEDED_SQL",
+   "TEXT:\n    WITH logged AS (\n        SELECT l.wonum, m.prior FROM cmms_indianapolis.work_order_log l\n        JOIN unnest(%(priors)s::varchar[], %(entries)s::text[]) AS m(prior, entry) ON l.entry = m.entry\n    ), restored AS (\n        UPDATE cmms_indianapolis.work_orders AS wo SET status = logged.prior,\n            description = CASE WHEN right(wo.description, length(%(suffix)s)) = %(suffix)s\n                THEN left(wo.description, length(wo.description) - length(%(suffix)s))\n                ELSE wo.description END\n        FROM logged WHERE wo.wonum = logged.wonum AND wo.status = 'CAN'\n        RETURNING wo.wonum\n    )\n    DELETE FROM cmms_indianapolis.work_order_log\n    WHERE entry = ANY(%(entries)s) AND wonum IN (SELECT wonum FROM restored)\n"
+  ],
+  [
+   "_RESTORE_PRIOR_ERA_SQL",
+   "TEXT:\n    UPDATE cmms_indianapolis.work_orders SET description = substr(description, length(%(prefix)s) + 1)\n    WHERE asset_num = %(asset)s AND left(description, length(%(prefix)s)) = %(prefix)s\n"
+  ],
+  [
+   "_HISTORY_SCOPE",
+   "TEXT:SELECT wonum FROM cmms_indianapolis.work_orders WHERE wonum = ANY(%s) AND asset_num = %s"
+  ],
+  [
+   "_DELETE_HISTORY_LOG_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum IN (SELECT wonum FROM cmms_indianapolis.work_orders WHERE wonum = ANY(%s) AND asset_num = %s)"
+  ],
+  [
+   "_DELETE_HISTORY_WO_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum IN (SELECT wonum FROM cmms_indianapolis.work_orders WHERE wonum = ANY(%s) AND asset_num = %s)"
+  ],
+  [
+   "_DELETE_PLANT_PM_LOG_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum = ANY(%s)"
+  ],
+  [
+   "_DELETE_PLANT_PM_WO_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum = ANY(%s)"
+  ]
+ ],
+ "story_history._require_reference": [
+  [
+   "TEXT:SELECT sku FROM products WHERE sku = ANY(%s)",
+   "(['MACH-BRKT-9901', 'MACH-HSG-7742', 'MACH-SHFT-8810'],)"
+  ],
+  [
+   "TEXT:SELECT customer_code FROM customers WHERE customer_code = ANY(%s)",
+   "(['CUST-MCH-0001', 'CUST-MCH-0002', 'CUST-MCH-0003', 'CUST-MCH-0004'],)"
+  ],
+  [
+   "TEXT:SELECT lot_number FROM material_lots WHERE lot_number = ANY(%s)",
+   "(['LOT-IND-RODST4140100-SEED', 'LOT-IND-SHTTI64125-SEED'],)"
+  ],
+  [
+   "TEXT:SELECT item_code FROM inventory_items WHERE item_code = ANY(%s)",
+   "(['BAR-AL7075-150'],)"
+  ],
+  [
+   "TEXT:SELECT supplier_code FROM suppliers WHERE supplier_code = ANY(%s)",
+   "(['SUP-IND-METALS'],)"
+  ],
+  [
+   "TEXT:SELECT location_code FROM inventory_locations WHERE location_code = ANY(%s)",
+   "(['IND-FG', 'IND-WH-RAW'],)"
+  ]
+ ],
+ "story_replan constants": [
+  [
+   "_STALE_CONDITION_SCOPE",
+   "TEXT:\n    SELECT wo.wonum FROM cmms_indianapolis.work_orders wo\n    WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s AND wo.reported_date < %(now)s\n      AND NOT EXISTS (\n          SELECT 1 FROM unnest(%(keep_wonums)s::varchar[], %(keep_dates)s::timestamp[]) AS k(wonum, reported)\n          WHERE k.wonum = wo.wonum AND k.reported = wo.reported_date)\n"
+  ],
+  [
+   "_PURGE_STALE_CONDITION_LOG_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum IN (\n    SELECT wo.wonum FROM cmms_indianapolis.work_orders wo\n    WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s AND wo.reported_date < %(now)s\n      AND NOT EXISTS (\n          SELECT 1 FROM unnest(%(keep_wonums)s::varchar[], %(keep_dates)s::timestamp[]) AS k(wonum, reported)\n          WHERE k.wonum = wo.wonum AND k.reported = wo.reported_date)\n)"
+  ],
+  [
+   "_PURGE_STALE_CONDITION_WO_SQL",
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum IN (\n    SELECT wo.wonum FROM cmms_indianapolis.work_orders wo\n    WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s AND wo.reported_date < %(now)s\n      AND NOT EXISTS (\n          SELECT 1 FROM unnest(%(keep_wonums)s::varchar[], %(keep_dates)s::timestamp[]) AS k(wonum, reported)\n          WHERE k.wonum = wo.wonum AND k.reported = wo.reported_date)\n)"
+  ]
+ ],
+ "story_replan._purge_condition_orders_before": [
+  [
+   "TEXT:DELETE FROM cmms_indianapolis.work_order_log WHERE wonum IN (\n    SELECT wo.wonum FROM cmms_indianapolis.work_orders wo\n    WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s AND wo.reported_date < %(now)s\n      AND NOT EXISTS (\n          SELECT 1 FROM unnest(%(keep_wonums)s::varchar[], %(keep_dates)s::timestamp[]) AS k(wonum, reported)\n          WHERE k.wonum = wo.wonum AND k.reported = wo.reported_date)\n)",
+   "{'asset': '1001-CMX-441', 'prefix': 'VIB-CMX-%', 'now': datetime.datetime(2026, 9, 26, 14, 13, 20), 'keep_wonums': ['VIB-CMX-000000', 'VIB-CMX-000001', 'VIB-CMX-000002', 'VIB-CMX-000003', 'VIB-CMX-000004', 'VIB-CMX-000005', 'VIB-CMX-000006', 'VIB-CMX-000007', 'VIB-CMX-000008', 'VIB-CMX-000009', 'VIB-CMX-000010', 'VIB-CMX-000011', 'VIB-CMX-000012', 'VIB-CMX-000013', 'VIB-CMX-000014'], 'keep_dates': [datetime.datetime(2026, 9, 21, 19, 38, 10), datetime.datetime(2026, 9, 22, 3, 38, 10), datetime.datetime(2026, 9, 22, 11, 38, 10), datetime.datetime(2026, 9, 22, 19, 38, 10), datetime.datetime(2026, 9, 23, 3, 38, 10), datetime.datetime(2026, 9, 23, 11, 38, 10), datetime.datetime(2026, 9, 23, 19, 38, 10), datetime.datetime(2026, 9, 24, 3, 38, 10), datetime.datetime(2026, 9, 24, 11, 38, 10), datetime.datetime(2026, 9, 24, 19, 38, 10), datetime.datetime(2026, 9, 25, 3, 38, 10), datetime.datetime(2026, 9, 25, 11, 38, 10), datetime.datetime(2026, 9, 25, 19, 38, 10), datetime.datetime(2026, 9, 26, 3, 38, 10), datetime.datetime(2026, 9, 26, 11, 38, 10)]}"
+  ],
+  [
+   "TEXT:DELETE FROM cmms_indianapolis.work_orders WHERE wonum IN (\n    SELECT wo.wonum FROM cmms_indianapolis.work_orders wo\n    WHERE wo.asset_num = %(asset)s AND wo.wonum LIKE %(prefix)s AND wo.reported_date < %(now)s\n      AND NOT EXISTS (\n          SELECT 1 FROM unnest(%(keep_wonums)s::varchar[], %(keep_dates)s::timestamp[]) AS k(wonum, reported)\n          WHERE k.wonum = wo.wonum AND k.reported = wo.reported_date)\n)",
+   "{'asset': '1001-CMX-441', 'prefix': 'VIB-CMX-%', 'now': datetime.datetime(2026, 9, 26, 14, 13, 20), 'keep_wonums': ['VIB-CMX-000000', 'VIB-CMX-000001', 'VIB-CMX-000002', 'VIB-CMX-000003', 'VIB-CMX-000004', 'VIB-CMX-000005', 'VIB-CMX-000006', 'VIB-CMX-000007', 'VIB-CMX-000008', 'VIB-CMX-000009', 'VIB-CMX-000010', 'VIB-CMX-000011', 'VIB-CMX-000012', 'VIB-CMX-000013', 'VIB-CMX-000014'], 'keep_dates': [datetime.datetime(2026, 9, 21, 19, 38, 10), datetime.datetime(2026, 9, 22, 3, 38, 10), datetime.datetime(2026, 9, 22, 11, 38, 10), datetime.datetime(2026, 9, 22, 19, 38, 10), datetime.datetime(2026, 9, 23, 3, 38, 10), datetime.datetime(2026, 9, 23, 11, 38, 10), datetime.datetime(2026, 9, 23, 19, 38, 10), datetime.datetime(2026, 9, 24, 3, 38, 10), datetime.datetime(2026, 9, 24, 11, 38, 10), datetime.datetime(2026, 9, 24, 19, 38, 10), datetime.datetime(2026, 9, 25, 3, 38, 10), datetime.datetime(2026, 9, 25, 11, 38, 10), datetime.datetime(2026, 9, 25, 19, 38, 10), datetime.datetime(2026, 9, 26, 3, 38, 10), datetime.datetime(2026, 9, 26, 11, 38, 10)]}"
+  ]
+ ],
+ "utils.ensure_number_sequences": [
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_order_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_shipment_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_po_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_invoice_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_payment_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_run_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:CREATE SEQUENCE IF NOT EXISTS seq_work_order_number",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ]
+ ],
+ "utils.savepoint error": [
+  [
+   "TEXT:SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:ROLLBACK TO SAVEPOINT adt_number_sequence",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_number_sequence",
+   "None"
+  ]
+ ],
+ "utils.savepoint ok": [
+  [
+   "TEXT:SAVEPOINT adt_row",
+   "None"
+  ],
+  [
+   "TEXT:RELEASE SAVEPOINT adt_row",
+   "None"
+  ]
+ ]
+}

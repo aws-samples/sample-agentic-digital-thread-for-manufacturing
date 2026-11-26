@@ -1,0 +1,97 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 */
+.toast-regions {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 11000;
+  display: flex;
+  width: min(24rem, calc(100vw - 2rem));
+  flex-direction: column;
+  gap: 0.65rem;
+  pointer-events: none;
+}
+
+.toast-region {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.toast-region:empty {
+  display: none;
+}
+
+.toast {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.75rem 0.7rem 0.9rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
+  pointer-events: auto;
+  /* Enter: toasts mount fresh into .toast-region, so the animation runs
+     once per toast. Exit is intentionally instant (store removal). */
+  animation: toast-in-motion var(--motion-base) var(--ease-enter) both;
+}
+
+.toast-success { border-left-color: var(--green); }
+.toast-info { border-left-color: var(--accent2); }
+.toast-warning { border-left-color: var(--amber); }
+.toast-error { border-left-color: var(--red); }
+
+/* Activatable toast (carries an onActivate action) — button affordance. */
+.toast-activatable {
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.toast-activatable:hover,
+.toast-activatable:focus-visible {
+  background: var(--surface2);
+  border-color: var(--border);
+  outline: none;
+}
+
+.toast-message {
+  flex: 1;
+  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.toast-dismiss {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.1rem;
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.toast-dismiss:hover,
+.toast-dismiss:focus-visible {
+  color: var(--text);
+  background: var(--surface2);
+  border-color: var(--border);
+  outline: none;
+}

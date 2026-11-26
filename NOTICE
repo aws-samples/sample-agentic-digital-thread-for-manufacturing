@@ -1,0 +1,196 @@
+Agentic Digital Thread
+Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+This project includes the following third-party software:
+
+---
+
+HighByte Intelligence Hub
+  A commercial product by HighByte, Inc. NOT included in this repository.
+  Users must obtain their own license from HighByte.
+  Source: https://highbyte.com
+
+---
+
+BusyBox 1.36.1
+  NOT included in this repository. In a deploy.sh --highbyte deployment, the
+  HighByte stack's settings-seed init container runs the Docker Official Image
+  public.ecr.aws/docker/library/busybox:1.36, pinned by its image index digest
+  sha256:73aaf090f3d85aa34ee199857f03fa3a95c8ede2ffd4cc2cdb5b94e566b11662.
+  The task runs that index's linux/amd64 image (busybox:1.36.1-glibc),
+  manifest digest
+  sha256:b7f3d86d6e84fc17718c48bcde1450807faa2d56704205c697b4bd5df7b9e29f
+  (both pinned in stacks/_external_images.py).
+  How the image reaches the task: the customer's own account pulls the pinned
+  linux/amd64 image by digest from Amazon Elastic Container Registry Public
+  (Amazon ECR Public) at every task start. This project does not ship, copy
+  or redistribute BusyBox. An AWS Workshop Studio package built from this
+  project runs the settings seed on the HighByte Intelligence Hub image
+  instead, and never carries, copies or pulls BusyBox.
+  Contents: BusyBox 1.36.1 built against glibc, plus GNU C Library files the
+  image build copies from Debian 13 (Debian GLIBC 2.41-12+deb13u2): the
+  shared libraries BusyBox and getconf load, and the getconf program.
+  BusyBox: Copyright (c) Erik Andersen, Rob Landley, Denys Vlasenko and other
+  BusyBox contributors. Licensed under the GNU General Public License
+  version 2 only (GPL-2.0-only).
+  License text: https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+  Source: https://busybox.net
+  GNU C Library: Copyright (C) Free Software Foundation, Inc. and others. The
+  libraries are licensed under the GNU Lesser General Public License version
+  2.1 or later (LGPL-2.1-or-later); the copyright file of Debian's glibc
+  package lists the terms of every file.
+  Build: docker-library/busybox commit
+  c1375496373e76f680b1ef5f713500e98921a45c, directory latest-1/glibc
+  (https://github.com/docker-library/busybox/tree/c1375496373e76f680b1ef5f713500e98921a45c/latest-1/glibc).
+  Its Dockerfile.builder is the build recipe, including the BusyBox
+  configuration it applies, and its amd64/ directory holds this image's
+  exact manifest, config and layer.
+  The image's source is published upstream: BusyBox 1.36.1 at
+  https://busybox.net/downloads/busybox-1.36.1.tar.bz2 and Debian's glibc
+  2.41-12+deb13u2 at https://snapshot.debian.org/package/glibc/2.41-12%2Bdeb13u2/.
+
+---
+
+Memgraph
+  A commercial / source-available (Business Source License 1.1) graph database
+  by Memgraph Ltd. NOT included in this repository. Users who follow the local
+  development setup pull the container image themselves and use it under
+  license terms from Memgraph. Used for local development only — the deployed
+  application uses Amazon Neptune Analytics.
+  Source: https://memgraph.com
+
+---
+
+Strands Agents
+  Copyright Amazon.com, Inc. or its affiliates.
+  Licensed under the Apache License, Version 2.0
+  Source: https://github.com/strands-agents/sdk-python
+
+---
+
+pg8000 1.31.6
+  A Python dependency (pure-Python PostgreSQL driver, under the sample's
+  pgdriver.py module), installed unmodified by pip from the lock files; not
+  vendored and not modified. The complete license is in THIRD_PARTY_LICENSES.
+  Copyright Mathieu Fenniak and Contributors to pg8000.
+  Licensed under the BSD 3-Clause License
+  Source: https://codeberg.org/tlocke/pg8000
+
+---
+
+scramp 1.5.0
+  A Python dependency of pg8000 (SCRAM authentication), installed unmodified
+  by pip from the lock files; not vendored and not modified. The complete
+  license is in THIRD_PARTY_LICENSES.
+  Copyright The Contributors.
+  Licensed under the MIT No Attribution License (MIT-0)
+  Source: https://codeberg.org/tlocke/scramp
+
+---
+
+asn1crypto 1.5.1
+  A Python dependency of scramp, installed unmodified by pip from the lock
+  files; not vendored and not modified. The complete license is in
+  THIRD_PARTY_LICENSES.
+  Copyright (c) 2015-2022 Will Bond.
+  Licensed under the MIT License
+  Source: https://github.com/wbond/asn1crypto
+
+---
+
+certifi 2026.10.23
+  A Python dependency (the Mozilla CA certificate bundle) installed unmodified
+  by pip from the lock files; not vendored and not modified. The HTTPS clients
+  of the app, the AgentCore runtime and the ERP dashboard use it.
+  Licensed under the Mozilla Public License 2.0 (MPL-2.0)
+  Source: https://github.com/certifi/python-certifi
+
+---
+
+node-opcua 2.187.32
+  An npm runtime dependency of the simulated OPC UA server
+  (highbyte/components/opc-server/, declared in its package.json and installed
+  at build time; not vendored as source). Only the first-party sources
+  (server.mjs, clock.mjs, server.sh) are included in this repository.
+  Copyright (c) Etienne Rossignon and node-opcua contributors.
+  Licensed under the MIT License
+  Source: https://github.com/node-opcua/node-opcua
+
+---
+
+AWS SDK for JavaScript v3: @aws-sdk/client-ssm 3.1088.0
+  An npm runtime dependency of the simulated OPC UA server
+  (highbyte/components/opc-server/, declared in its package.json and installed
+  at build time; not vendored as source). The server uses it to read the live
+  story clock's anchor from AWS Systems Manager Parameter Store. Transitive npm
+  dependencies are resolved at build time from that directory's
+  package-lock.json.
+  Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  Licensed under the Apache License, Version 2.0
+  Source: https://github.com/aws/aws-sdk-js-v3
+
+---
+
+Shop Floor Connectivity (SFC) v1.11.0
+  NOT included in this repository. The SFC container image build
+  (docker/sfc/Dockerfile) downloads the sfc-main, opcua, aws-sitewise-target
+  and aws-s3-tables-target release bundles from GitHub and checks each one
+  against a pinned SHA-512 checksum. Used by --sfc deploys and by the live
+  workshop story.
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  Licensed under the Apache License, Version 2.0
+  Source: https://github.com/awslabs/industrial-shopfloor-connect
+
+---
+
+Front-end library served from the application's own origin (not committed;
+no runtime CDN dependency). The Vite build copies it from the pinned chart.js
+npm package to /js/vendor/chart.umd.min.js; see
+agentic_digital_thread/frontend/public/js/vendor/README.md. Complete license
+text and copyright attribution are in THIRD_PARTY_LICENSES.
+  Chart.js                 4.5.1    MIT                    https://github.com/chartjs/Chart.js
+
+  Chart.js is served as a separate file because it is loaded by absolute
+  same-origin URL inside the SPA's sandboxed chart-rendering iframes.
+
+---
+
+React SPA direct runtime dependencies (declared with exact versions in
+agentic_digital_thread/frontend/package.json and consumed through the Vite build):
+  @popperjs/core          2.11.8   MIT                    https://github.com/floating-ui/floating-ui
+  @tanstack/react-query   5.101.2  MIT                    https://github.com/TanStack/query
+  chart.js                4.5.1    MIT                    https://github.com/chartjs/Chart.js
+  cytoscape               3.34.0   MIT                    https://github.com/cytoscape/cytoscape.js
+  cytoscape-cola          2.5.1    MIT                    https://github.com/cytoscape/cytoscape.js-cola
+  cytoscape-popper        2.0.0    MIT                    https://github.com/cytoscape/cytoscape.js-popper
+  dompurify (SPA)         3.4.17   Apache-2.0 OR MPL-2.0  https://github.com/cure53/DOMPurify
+  marked                  15.0.12  MIT                    https://github.com/markedjs/marked
+  react                   18.3.1   MIT                    https://github.com/facebook/react
+  react-dom               18.3.1   MIT                    https://github.com/facebook/react
+  react-markdown          10.1.0   MIT                    https://github.com/remarkjs/react-markdown
+  remark-gfm              4.0.1    MIT                    https://github.com/remarkjs/remark-gfm
+  tippy.js                6.3.7    MIT                    https://github.com/atomiks/tippyjs
+  webcola                 3.4.0    MIT                    https://github.com/tgdwyer/WebCola
+
+  DOMPurify is dual-licensed under Apache-2.0 OR MPL-2.0; this distribution
+  elects Apache-2.0. Transitive npm dependencies are resolved at customer build
+  time from agentic_digital_thread/frontend/package-lock.json. The complete
+  Chart.js license is in THIRD_PARTY_LICENSES; npm packages retain their
+  license files when installed from the lockfile.
+
+---
+
+Web fonts (npm packages, declared with exact versions in
+agentic_digital_thread/frontend/package.json; the Vite build copies the latin
+and latin-ext woff2 files into dist/assets/, served from the application's own
+origin; not committed to this repository):
+  @fontsource/ibm-plex-mono    5.3.0  OFL-1.1  https://github.com/IBM/plex
+  @fontsource-variable/outfit  5.3.0  OFL-1.1  https://github.com/Outfitio/Outfit-Fonts
+
+  IBM Plex Mono: Copyright 2017 IBM Corp. All rights reserved.
+  Outfit: Copyright 2021 The Outfit Project Authors
+  (https://github.com/Outfitio/Outfit-Fonts)
+  The per-file copyright lines of each package are reproduced in
+  THIRD_PARTY_LICENSES.
+  Both are licensed under the SIL Open Font License 1.1; the complete text is
+  in THIRD_PARTY_LICENSES.

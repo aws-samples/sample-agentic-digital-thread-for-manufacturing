@@ -1,0 +1,407 @@
+{
+ "card, over-cap probe": {
+  "queries": [
+   "SELECT column_name, data_type, extra_info FROM information_schema.columns WHERE table_schema = 'lake_db' AND table_name = 'events' ORDER BY ordinal_position LIMIT 500",
+   "SELECT f AS field, sum(file_size_in_bytes) AS bytes FROM \"lake_db\".\"events$files\" CROSS JOIN UNNEST(regexp_extract_all(file_path, '/([A-Za-z_][A-Za-z0-9_]*)=[^/]*', 1)) AS u (f) GROUP BY f LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0 FROM (SELECT (content <> 0 OR ((NOT regexp_like(coalesce(element_at(upper_bounds, 6), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(upper_bounds, 6), 1, 10) >= '2026-09-04') AND (NOT regexp_like(coalesce(element_at(lower_bounds, 6), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(lower_bounds, 6), 1, 10) <= '2026-09-26'))) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 1), file_size_in_bytes / 7) + coalesce(element_at(column_sizes, 2), file_size_in_bytes / 7) + coalesce(element_at(column_sizes, 6), file_size_in_bytes / 7) + 16384 END) AS est, (0) AS x0, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4 LIMIT 20001",
+   "SELECT site, COUNT(*) AS n FROM events FOR VERSION AS OF 4242 WHERE \"created\" >= TIMESTAMP '2026-09-24 00:00:00' AND (state = 'DONE' AND created >= TIMESTAMP '2026-09-05 00:00:00' AND created < TIMESTAMP '2026-09-25 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 2001",
+   "SELECT site, COUNT(*) AS n FROM events FOR VERSION AS OF 4242 WHERE (\"created\" < TIMESTAMP '2026-09-15 00:00:00' OR \"created\" IS NULL) AND (state = 'DONE' AND created >= TIMESTAMP '2026-09-05 00:00:00' AND created < TIMESTAMP '2026-09-25 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 2001",
+   "SELECT site, COUNT(*) AS n FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-15 00:00:00' AND \"created\" < TIMESTAMP '2026-09-24 00:00:00') AND (state = 'DONE' AND created >= TIMESTAMP '2026-09-05 00:00:00' AND created < TIMESTAMP '2026-09-25 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 2001",
+   "SELECT site, COUNT(*) AS n FROM events WHERE state = 'DONE' AND created >= TIMESTAMP '2026-09-05 00:00:00' AND created < TIMESTAMP '2026-09-25 00:00:00' GROUP BY site ORDER BY n DESC LIMIT 500",
+   "SELECT snapshot_id FROM \"lake_db\".\"events$snapshots\" ORDER BY committed_at DESC LIMIT 1"
+  ],
+  "result": {
+   "columns": [
+    "site",
+    "n"
+   ],
+   "exact_split": {
+    "applied": true,
+    "atomic": true,
+    "calibration": 0.322,
+    "exact": true,
+    "first_plan_over_cap": true,
+    "group_cap": 2000,
+    "groups": 4,
+    "groups_shown": 4,
+    "ordered": true,
+    "partition_column": "created",
+    "pieces": 3,
+    "plan_fraction": 0.9,
+    "query_ids": 3,
+    "ranges": [
+     "created before 2026-09-15 or null",
+     "created 2026-09-15 to 2026-09-24",
+     "created from 2026-09-24"
+    ],
+    "refused_pieces": 0,
+    "retried_pieces": 0,
+    "row_counts": [
+     4,
+     4,
+     4
+    ],
+    "scanned_bytes": [
+     6000000,
+     5370000,
+     630000
+    ],
+    "snapshot_id": 4242,
+    "snapshot_pinned": true,
+    "split_columns": [
+     "created"
+    ],
+    "table": "events",
+    "timed_out_attempt_bytes": 0,
+    "total_scanned_bytes": 18003001
+   },
+   "note": "Computed from 3 partition pieces of events split on created at table snapshot 4242, because the whole query is over the per-query scan limit. This is ONE result: use its rows as they are and do not add them to other results.",
+   "row_count": 4,
+   "rows": [
+    [
+     "site-a",
+     "35"
+    ],
+    [
+     "site-b",
+     "34"
+    ],
+    [
+     "site-c",
+     "32"
+    ],
+    [
+     null,
+     "32"
+    ]
+   ],
+   "scanned_bytes": 18003001
+  },
+  "split_clock_seconds": 19.5
+ },
+ "count": {
+  "queries": [
+   "SELECT COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE \"completed\" >= TIMESTAMP '2026-09-17 00:00:00' AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-10 00:00:00' AND completed < TIMESTAMP '2026-09-20 00:00:00') LIMIT 500",
+   "SELECT COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" < TIMESTAMP '2026-09-13 00:00:00' OR \"completed\" IS NULL) AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-10 00:00:00' AND completed < TIMESTAMP '2026-09-20 00:00:00') LIMIT 500",
+   "SELECT COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-13 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-17 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-10 00:00:00' AND completed < TIMESTAMP '2026-09-20 00:00:00') LIMIT 500",
+   "SELECT COUNT(*) FROM events WHERE state = 'DONE' AND completed >= TIMESTAMP '2026-09-10 00:00:00' AND completed < TIMESTAMP '2026-09-20 00:00:00' LIMIT 500",
+   "SELECT column_name, data_type, extra_info FROM information_schema.columns WHERE table_schema = 'lake_db' AND table_name = 'events' ORDER BY ordinal_position LIMIT 500",
+   "SELECT f AS field, sum(file_size_in_bytes) AS bytes FROM \"lake_db\".\"events$files\" CROSS JOIN UNNEST(regexp_extract_all(file_path, '/([A-Za-z_][A-Za-z0-9_]*)=[^/]*', 1)) AS u (f) GROUP BY f LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, CASE WHEN m THEN e0lo END AS e0lo, CASE WHEN m THEN e0hi END AS e0hi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, max(n0) AS n0, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0, sum(CASE WHEN m THEN x1 ELSE 0 END) AS x1 FROM (SELECT (content <> 0 OR ((NOT regexp_like(coalesce(element_at(upper_bounds, 7), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(upper_bounds, 7), 1, 10) >= '2026-09-09') AND (NOT regexp_like(coalesce(element_at(lower_bounds, 7), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(lower_bounds, 7), 1, 10) <= '2026-09-21'))) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, CASE WHEN content = 0 THEN greatest(substr(element_at(lower_bounds, 7), 1, 10), '2026-09-09') END AS e0lo, CASE WHEN content = 0 THEN least(substr(element_at(upper_bounds, 7), 1, 10), '2026-09-21') END AS e0hi, CASE WHEN content = 0 THEN element_at(upper_bounds, 7) END AS n0, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 2), file_size_in_bytes / 7) + coalesce(element_at(column_sizes, 7), file_size_in_bytes / 7) + 16384 END) AS est, (CASE WHEN content <> 0 THEN 0 ELSE coalesce(element_at(column_sizes, 6), file_size_in_bytes / 7) END) AS x0, (0) AS x1, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4, 5, 6 LIMIT 20001",
+   "SELECT snapshot_id FROM \"lake_db\".\"events$snapshots\" ORDER BY committed_at DESC LIMIT 1"
+  ],
+  "result": {
+   "columns": [
+    "COUNT(*)"
+   ],
+   "exact_split": {
+    "applied": true,
+    "atomic": true,
+    "calibration": 1.336,
+    "exact": true,
+    "groups": 1,
+    "groups_shown": 1,
+    "newest_in_file_statistics": {
+     "completed": "2026-10-02T01:29:00"
+    },
+    "partition_column": "created",
+    "pieces": 3,
+    "plan_fraction": 0.6,
+    "query_ids": 3,
+    "ranges": [
+     "completed before 2026-09-13 or null",
+     "completed 2026-09-13 to 2026-09-17",
+     "completed from 2026-09-17"
+    ],
+    "refused_pieces": 0,
+    "retried_pieces": 0,
+    "row_counts": [
+     1,
+     1,
+     1
+    ],
+    "scanned_bytes": [
+     1720000,
+     2100000,
+     1680000
+    ],
+    "snapshot_id": 4242,
+    "snapshot_pinned": true,
+    "split_columns": [
+     "created",
+     "completed"
+    ],
+    "table": "events",
+    "timed_out_attempt_bytes": 0,
+    "total_scanned_bytes": 8503001
+   },
+   "note": "Computed from 3 partition pieces of events split on created and completed at table snapshot 4242, because the whole query is over the per-query scan limit. This is ONE result: use its rows as they are and do not add them to other results.",
+   "row_count": 1,
+   "rows": [
+    [
+     "70"
+    ]
+   ],
+   "scanned_bytes": 8503001
+  }
+ },
+ "or of states": {
+  "queries": [
+   "SELECT column_name, data_type, extra_info FROM information_schema.columns WHERE table_schema = 'lake_db' AND table_name = 'events' ORDER BY ordinal_position LIMIT 500",
+   "SELECT f AS field, sum(file_size_in_bytes) AS bytes FROM \"lake_db\".\"events$files\" CROSS JOIN UNNEST(regexp_extract_all(file_path, '/([A-Za-z_][A-Za-z0-9_]*)=[^/]*', 1)) AS u (f) GROUP BY f LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0 FROM (SELECT (content <> 0 OR (TRUE)) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 1), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 2), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 3), file_size_in_bytes / 6) + 16384 END) AS est, (CASE WHEN content <> 0 THEN 0 ELSE coalesce(element_at(column_sizes, 6), file_size_in_bytes / 6) END) AS x0, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4 LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0 FROM (SELECT (content <> 0 OR (TRUE)) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 1), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 2), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 4), file_size_in_bytes / 6) + 16384 END) AS est, (CASE WHEN content <> 0 THEN 0 ELSE coalesce(element_at(column_sizes, 6), file_size_in_bytes / 6) END) AS x0, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4 LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0 FROM (SELECT (content <> 0 OR (TRUE)) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 1), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 2), file_size_in_bytes / 6) + coalesce(element_at(column_sizes, 5), file_size_in_bytes / 6) + 16384 END) AS est, (CASE WHEN content <> 0 THEN 0 ELSE coalesce(element_at(column_sizes, 6), file_size_in_bytes / 6) END) AS x0, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4 LIMIT 20001",
+   "SELECT snapshot_id FROM \"lake_db\".\"events$snapshots\" ORDER BY committed_at DESC LIMIT 1",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE \"created\" >= TIMESTAMP '2026-09-15 00:00:00' AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE \"created\" >= TIMESTAMP '2026-09-15 00:00:00' AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE \"created\" >= TIMESTAMP '2026-09-15 00:00:00' AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" < TIMESTAMP '2026-09-03 00:00:00' OR \"created\" IS NULL) AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" < TIMESTAMP '2026-09-03 00:00:00' OR \"created\" IS NULL) AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" < TIMESTAMP '2026-09-03 00:00:00' OR \"created\" IS NULL) AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-06 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-06 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-06 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-08 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-08 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-08 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-08 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-08 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-08 00:00:00' AND \"created\" < TIMESTAMP '2026-09-10 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-10 00:00:00' AND \"created\" < TIMESTAMP '2026-09-15 00:00:00') AND ((site = 'SITE-A') AND (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-10 00:00:00' AND \"created\" < TIMESTAMP '2026-09-15 00:00:00') AND ((site = 'SITE-A') AND (state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events FOR VERSION AS OF 4242 WHERE (\"created\" >= TIMESTAMP '2026-09-10 00:00:00' AND \"created\" < TIMESTAMP '2026-09-15 00:00:00') AND ((site = 'SITE-A') AND (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 20001",
+   "SELECT state, COUNT(*) FROM events WHERE site = 'SITE-A' AND ((state = 'DONE' AND done_at >= TIMESTAMP '2026-09-04 00:00:00' AND done_at < TIMESTAMP '2026-09-12 00:00:00') OR (state = 'FAILED' AND failed_at >= TIMESTAMP '2026-09-04 00:00:00' AND failed_at < TIMESTAMP '2026-09-12 00:00:00') OR (state = 'BEGUN' AND begun_at >= TIMESTAMP '2026-09-04 00:00:00' AND begun_at < TIMESTAMP '2026-09-12 00:00:00')) GROUP BY state LIMIT 500"
+  ],
+  "result": {
+   "columns": [
+    "state",
+    "COUNT(*)"
+   ],
+   "exact_split": {
+    "applied": true,
+    "atomic": true,
+    "branch_queries": 3,
+    "branches": 3,
+    "exact": true,
+    "group_cap": 20000,
+    "groups": 3,
+    "groups_shown": 3,
+    "ordered": false,
+    "partition_column": "created",
+    "pieces": 24,
+    "query_ids": 18,
+    "ranges": [
+     "created before 2026-09-03 or null",
+     "created 2026-09-03 to 2026-09-06",
+     "created 2026-09-06 to 2026-09-08",
+     "created 2026-09-08 to 2026-09-10",
+     "created 2026-09-10 to 2026-09-15",
+     "created from 2026-09-15",
+     "created before 2026-09-03 or null",
+     "created 2026-09-03 to 2026-09-06",
+     "created 2026-09-06 to 2026-09-08",
+     "created 2026-09-08 to 2026-09-10",
+     "created 2026-09-10 to 2026-09-15",
+     "created from 2026-09-15",
+     "created before 2026-09-03 or null",
+     "created 2026-09-03 to 2026-09-06",
+     "created 2026-09-06 to 2026-09-08",
+     "created 2026-09-08 to 2026-09-10",
+     "created 2026-09-10 to 2026-09-15",
+     "created from 2026-09-15"
+    ],
+    "refused_pieces": 6,
+    "retried_pieces": 0,
+    "row_counts": [
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     1,
+     0
+    ],
+    "scanned_bytes": [
+     0,
+     1119936,
+     1119936,
+     1119936,
+     1119936,
+     0,
+     0,
+     1119936,
+     1119936,
+     1119936,
+     1119936,
+     0,
+     0,
+     1119936,
+     1119936,
+     1119936,
+     1119936,
+     0
+    ],
+    "snapshot_id": 4242,
+    "snapshot_pinned": true,
+    "split_columns": [
+     "created"
+    ],
+    "table": "events",
+    "timed_out_attempt_bytes": 0,
+    "total_scanned_bytes": 23944239
+   },
+   "note": "Computed from 24 partition pieces across 3 branch queries of events split on created at table snapshot 4242, because the whole query is over the per-query scan limit, and its states are combined from per-state branches. This is ONE result: use its rows as they are and do not add them to other results.",
+   "row_count": 3,
+   "rows": [
+    [
+     "DONE",
+     "16"
+    ],
+    [
+     "FAILED",
+     "16"
+    ],
+    [
+     "BEGUN",
+     "16"
+    ]
+   ],
+   "scanned_bytes": 23944239
+  }
+ },
+ "over-cap probe": {
+  "queries": [
+   "SELECT column_name, data_type, extra_info FROM information_schema.columns WHERE table_schema = 'lake_db' AND table_name = 'events' ORDER BY ordinal_position LIMIT 500",
+   "SELECT f AS field, sum(file_size_in_bytes) AS bytes FROM \"lake_db\".\"events$files\" CROSS JOIN UNNEST(regexp_extract_all(file_path, '/([A-Za-z_][A-Za-z0-9_]*)=[^/]*', 1)) AS u (f) GROUP BY f LIMIT 20001",
+   "SELECT m, CASE WHEN m THEN pv END AS pv, CASE WHEN m AND pv IS NULL THEN plo END AS plo, CASE WHEN m AND pv IS NULL THEN phi END AS phi, CASE WHEN m THEN e0lo END AS e0lo, CASE WHEN m THEN e0hi END AS e0hi, count(*) AS files, sum(CASE WHEN m THEN est ELSE 0 END) AS match_bytes, sum(fbytes) AS file_bytes, max(n0) AS n0, sum(CASE WHEN m THEN x0 ELSE 0 END) AS x0, sum(CASE WHEN m THEN x1 ELSE 0 END) AS x1 FROM (SELECT (content <> 0 OR ((NOT regexp_like(coalesce(element_at(upper_bounds, 7), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(upper_bounds, 7), 1, 10) >= '2026-09-01') AND (NOT regexp_like(coalesce(element_at(lower_bounds, 7), ''), '^[0-9]{4}-[0-9]{2}-[0-9]{2}') OR substr(element_at(lower_bounds, 7), 1, 10) <= '2026-09-30'))) AS m, regexp_extract(file_path, '/created_day=([^/]*)/', 1) AS pv, CASE WHEN content = 0 THEN substr(element_at(lower_bounds, 6), 1, 10) END AS plo, CASE WHEN content = 0 THEN substr(element_at(upper_bounds, 6), 1, 10) END AS phi, CASE WHEN content = 0 THEN greatest(substr(element_at(lower_bounds, 7), 1, 10), '2026-09-01') END AS e0lo, CASE WHEN content = 0 THEN least(substr(element_at(upper_bounds, 7), 1, 10), '2026-09-30') END AS e0hi, CASE WHEN content = 0 THEN element_at(upper_bounds, 7) END AS n0, (CASE WHEN content <> 0 THEN file_size_in_bytes ELSE coalesce(element_at(column_sizes, 1), file_size_in_bytes / 7) + coalesce(element_at(column_sizes, 2), file_size_in_bytes / 7) + coalesce(element_at(column_sizes, 7), file_size_in_bytes / 7) + 16384 END) AS est, (CASE WHEN content <> 0 THEN 0 ELSE coalesce(element_at(column_sizes, 6), file_size_in_bytes / 7) END) AS x0, (0) AS x1, file_size_in_bytes AS fbytes FROM \"lake_db\".\"events$files\") GROUP BY 1, 2, 3, 4, 5, 6 LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE \"completed\" >= TIMESTAMP '2026-09-27 00:00:00' AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE \"created\" >= TIMESTAMP '2026-09-03 00:00:00' AND (\"completed\" < TIMESTAMP '2026-09-06 00:00:00' OR \"completed\" IS NULL) AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-06 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-10 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-10 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-13 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-13 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-17 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-17 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-21 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-21 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-24 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"completed\" >= TIMESTAMP '2026-09-24 00:00:00' AND \"completed\" < TIMESTAMP '2026-09-27 00:00:00') AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events FOR VERSION AS OF 4242 WHERE (\"created\" < TIMESTAMP '2026-09-03 00:00:00' OR \"created\" IS NULL) AND (\"completed\" < TIMESTAMP '2026-09-06 00:00:00' OR \"completed\" IS NULL) AND (state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00') GROUP BY site ORDER BY n DESC LIMIT 20001",
+   "SELECT site, COUNT(*) AS n, MIN(completed) AS first_done, MAX(completed) AS last_done FROM events WHERE state = 'DONE' AND completed >= TIMESTAMP '2026-09-02 00:00:00' AND completed < TIMESTAMP '2026-09-29 00:00:00' GROUP BY site ORDER BY n DESC LIMIT 200",
+   "SELECT snapshot_id FROM \"lake_db\".\"events$snapshots\" ORDER BY committed_at DESC LIMIT 1"
+  ],
+  "result": {
+   "columns": [
+    "site",
+    "n",
+    "first_done",
+    "last_done"
+   ],
+   "exact_split": {
+    "applied": true,
+    "atomic": true,
+    "calibration": 0.482,
+    "exact": true,
+    "first_plan_over_cap": true,
+    "group_cap": 20000,
+    "groups": 4,
+    "groups_shown": 4,
+    "newest_in_file_statistics": {
+     "completed": "2026-10-02T01:29:00"
+    },
+    "ordered": true,
+    "partition_column": "created",
+    "pieces": 9,
+    "plan_fraction": 0.9,
+    "query_ids": 9,
+    "ranges": [
+     "created before 2026-09-03 or null; completed before 2026-09-06 or null",
+     "completed 2026-09-06 to 2026-09-10",
+     "completed 2026-09-10 to 2026-09-13",
+     "completed 2026-09-13 to 2026-09-17",
+     "completed 2026-09-17 to 2026-09-21",
+     "completed 2026-09-21 to 2026-09-24",
+     "completed 2026-09-24 to 2026-09-27",
+     "completed from 2026-09-27",
+     "created from 2026-09-03; completed before 2026-09-06 or null"
+    ],
+    "refused_pieces": 0,
+    "retried_pieces": 0,
+    "row_counts": [
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4,
+     4
+    ],
+    "scanned_bytes": [
+     1720000,
+     3450000,
+     2580000,
+     3150000,
+     3180000,
+     2550000,
+     2610000,
+     1890000,
+     2520000
+    ],
+    "snapshot_id": 4242,
+    "snapshot_pinned": true,
+    "split_columns": [
+     "created",
+     "completed"
+    ],
+    "table": "events",
+    "timed_out_attempt_bytes": 0,
+    "total_scanned_bytes": 27653001
+   },
+   "note": "Computed from 9 partition pieces of events split on created and completed at table snapshot 4242, because the whole query is over the per-query scan limit. This is ONE result: use its rows as they are and do not add them to other results.",
+   "row_count": 4,
+   "rows": [
+    [
+     "site-b",
+     "54",
+     "2026-09-02 00:00:00",
+     "2026-09-28 17:06:00"
+    ],
+    [
+     null,
+     "47",
+     "2026-09-02 10:15:00",
+     "2026-09-28 11:24:00"
+    ],
+    [
+     "site-c",
+     "45",
+     "2026-09-03 14:05:00",
+     "2026-09-28 22:51:00"
+    ],
+    [
+     "site-a",
+     "42",
+     "2026-09-03 19:47:00",
+     "2026-09-28 12:10:00"
+    ]
+   ],
+   "scanned_bytes": 27653001
+  }
+ }
+}

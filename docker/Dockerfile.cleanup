@@ -1,0 +1,32 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# Lambda Container Dockerfile for ERP Cleanup Lambda
+# This container cleans transactional data and resets inventory balances
+#
+# Build context should be the distribution package root
+# Usage: finch build -f docker/Dockerfile.cleanup -t erp-cleanup:latest .
+#
+# checkov:skip=CKV_DOCKER_2: AWS Lambda manages container health checks internally
+# checkov:skip=CKV_DOCKER_3: AWS Lambda runs containers as a managed sandbox user (sbx_user1051)
+
+# Digest-pinned (manifest list) for reproducible builds: the list the 3.11 tag served on 2026-10-12.
+# Move the digest forward to pick up base-image fixes.
+FROM public.ecr.aws/lambda/python:3.11@sha256:67d572c2eb30da5fdaa720bcdc56460cb4d1a54ef8c980c70eafc5f799cb1e96
+
+# Install the exact Python 3.11 ARM64 deployment lock; direct requirements remain
+# the human-maintained resolver input.
+COPY requirements/erp-simulation-py311-linux-arm64.lock /tmp/requirements.lock
+RUN pip install --no-cache-dir --require-hashes --only-binary=:all: \
+    -r /tmp/requirements.lock
+
+# Copy the erp_simulation module (includes database.py)
+COPY erp_simulation/ ${LAMBDA_TASK_ROOT}/erp_simulation/
+
+# Copy Lambda handler
+COPY lambda_/lambda_cleanup_old_data.py ${LAMBDA_TASK_ROOT}/
+
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Set the Lambda handler
+CMD ["lambda_cleanup_old_data.lambda_handler"]

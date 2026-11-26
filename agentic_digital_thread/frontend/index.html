@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Digital Thread</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<!-- Anti-flash: brand elements hidden until /api/branding resolves (ported from the legacy static index.html, removed 2026-07-31).
+     #root is transparent to layout: base.css styles body as the 100vh flex column
+     with header/.main/footer as direct children — display:contents preserves that. -->
+<style>#brand-logo,#brand-footer{visibility:hidden}#root{display:contents}</style>
+<!-- Apply saved theme before first paint to avoid a dark→light flash -->
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light')</script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main-app.tsx"></script>
+</body>
+</html>

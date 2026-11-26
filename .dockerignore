@@ -1,0 +1,31 @@
+# Build context for the four images built from the repository root:
+# docker/Dockerfile.lambda (ERP simulation and story history),
+# docker/Dockerfile.cleanup, docker/Dockerfile.seed and docker/Dockerfile.dashboard.
+# ALLOWLIST: everything is excluded except what those Dockerfiles COPY, so an
+# edit to any other file (app.py, cdk.json, docs, ...) leaves their image asset
+# hashes alone. A new COPY source needs a line here; the context tests in
+# tests/test_docker_context_hygiene.py fail until it has one.
+*
+!.dockerignore
+!docker/Dockerfile.cleanup
+!docker/Dockerfile.dashboard
+!docker/Dockerfile.lambda
+!docker/Dockerfile.seed
+!requirements/erp-dashboard-py311-linux-arm64.lock
+!requirements/erp-simulation-py311-linux-arm64.lock
+!erp_simulation/**
+!lambda-db-init/handler.py
+!lambda_/lambda_cleanup_old_data.py
+!lambda_/lambda_function.py
+!lambda_/lambda_seed_data.py
+!lambda_/lambda_story_history.py
+
+# Local residue inside the re-included trees. These come after the
+# re-includes so they still apply there.
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/.hypothesis/
+**/.DS_Store
+**/*.swp
+**/*.swo

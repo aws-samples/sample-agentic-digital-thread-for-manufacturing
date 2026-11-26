@@ -1,0 +1,2054 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 */
+/* Agentic Digital Thread — Dashboard Styles */
+
+  /* ── Defect Trace Timeline ─────────────────────────────────────────── */
+  .panel-section { margin-bottom: 1.5rem; }
+  .panel-title {
+    font-size: 0.8rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .panel-title .src-badge {
+    font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 3px;
+    background: var(--surface2); border: 1px solid var(--border2); color: var(--text2);
+  }
+  .trace-timeline {
+    display: flex; align-items: flex-start; gap: 0; overflow-x: auto;
+    padding: 0.5rem 0 1rem;
+  }
+  .trace-node {
+    display: flex; flex-direction: column; align-items: center; min-width: 130px;
+  }
+  .trace-dot {
+    width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border2);
+    background: var(--surface2); display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; z-index: 1; flex-shrink: 0;
+  }
+  .trace-dot.ok { border-color: var(--green); background: rgba(0,200,100,0.1); }
+  .trace-dot.warn { border-color: var(--amber); background: rgba(255,180,0,0.1); }
+  .trace-dot.fail { border-color: var(--red); background: rgba(255,60,60,0.1); }
+  .trace-label { font-size: 0.72rem; text-align: center; margin-top: 0.4rem; color: var(--text); line-height: 1.3; }
+  .trace-sub { font-size: 0.65rem; color: var(--text2); text-align: center; margin-top: 0.15rem; }
+  .trace-connector {
+    flex: 1; height: 2px; background: var(--border2); margin-top: 15px; min-width: 20px;
+  }
+  .trace-connector.active { background: var(--accent); }
+
+  /* ── Sensor Heatmap ─────────────────────────────────────────────────── */
+  .heatmap-grid { display: grid; gap: 2px; }
+  .heatmap-header { font-size: 0.65rem; color: var(--text2); text-align: center; padding: 0.2rem; }
+  .heatmap-row-label { font-size: 0.7rem; color: var(--text2); display: flex; align-items: center; padding-right: 0.5rem; word-break: break-word; line-height: 1.3; }
+  .heatmap-cell {
+    height: 36px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; cursor: default;
+    transition: opacity 0.15s; position: relative;
+  }
+  .heatmap-cell:hover { opacity: 0.8; }
+  .heatmap-cell.ok { background: rgba(0,200,100,0.2); color: var(--green); border: 1px solid rgba(0,200,100,0.3); }
+  .heatmap-cell.warn { background: rgba(255,180,0,0.2); color: var(--amber); border: 1px solid rgba(255,180,0,0.3); }
+  .heatmap-cell.crit { background: rgba(255,60,60,0.25); color: var(--red); border: 1px solid rgba(255,60,60,0.3); }
+  .heatmap-cell.none { background: var(--surface2); color: var(--border2); border: 1px solid var(--border); }
+
+  /* ── Quality Sparkline ──────────────────────────────────────────────── */
+  .sparkline-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .sparkline-row:last-child { border-bottom: none; }
+  .sparkline-meta { flex: 1; min-width: 0; }
+  .sparkline-param { font-size: 0.78rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sparkline-batch { font-size: 0.65rem; color: var(--text2); }
+  .sparkline-svg { flex-shrink: 0; }
+  .sparkline-result { font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; flex-shrink: 0; width: 40px; text-align: right; }
+
+  /* ── Cross-System Identity ──────────────────────────────────────────── */
+  .identity-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0; align-items: center; }
+  .identity-card {
+    background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
+    padding: 0.75rem; font-size: 0.75rem;
+  }
+  .identity-card-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text2); margin-bottom: 0.4rem; }
+  .identity-card-id { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 0.4rem; }
+  .identity-card-field { font-size: 0.7rem; color: var(--text2); line-height: 1.6; }
+  .identity-arrow { text-align: center; color: var(--accent); font-size: 1.2rem; padding: 0 0.5rem; }
+  .ai-insights { 
+    background: var(--surface2); 
+    border: 1px solid var(--border2); 
+    border-radius: 8px; 
+    padding: 1.25rem;
+  }
+  .ai-insights-title { 
+    font-size: 1rem; 
+    font-weight: 600; 
+    margin-bottom: 1rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 0.5rem;
+  }
+  .ai-insights-title svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
+  /* Briefing title tooltip */
+  .briefing-title-tooltip { position: relative; }
+  .briefing-title-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text2);
+    white-space: normal;
+    width: 320px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    line-height: 1.5;
+  }
+  .briefing-title-tooltip:hover::after { opacity: 1; }
+  /* Trace window */
+  #trace-window { flex-direction: column; }
+  .insight-item { 
+    margin-bottom: 0.75rem; 
+    padding: 0.75rem; 
+    background: var(--surface); 
+    border-radius: 6px; 
+    font-size: 0.85rem; 
+    line-height: 1.4;
+  }
+  .insight-item:last-child { margin-bottom: 0; }
+  .status-badge { 
+    padding: 0.25rem 0.5rem; 
+    border-radius: 4px; 
+    font-size: 0.7rem; 
+    font-weight: 500; 
+    text-transform: uppercase;
+  }
+  .status-delayed, .status-fail, .status-stopped { background: var(--red); color: white; }
+  .status-released, .status-scheduled, .status-running, .status-maintenance, .status-under_review { background: var(--amber); color: black; }
+  .status-completed, .status-pass, .status-operational, .status-active { background: var(--green); color: black; }
+
+  /* Architecture View */
+  #architecture-view { 
+    position: relative; 
+    background: var(--bg);
+    overflow: hidden;
+    height: 100%;
+    background-image: 
+      linear-gradient(rgba(0, 216, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 216, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  
+  .active-query {
+    position: absolute;
+    top: 3rem;
+    left: 1rem;
+    right: 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text2);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition:
+      opacity var(--motion-slow) var(--ease-standard),
+      transform var(--motion-slow) var(--ease-standard);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .active-query.visible { opacity: 1; transform: translateY(0); }
+  .active-query::before { content: '> '; color: var(--accent); }
+
+  /* Architecture tab bar */
+  .arch-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .arch-tabs-systems {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .arch-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard);
+  }
+  .arch-tab:hover { color: var(--text); }
+  .arch-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  /* Architecture in-view tab switches — the graph panes (#cy-map,
+     #cy-container, #cy-neptune) toggle display when .arch-tab changes; the
+     flip restarts this fade. HARD RULE: opacity ONLY under #architecture-view
+     (transformed ancestors break Cytoscape pointer math — see base.css). */
+  .arch-graph-pane {
+    animation: panel-fade-motion var(--motion-base) var(--ease-standard) both;
+  }
+  #cy-map {
+    flex: 1;
+    width: 65%;
+    height: 100%;
+    position: relative;
+  }
+  #cy-neptune {
+    flex: 1;
+    width: 65%;
+    height: 100%;
+    position: relative;
+  }
+
+  .arch-split {
+    position: absolute;
+    top: 3rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+  }
+  #reasoning-trace.hidden {
+    display: none;
+  }
+  #cy-container {
+    flex: 1;
+    width: 65%;
+    height: 100%;
+    position: relative;
+  }
+  .arch-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .arch-empty-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .arch-empty-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-width: 320px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .arch-legend {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    gap: 0.75rem;
+    z-index: 5;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1.5px solid;
+  }
+  /* Swatch COLORS are set inline from the exported node palette (colors.ts
+     invPalette, rendered by Legends.tsx) — single source with the graph node
+     fills. The per-type classes carry SHAPE only. */
+  .legend-swatch.entity { border-radius: 50%; border-style: dashed; }
+  .legend-swatch.finding { border-radius: 2px; clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%); border: none; }
+  /* Tippy tooltip theme */
+  .tippy-box[data-theme~='cyto'] { background: var(--surface); color: var(--text2); border: 1px solid var(--border); font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; line-height: 1.4; }
+  .tippy-box[data-theme~='cyto'] .tippy-arrow { color: var(--surface); }
+  /* The investigation graph's plain-text tooltip: one line per content line. */
+  .tippy-box[data-theme~='cyto-lines'] .tippy-content { white-space: pre-line; }
+
+  .arch-empty-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    opacity: 0.6;
+    margin-top: 0.5rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  #reasoning-trace {
+    flex: 0 0 35%;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0.75rem 0.5rem;
+  }
+  #kg-explorer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 35%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    border-left: 1px solid var(--border);
+    background: var(--bg);
+    z-index: 6;
+  }
+  #kg-explorer-panel.hidden {
+    display: none;
+  }
+  .kg-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .kg-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 0.2rem 0.3rem;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .kg-checkbox-item:hover {
+    background: var(--surface2);
+  }
+  .kg-checkbox-item input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+  .kg-checkbox-item span {
+    user-select: none;
+  }
+  .kg-checkbox-sm .kg-checkbox-item {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.2rem;
+  }
+  .kg-checkbox-sm .kg-checkbox-item input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+  }
+  /* Graph Explorer view-scoped legend (KgTypeLegend): live count badge per
+     type; zero-count rows stay rendered but muted. */
+  .kg-type-count {
+    margin-left: auto;
+    font-size: 0.65rem;
+    color: var(--muted);
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 0 0.35rem;
+    min-width: 1.2rem;
+    text-align: center;
+  }
+  .kg-checkbox-item.kg-type-muted { opacity: 0.45; }
+  /* A node label the overview leaves out on purpose: its real count, marked. */
+  .kg-type-note {
+    font-size: 0.65rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  /* View-state breadcrumb (KgViewBreadcrumb): filtered overview vs
+     neighborhood-of-node, with the one-click return. */
+  .kg-view-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .kg-breadcrumb-back {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+  .kg-breadcrumb-back:hover { color: var(--accent); border-color: var(--accent); }
+  .kg-node-search { margin-bottom: 0.75rem; }
+  .kg-node-search-input {
+    width: 100%; box-sizing: border-box; font-size: 0.78rem; padding: 0.3rem 0.5rem;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text); font-family: inherit;
+  }
+  .kg-node-search-hits { list-style: none; margin: 0.3rem 0 0; padding: 0; max-height: 11rem; overflow-y: auto; }
+  .kg-node-search-hits button {
+    width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+    color: var(--text2); font-size: 0.78rem; padding: 0.2rem 0.3rem; border-radius: 3px;
+    font-family: inherit;
+  }
+  .kg-node-search-hits button:hover { background: var(--surface2); color: var(--text); }
+  .kg-node-search-type { color: var(--muted); font-size: 0.68rem; margin-left: 0.35rem; }
+  .kg-node-search-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+  .trace-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding: 0 0 0.5rem;
+    padding-top: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    border-left: 2px solid var(--border);
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 2;
+  }
+  #trace-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .trace-entry {
+    position: relative;
+    padding: 0.6rem 0.75rem 0.6rem 1.5rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--text2);
+    border-left: 2px solid var(--border);
+    margin-left: 0.5rem;
+    animation: trace-slide-in 0.3s ease-out;
+  }
+  @keyframes trace-slide-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .trace-entry::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 0.85rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .trace-entry.decision { color: var(--text); }
+  .trace-entry.decision::before { background: var(--green); box-shadow: 0 0 6px rgba(63,185,80,0.4); }
+  .trace-entry.discovery { color: var(--text2); }
+  .trace-entry.discovery::before { background: var(--amber); box-shadow: 0 0 6px rgba(210,153,34,0.4); }
+  /* Honest completed-call outcomes (HUD/trace honesty): a FAILED call gets
+     the red error dot; an EMPTY (no-data) call gets a hollow amber ring;
+     a TIMEOUT ("request timed out") gets the red dot too; a PARTIAL
+     (budget stop, data present but incomplete) gets a half-filled amber dot. */
+  .trace-entry.failed::before { background: var(--red); box-shadow: 0 0 6px rgba(248,81,73,0.5); }
+  /* WHY a row is failed/empty/partial (classifyToolResultDetailed reason). */
+  .trace-outcome-reason {
+    margin-top: 0.3rem; font-size: 0.68rem; line-height: 1.35;
+    color: var(--muted); font-style: italic;
+  }
+  .trace-entry.failed .trace-outcome-reason,
+  .trace-entry.timeout .trace-outcome-reason { color: var(--red); }
+  .trace-entry.timeout::before { background: var(--red); box-shadow: 0 0 6px rgba(248,81,73,0.5); }
+  .trace-entry.empty::before {
+    background: transparent;
+    border: 2px solid var(--amber);
+    box-sizing: border-box;
+    box-shadow: none;
+  }
+  .trace-entry.partial::before {
+    background: linear-gradient(90deg, var(--amber) 50%, transparent 50%);
+    border: 2px solid var(--amber);
+    box-sizing: border-box;
+    box-shadow: none;
+  }
+  /* Cross-surface correlation: rows that report a completed call are
+     clickable; the selected call's row keeps a persistent accent tint
+     (distinct from the transient .highlighted graph-click flash). */
+  .trace-entry.has-call { cursor: pointer; }
+  .trace-entry.correlated {
+    background: rgba(0,216,255,0.08);
+    border-left-color: var(--accent);
+  }
+  .trace-retry-badge {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0 0.3rem;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(210,153,34,0.5);
+    border-radius: 3px;
+    vertical-align: middle;
+  }
+  .trace-entry.system::before { background: var(--amber); box-shadow: 0 0 6px rgba(210,153,34,0.4); }
+  .trace-entry.highlighted { background: rgba(0,216,255,0.08); border-left-color: var(--accent); transition: background 0.3s; }
+  .trace-entry .trace-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+  /* Trace body: default capped height + scroll; .expanded lifts the cap so a
+     long/tabular trace (whose sticky header can otherwise fill the whole cap)
+     can be read in full via the caret toggle, then collapsed back. */
+  .trace-body {
+    word-break: break-word;
+    max-height: 120px;
+    overflow-y: auto;
+    transition: max-height var(--motion-fast) var(--ease-standard);
+  }
+  .trace-body.expanded { overflow-y: visible; }
+  /* Cap table font-size so wide rendered tables fit the trace column better. */
+  .trace-md table { font-size: 0.82em; }
+  .trace-md th, .trace-md td { padding: 0.15rem 0.35rem; }
+  .trace-expand-toggle {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    line-height: 1;
+    padding: 0 0.2rem;
+  }
+  .trace-expand-toggle:hover { color: var(--accent); }
+  .trace-expand-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  /* Muted marker shown under a partial answer when the user clicks Stop. */
+  .response-canceled {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+  .trace-entry.decision .trace-label { color: var(--green); }
+  .trace-entry.discovery .trace-label { color: var(--amber); }
+  .trace-entry.system .trace-label { color: var(--amber); }
+
+  /* Chat Sidebar */
+  .chat-header { 
+    padding: 0.75rem 1rem; 
+    border-bottom: 1px solid var(--border); 
+    font-weight: 500; 
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+  /* Top row: [popout · Orchestrator title] on the left, actions on the right. */
+  .chat-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .chat-header-title { display: flex; align-items: center; gap: 0.5rem; }
+  /* Investigation tracking button — beside the chat title whenever the
+     conversation session is active (streaming, or session id + a non-empty
+     thread — InvestigationTrackButton.tsx). The pulse is a plain CSS
+     animation, so the universal prefers-reduced-motion kill in base.css
+     neutralizes it. */
+  .inv-track-btn {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    border-radius: 4px; padding: 0.15rem 0.4rem; cursor: pointer;
+    display: inline-flex; align-items: center;
+  }
+  .inv-track-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .inv-track-btn.streaming { animation: inv-track-pulse 2s ease-in-out infinite; }
+  @keyframes inv-track-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .chat-header-actions { display: flex; gap: 0.4rem; align-items: center; }
+
+  /* Expand-answer affordance — bottom of the thread scroll flow (inside
+     #messages, so it never shifts or overlaps the composer). Explicit
+     replacement for the retired end-of-turn modal auto-open. */
+  .expand-answer-row { display: flex; justify-content: center; padding: 0.4rem 0 0.15rem; }
+  .expand-answer-btn {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    border-radius: 999px; padding: 0.3rem 0.75rem; font-size: 0.75rem;
+    font-family: inherit; line-height: 1; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .expand-answer-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .expand-answer-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Keyboard-navigable session menu ('+ New' trigger + dropdown) */
+  .session-menu-wrap { position: relative; }
+  .session-menu-trigger {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    padding: 0.35rem 0.7rem; border-radius: 5px; font-size: 0.8rem; font-weight: 600;
+    line-height: 1; cursor: pointer; display: inline-flex; align-items: center;
+    gap: 0.3rem; transition: color 0.15s, border-color 0.15s;
+  }
+  .session-menu-trigger:hover,
+  .session-menu-trigger:focus-visible,
+  .session-menu-trigger[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+  .session-menu-caret { font-size: 0.6rem; opacity: 0.8; }
+  .session-menu {
+    position: absolute; top: calc(100% + 4px); right: 0; z-index: 1000;
+    min-width: 240px; max-width: 320px; max-height: 60vh; overflow-y: auto;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45); padding: 0.35rem; outline: none;
+  }
+  .session-menu[hidden] { display: none; }
+  .session-menu-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    width: 100%; text-align: left; background: none; border: none; color: var(--text);
+    font-family: inherit; font-size: 0.8rem; padding: 0.5rem 0.6rem; border-radius: 5px;
+    cursor: pointer; line-height: 1.2;
+  }
+  .session-menu-item--new { font-weight: 600; }
+  .session-menu-item.active { background: var(--accent); color: var(--bg); }
+  .session-menu-item.active .session-menu-item-time { color: var(--bg); opacity: 0.85; }
+  .session-menu-item-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .session-menu-item-time { font-size: 0.68rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .session-menu-divider { height: 1px; background: var(--border); margin: 0.35rem 0.2rem; }
+  .session-menu-label {
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); padding: 0.3rem 0.6rem 0.2rem;
+  }
+  .session-menu-muted { font-size: 0.75rem; color: var(--muted); padding: 0.4rem 0.6rem; font-style: italic; }
+  .chat-popout-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer;
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-fast) var(--ease-standard);
+    line-height: 1;
+  }
+  .chat-popout-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* Loading indicator */
+  .loading-indicator {
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .loading-indicator.active { display: flex; }
+  .loading-dots span {
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: dot-bounce 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* Tool activity HUD (overlays the architecture graph). No z-index / max-width —
+     it flows above the canvas and sizes to its content. */
+  .tool-hud {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    pointer-events: none;
+    align-items: flex-end;
+  }
+  /* The collapse toggle is the only interactive part — small, unobtrusive, keyboard
+     focusable. */
+  .tool-hud-toggle {
+    pointer-events: auto;
+    align-self: flex-end;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    width: 1.3rem;
+    height: 1.3rem;
+    line-height: 1;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, color 0.15s, border-color 0.15s;
+  }
+  .tool-hud-toggle:hover,
+  .tool-hud-toggle:focus-visible { color: var(--accent); border-color: var(--accent); }
+  /* Collapsed: rotate the caret; the chip list is not rendered at all while
+     collapsed (React-side — the old CSS max-height squeeze lost to the chips'
+     inline padding/border and left overlapping colored slivers). Only the
+     toggle and a small count badge remain. */
+  .tool-hud.collapsed .tool-hud-toggle { transform: rotate(-90deg); }
+  .tool-hud-count {
+    pointer-events: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.65rem;
+    line-height: 1;
+    padding: 0.15rem 0.4rem;
+    margin-top: 0.15rem;
+  }
+  /* Cross-surface correlation (graph ↔ trace ↔ HUD): the selected call's
+     HUD chip gets an accent ring. */
+  .tool-hud .hud-chip.correlated {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  /* Chat popout modal */
+  .chat-modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(4px);
+  }
+  /* Enter motion: the display flip restarts these on every open
+     (ChatModal is keepMounted; only the .open class toggles). */
+  .chat-modal-overlay.open {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    animation: overlay-fade-motion var(--motion-fast) var(--ease-standard) both;
+  }
+  .chat-modal-overlay.open .chat-modal {
+    animation: modal-pop-motion var(--motion-base) var(--ease-enter) both;
+  }
+  .chat-modal {
+    background: var(--surface);
+    width: 100%;
+    margin: 0 7rem;
+    display: flex; flex-direction: column;
+    border-left: 1px solid var(--border2);
+    border-right: 1px solid var(--border2);
+  }
+  .chat-modal-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .chat-modal-close {
+    background: none; border: 1px solid var(--border); color: var(--text2);
+    font-size: 0.9rem; cursor: pointer; padding: 0.3rem 0.7rem; border-radius: 4px;
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-fast) var(--ease-standard);
+  }
+  .chat-modal-close:hover { color: var(--text); border-color: var(--text2); }
+  /* Header actions (+ New, Word) — subtle bordered buttons matching Close. */
+  .chat-modal-action {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+    font-size: 0.75rem; cursor: pointer; padding: 0.3rem 0.7rem; border-radius: 4px;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    transition:
+      color var(--motion-fast) var(--ease-standard),
+      border-color var(--motion-fast) var(--ease-standard),
+      background-color var(--motion-fast) var(--ease-standard);
+  }
+  .chat-modal-action:hover { color: var(--text); border-color: var(--accent); }
+  .chat-modal-action svg { display: block; }
+  .chat-modal .messages { flex: 1; overflow-y: auto; padding: 1.25rem; }
+  /* Modal reading column: bubbles, pills and prose share one centered column.
+     The EXPANDED modal lets the column use the available width (generous
+     1700px cap, centered) so wide markdown tables and charts get room —
+     flowing prose stays readable via the 72ch measure cap on FLOWING text
+     only (thread.css .answer-body). The DOCKED sidebar has no
+     .chat-content-column wrapper and keeps its own sizing. */
+  .chat-modal .messages .chat-content-column { max-width: 1700px; margin: 0 auto; }
+  .chat-modal .persona-panel .persona-groups-container { max-width: 86ch; margin: 0 auto; }
+  /* Empty-state persona panel inside the modal — occupy the same body area as
+     the thread (#modal-messages) so an empty conversation shows the persona
+     investigation guidance instead of a blank void. Only one is visible at a
+     time (toggled by _renderModalBody in chat.js). */
+  .chat-modal .persona-panel { flex: 1; overflow-y: auto; padding: 1.25rem; }
+  .chat-modal .chat-input { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
+  .chat-modal .chat-input input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 0.75rem; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
+  /* Popout-modal composer sizing — visual treatment comes from the shared
+     `.btn-send, .chat-input button` rule (single source, below). */
+  .chat-modal .chat-input button { padding: 0.75rem 1.5rem; font-weight: 500; }
+  .chat-modal .chat-input button:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* The prompt-library button is injected into EVERY .chat-input (including the
+     modal's). The generic accent-button rule above would erase its icon look, so
+     restore the proper icon-button appearance + SVG sizing here. */
+  .chat-modal .chat-input .prompt-library-btn {
+    background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+    padding: 0; width: 2.75rem; height: 2.75rem; flex: 0 0 auto;
+  }
+  .chat-modal .chat-input .prompt-library-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .chat-modal .chat-input .prompt-library-btn svg { width: 20px; height: 20px; display: block; }
+  /* Mobile: the pop-out is the full screen. The desktop 7rem side margins
+     left it NARROWER than the full-width chat drawer it pops out of. */
+  @media (max-width: 768px) {
+    .chat-modal {
+      margin: 0;
+      border-left: 0;
+      border-right: 0;
+    }
+    .chat-modal-header {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding-top: max(0.75rem, env(safe-area-inset-top));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+    }
+    .chat-modal-actions { margin-left: auto; }
+    .chat-modal .messages,
+    .chat-modal .persona-panel { padding: 0.75rem; }
+    .chat-modal .chat-input {
+      padding: 0.75rem max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+    }
+    .chat-modal .chat-input button { padding: 0.75rem 1rem; }
+  }
+
+  /* ISA-95 tooltip */
+  .isa-tooltip {
+    position: relative; display: inline-block; cursor: help;
+    border-bottom: 1px dashed var(--muted);
+  }
+  .isa-tooltip .isa-tooltip-body {
+    display: none;
+    position: absolute; bottom: 125%; left: 0; transform: none;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    width: 300px; font-size: 0.75rem; line-height: 1.5;
+    color: var(--text2); z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .isa-tooltip:hover .isa-tooltip-body { display: block; }
+  .isa-tooltip-body dt { color: var(--accent); font-weight: 600; margin-top: 0.4rem; }
+  .isa-tooltip-body dd { margin-left: 0.5rem; color: var(--text2); }
+  .suggestions { 
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .suggestions-toggle {
+    padding: 0.6rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .suggestions-toggle::-webkit-details-marker { display: none; }
+  .suggestions-toggle::before { content: '▸'; transition: transform 0.15s; }
+  .suggestions[open] > .suggestions-toggle::before { transform: rotate(90deg); }
+  .suggestions-list { padding: 0 0.75rem 0.75rem; overflow: hidden; }
+  .suggestions[open] .suggestions-list { animation: suggestions-open 0.2s ease-out; }
+  @keyframes suggestions-open { from { max-height: 0; opacity: 0; } to { max-height: 600px; opacity: 1; } }
+  .suggestion-persona-group { margin-bottom: 0.5rem; }
+  .suggestion-persona-label { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); padding: 0.25rem 0.25rem 0.1rem; }
+  .persona-details { margin-bottom: 0.25rem; }
+  .persona-summary { font-size: 0.72rem; font-weight: 600; color: var(--text2); cursor: pointer; padding: 0.35rem 0.25rem; list-style: none; display: flex; align-items: center; gap: 0.3rem; user-select: none; }
+  .persona-summary::-webkit-details-marker { display: none; }
+  .persona-summary::before { content: '▸'; font-size: 0.6rem; color: var(--muted); transition: transform 0.15s; }
+  .persona-details[open] > .persona-summary::before { transform: rotate(90deg); }
+  .persona-queries { padding: 0.1rem 0 0.25rem 0.75rem; display: flex; flex-direction: column; gap: 0.2rem; }
+  .suggestion-chip { 
+    display: inline-block; 
+    background: var(--surface2); 
+    border: 1px solid var(--border); 
+    padding: 0.5rem 0.75rem; 
+    margin: 0.2rem; 
+    border-radius: 16px; 
+    font-size: 0.78rem; 
+    cursor: pointer; 
+    transition:
+      color var(--motion-base) var(--ease-standard),
+      border-color var(--motion-base) var(--ease-standard),
+      background-color var(--motion-base) var(--ease-standard),
+      transform var(--motion-base) var(--ease-standard);
+  }
+  .suggestion-chip:hover { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+  }
+  .followup-chips {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .followup-chips .suggestion-chip {
+    /* Real <button>s (answer-blocks.tsx FollowupChips): reset the native
+       button font and colour, keep the chip shape. */
+    font-family: inherit;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    text-align: left;
+    color: var(--text2);
+    max-width: 100%;
+    margin: 0;
+    padding: 0.4rem 0.7rem;
+  }
+  .followup-chips .suggestion-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* The main next step: the first follow-up (or the first action when there
+     are no questions), tinted with the accent so it reads as the default. */
+  .followup-chips .suggestion-chip-primary {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface2));
+    color: var(--text);
+  }
+  .followup-chips .suggestion-chip-primary:hover {
+    background: color-mix(in srgb, var(--accent) 20%, var(--surface2));
+    color: var(--text);
+  }
+  /* Recommended actions: neutral chips with a leading arrow, so a suggestion
+     never reads as a warning (amber is the app's caution colour). */
+  .followup-chips .action-chip::before {
+    content: '→';
+    margin-right: 0.35rem;
+    color: var(--accent);
+  }
+  .cite-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1em;
+    height: 1.1em;
+    font-size: 0.65em;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    vertical-align: super;
+    margin: 0 0.1em;
+    line-height: 1;
+  }
+  .cite-badge:hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .messages { 
+    flex: 1; 
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    min-width: 0;
+  }
+  .message { 
+    margin-bottom: 1rem; 
+    padding: 0.75rem; 
+    border-radius: 8px;
+  }
+  /* User bubbles: right-aligned, width-capped, accent-tinted — visually
+     distinct from the assistant's full-measure surface3 bubbles. */
+  .message.user {
+    background: color-mix(in srgb, var(--accent) 10%, var(--surface2));
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    margin-left: auto;
+    max-width: 60%;
+    width: fit-content;
+    overflow-wrap: break-word;
+  }
+  /* Role labels — rendered as SIBLINGS before each bubble (ChatThread.tsx);
+     real content in the role="log" region so screen readers announce the
+     speaker before each message. */
+  .msg-role-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.25rem 0 0.25rem;
+  }
+  .msg-role-label.role-user { text-align: right; }
+  .message.assistant { 
+    background: var(--surface3); 
+    margin-right: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow-x: hidden;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .message.assistant > div {
+    max-width: 100%;
+    overflow-x: hidden;
+    min-width: 0;
+  }
+  .message.assistant h1, .message.assistant h2, .message.assistant h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0.75rem 0 0.3rem;
+    color: var(--accent);
+    word-break: break-word;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.2rem;
+  }
+  .message.assistant h3 { font-size: 0.85rem; color: var(--text); border-bottom: none; }
+  .message.assistant p { margin: 0.25rem 0; }
+  .message.assistant ul, .message.assistant ol { padding-left: 1.2rem; margin: 0.25rem 0; }
+  .message.assistant pre {
+    background: var(--bg);
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.75rem;
+    max-width: 100%;
+    white-space: pre-wrap;
+  }
+  .message.assistant table {
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+    font-size: 0.72rem;
+    margin: 0.75rem 0;
+  }
+  .message.assistant td, .message.assistant th {
+    padding: 0.4rem 0.5rem;
+  }
+  .message.assistant hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1rem 0;
+  }
+  .tool-pills { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 0.5rem; 
+    margin-bottom: 0.5rem;
+  }
+  .tool-pill { 
+    display: block;
+    background: var(--tool-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    color: var(--amber); 
+    padding: 0.3rem 0.6rem; 
+    border-radius: 6px;
+    font-size: 0.72rem; 
+    font-family: 'IBM Plex Mono', monospace;
+    margin: 0.2rem 0;
+    cursor: pointer;
+    user-select: none;
+  }
+  .tool-pill.done {
+    border-left-color: var(--green);
+    color: var(--green);
+  }
+  .reasoning-container {
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.25rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text2);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+  .tool-calls-details {
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface2);
+    padding: 0.3rem 0.5rem;
+  }
+  .tool-calls-summary-toggle {
+    font-size: 0.72rem;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    user-select: none;
+    list-style: none;
+  }
+  .tool-calls-summary-toggle::-webkit-details-marker { display: none; }
+  .tool-calls-summary-toggle::before { content: '▶ '; }
+  details[open] .tool-calls-summary-toggle::before { content: '▼ '; }
+  .tool-calls-details[open] { padding-bottom: 0.5rem; }
+
+  /* ── Agent Analysis collapsible panel (collapsed by default) ── */
+  .agent-analysis-details { margin-top: 1rem; margin-bottom: 0.5rem; }
+  .agent-analysis-summary {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    user-select: none;
+  }
+  .agent-analysis-summary:hover { border-color: var(--accent); }
+  .agent-analysis-summary::-webkit-details-marker { display: none; }
+  .agent-analysis-summary::before { content: '▸'; font-size: 0.65rem; color: var(--muted); transition: transform 0.15s; }
+  .agent-analysis-details[open] > .agent-analysis-summary::before { transform: rotate(90deg); }
+  .agent-analysis-details[open] > .agent-analysis-summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .agent-analysis-body > div:first-child .agent-analysis-box { margin-top: 0; }
+
+  /* ── Collapsible response sections ── */
+  .response-section {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+  }
+  .response-section-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    background: var(--surface2);
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    list-style: none;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.15s;
+    margin: 0;
+  }
+  .response-section-summary::-webkit-details-marker { display: none; }
+  .response-section-summary::before {
+    content: '▶';
+    font-size: 0.6rem;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .response-section[open] > .response-section-summary::before { transform: rotate(90deg); }
+  .response-section[open] > .response-section-summary {
+    border-bottom-color: var(--border);
+    background: var(--surface);
+  }
+  .response-section-summary:hover { background: var(--surface); }
+  .response-section-body {
+    padding: 0.6rem 0.75rem;
+    margin-top: 0;
+  }
+  .response-section-body > *:first-child { margin-top: 0; }
+  .response-section-body > *:last-child { margin-bottom: 0; }
+  .tool-trace {
+    display: none;
+    background: var(--tool-bg);
+    border-left: 2px solid var(--border2);
+    padding: 0.4rem 0.6rem;
+    margin: 0.15rem 0 0.4rem 0.5rem;
+    font-size: 0.72rem;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text2);
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+    border-radius: 0 4px 4px 0;
+  }
+  .tool-trace.visible { display: block; }
+  .trace-input {
+    color: var(--accent);
+    opacity: 0.7;
+    margin-bottom: 0.3rem;
+    font-size: 0.68rem;
+    word-break: break-all;
+  }
+  .trace-result { color: var(--text2); }
+  .trace-input-label { color: var(--muted); font-weight: 600; margin-right: 0.25rem; }
+  .trace-input-raw { margin-top: 0.25rem; }
+  .trace-input-raw > summary { cursor: pointer; color: var(--muted); font-size: 0.65rem; }
+  .trace-input-raw pre { margin: 0.25rem 0 0; white-space: pre-wrap; word-break: break-all; font-size: 0.65rem; }
+  .stream-md { color: var(--text2); font-size: 0.8rem; line-height: 1.5; }
+  .stream-md p { margin: 0.2rem 0; }
+  .stream-md strong { color: var(--text); }
+  .chat-input { 
+    padding: 1rem; 
+    border-top: 1px solid var(--border); 
+    display: flex; 
+    gap: 0.5rem;
+    align-items: flex-end;   /* keep send/library buttons aligned to the textarea's last line */
+    margin-top: auto;        /* pin the composer to the bottom of the chat column */
+    flex-shrink: 0;
+  }
+  .chat-input input,
+  .chat-input textarea { 
+    flex: 1; 
+    background: var(--surface2); 
+    border: 1px solid var(--border); 
+    color: var(--text); 
+    padding: 0.75rem; 
+    border-radius: 6px; 
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+  .chat-input textarea {
+    resize: vertical;        /* let the user resize the composer freely */
+    line-height: 1.4;
+    min-height: 4.25rem;     /* ~2 rows by default */
+    overflow-y: auto;
+  }
+  .chat-input input:focus,
+  .chat-input textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  /* ── Primary Send treatment — SINGLE SOURCE ──
+     One rule paints every Send-style primary button: the chat sidebar / popout
+     composer buttons (matched via .chat-input button) and any surface that
+     opts in with .btn-send (the data modal's follow-up Send). Colors follow
+     the CHAT panel's look: accent background, var(--bg) text (white-ish in
+     light mode, dark in dark mode). Candidates NOT yet migrated (kept as-is
+     to avoid repainting): .ob-confirm-btn (onboard wizard — gradient variant,
+     onboard.css). */
+  .btn-send,
+  .chat-input button {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-send:disabled,
+  .chat-input button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  /* Sidebar-composer layout (sizes only — treatment above). */
+  .chat-input button { 
+    height: 2.75rem;             /* match the prompt-library button height */
+    padding: 0 1rem; 
+    box-sizing: border-box;
+  }
+  
+  /* Footer — moved to base.css */
+
+  /* Viewport-owned modal surfaces. DetailModal portals out of the animated,
+     overflow-clipped dashboard view; these rules keep its backdrop above the
+     sticky shell controls and its body as the sole vertical scroller. */
+  .detail-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+  }
+  .detail-modal {
+    max-height: 85vh;
+    overflow: hidden;
+  }
+  .detail-modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(85vh - 4.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Data modal */
+  .data-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center; }
+  .data-modal { background:var(--surface); border:1px solid var(--border); border-radius:8px; max-width:900px; width:92%; max-height:85vh; overflow:hidden; padding:1.5rem 2rem; display:flex; flex-direction:column; }
+  /* Enter motion: data-modal.tsx flips the overlay's inline display (keepMounted),
+     which restarts these on every open. */
+  .data-modal-overlay { animation: overlay-fade-motion var(--motion-fast) var(--ease-standard) both; }
+  .data-modal-overlay .data-modal { animation: modal-pop-motion var(--motion-base) var(--ease-enter) both; }
+  .data-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem; flex-shrink:0; }
+  .data-modal-header h3 { margin:0; font-size:1rem; }
+  .data-modal-header button { background:none; border:none; color:var(--muted); font-size:1.3rem; cursor:pointer; padding:0.25rem; }
+  .data-modal-header button:hover { color:var(--text); }
+  .data-modal-body { flex:1 1 auto; min-height:0; max-height:calc(85vh - 9rem); overflow-y:auto; overscroll-behavior:contain; font-size:0.85rem; line-height:1.6; color:var(--text); }
+  .data-modal-body h1, .data-modal-body h2, .data-modal-body h3 { margin:1rem 0 0.5rem; }
+  .data-modal-body table { width:100%; border-collapse:collapse; margin:0.75rem 0; font-size:0.8rem; }
+  .data-modal-body th, .data-modal-body td { padding:0.35rem 0.5rem; border:1px solid var(--border); text-align:left; }
+  .data-modal-body th { background:var(--bg); font-weight:600; }
+  .data-modal-body code { background:var(--bg); padding:0.1rem 0.3rem; border-radius:3px; font-size:0.8rem; }
+  .data-modal-body pre { background:var(--bg); padding:0.75rem; border-radius:4px; overflow-x:auto; }
+  .data-modal-body .modal-telemetry-lines { white-space:pre-wrap; overflow-wrap:anywhere; font-size:0.8rem; }
+  .data-modal-body ul, .data-modal-body ol { padding-left:1.25rem; }
+  .data-modal-body strong { color:var(--accent); }
+
+  /* Follow-up composer stays visible below the independently scrolling body.
+     Negative margins bleed over the shell padding so it remains flush with
+     the rounded modal edge. */
+  .data-modal-followup {
+    flex-shrink: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    margin: 0 -2rem -1.5rem;
+    border-radius: 0 0 8px 8px;
+  }
+
+/* ── Prompt Library ── */
+.prompt-library-btn { width:2.75rem; height:2.75rem; flex-shrink:0; padding:0; background:var(--surface2); border:1px solid var(--border); border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:color 0.2s, border-color 0.2s, background 0.2s; }
+.prompt-library-btn:hover { color:var(--accent); border-color:var(--accent); }
+.prompt-library-btn svg { width:20px; height:20px; display:block; }
+
+.prompt-popover { position:absolute; bottom:100%; right:0; margin-bottom:0.5rem; width:340px; max-height:420px; background:var(--surface); border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.4); z-index:1000; padding:0.75rem; display:none; flex-direction:column; overflow:hidden; }
+.prompt-popover.open { display:flex; }
+
+/* Composer buttons flip to a 'Stop' affordance while a query streams (see
+   _setComposerStreaming in chat.js). ID selectors override the .chat-input
+   button base so this applies in both the sidebar and the popout modal. */
+#send-btn.streaming, #modal-send-btn.streaming { background:var(--red); color:#fff; }
+
+/* '+ New prompt' row and the search input stay pinned: they live OUTSIDE the
+   scrolling results list (flex:none in the popover column), so only the cards
+   scroll under them. */
+.prompt-search { flex:none; width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:0.5rem 0.75rem; border-radius:6px; font-family:inherit; font-size:0.8rem; margin-bottom:0.75rem; box-sizing:border-box; }
+.prompt-search:focus { border-color:var(--accent); outline:none; }
+
+.prompt-popover-header { flex:none; margin-bottom:0.5rem; }
+.prompt-new-btn { display:flex; align-items:center; justify-content:center; gap:0.35rem; width:100%; background:var(--surface2); border:1px dashed var(--border); color:var(--text); padding:0.5rem 0.75rem; border-radius:6px; font-family:inherit; font-size:0.8rem; font-weight:500; cursor:pointer; box-sizing:border-box; transition:background 0.15s, border-color 0.15s, color 0.15s; }
+.prompt-new-btn:hover { background:var(--surface3); border-color:var(--accent); color:var(--accent); }
+.prompt-new-btn:focus-visible { border-color:var(--accent); outline:2px solid var(--accent); outline-offset:1px; }
+.prompt-new-btn span { font-size:1rem; line-height:1; }
+
+/* The results list is the sole scroll container; min-height:0 lets it shrink
+   inside the flex column so the pinned header/search never scroll away. */
+.prompt-results { flex:1 1 auto; min-height:0; overflow-y:auto; }
+
+/* Group headers ('Registry'/'Saved') stick to the top of the scrolling list.
+   Solid surface background + z-index so cards scroll cleanly underneath. */
+.prompt-group-label { position:sticky; top:0; z-index:2; background:var(--surface); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); padding:0.35rem 0.25rem; }
+
+.prompt-card { padding:0.5rem 0.75rem; border-radius:6px; cursor:pointer; margin-bottom:0.25rem; transition:background 0.15s; position:relative; }
+.prompt-card:hover { background:var(--surface2); }
+
+.prompt-card-title { font-size:0.8rem; font-weight:500; color:var(--text); margin-bottom:0.15rem; }
+.prompt-card-text { font-size:0.7rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.prompt-card-meta { display:flex; gap:0.35rem; margin-top:0.25rem; flex-wrap:wrap; }
+
+.prompt-systems-tag { font-size:0.6rem; padding:0.1rem 0.4rem; border-radius:3px; background:var(--surface3); color:var(--text2); }
+.prompt-systems-tag.dimmed { opacity:0.35; }
+
+.prompt-category-badge { font-size:0.6rem; padding:0.1rem 0.4rem; border-radius:3px; }
+.prompt-category-badge[data-category="cross-system"] { background:rgba(var(--accent-rgb,99,102,241),0.15); color:var(--accent); }
+.prompt-category-badge[data-category="single-system"] { background:rgba(var(--green-rgb,63,185,80),0.15); color:var(--green); }
+.prompt-category-badge[data-category="troubleshooting"] { background:rgba(var(--amber-rgb,210,153,34),0.15); color:var(--amber); }
+
+.bookmark-btn { position:absolute; top:0.25rem; right:0.25rem; background:none; border:none; color:var(--muted); cursor:pointer; opacity:0; transition:opacity 0.2s, color 0.3s; padding:0.25rem; }
+.message:hover .bookmark-btn { opacity:1; }
+.bookmark-btn.saved { color:var(--accent); opacity:1; }
+.bookmark-btn svg { width:16px; height:16px; }
+
+@keyframes bookmark-fill { 0% { transform:scale(1); } 30% { transform:scale(1.3); } 100% { transform:scale(1); } }
+.bookmark-btn.saving { animation:bookmark-fill 0.4s ease; }
+
+.save-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; display:flex; align-items:center; justify-content:center; }
+
+.save-modal { background:var(--surface); border:1px solid var(--border); border-radius:8px; width:480px; max-width:90vw; max-height:80vh; overflow-y:auto; padding:1.5rem; }
+.save-modal h3 { margin:0 0 1rem; font-size:1rem; color:var(--text); }
+.save-modal label { display:block; font-size:0.75rem; color:var(--muted); margin-bottom:0.25rem; margin-top:0.75rem; }
+.save-modal input, .save-modal select, .save-modal textarea { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:0.5rem 0.75rem; border-radius:6px; font-family:inherit; font-size:0.85rem; box-sizing:border-box; }
+.save-modal input:focus, .save-modal select:focus, .save-modal textarea:focus { border-color:var(--accent); outline:none; }
+.save-modal textarea { min-height:80px; resize:vertical; }
+
+.save-modal-actions { display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem; }
+.save-modal-actions button { padding:0.5rem 1rem; border-radius:6px; font-weight:500; cursor:pointer; font-family:inherit; font-size:0.85rem; }
+.save-modal-actions button.primary { background:var(--accent); color:var(--bg); border:none; }
+.save-modal-actions button.secondary { background:none; border:1px solid var(--border); color:var(--text); }
+
+.save-modal .toggle-row { display:flex; align-items:center; justify-content:space-between; margin-top:0.75rem; }
+
+.toggle-switch { width:36px; height:20px; background:var(--surface3); border-radius:10px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+.toggle-switch.on { background:var(--accent); }
+.toggle-switch::after { content:''; position:absolute; width:16px; height:16px; background:var(--text); border-radius:50%; top:2px; left:2px; transition:left 0.2s; }
+.toggle-switch.on::after { left:18px; }
+
+.schedule-resolved { font-size:0.7rem; color:var(--muted); margin-top:0.25rem; font-family:'IBM Plex Mono', monospace; }
+
+/* ── Pinned Dashboard Cards ── */
+.pinned-cards-section { margin-bottom:1.5rem; }
+
+.pinned-cards-header { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; }
+.pinned-cards-header svg { width:18px; height:18px; color:var(--accent); }
+.pinned-cards-header span { font-size:0.85rem; font-weight:500; color:var(--text); }
+
+.pinned-cards-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:1rem; }
+
+.pinned-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+
+.pinned-card-header { display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1rem; border-bottom:1px solid var(--border); background:var(--surface2); }
+
+.pinned-card-title { font-size:0.8rem; font-weight:500; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+.pinned-card-time { font-size:0.65rem; color:var(--muted); margin-left:0.5rem; white-space:nowrap; }
+
+.pinned-card-refresh { background:none; border:none; color:var(--muted); cursor:pointer; padding:0.25rem; margin-left:0.5rem; transition:color 0.2s; }
+.pinned-card-refresh:hover { color:var(--accent); }
+.pinned-card-refresh svg { width:14px; height:14px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.pinned-card-refresh.loading { animation:spin 1s linear infinite; }
+
+.pinned-card-body { padding:1rem; font-size:0.8rem; line-height:1.5; color:var(--text2); max-height:300px; overflow-y:auto; }
+
+.pinned-card-error { padding:0.75rem 1rem; background:rgba(248,81,73,0.1); border-top:1px solid rgba(248,81,73,0.3); color:var(--red); font-size:0.75rem; }
+
+.pinned-card video { width:100%; display:block; background:#000; }
+
+  /* ── Self-Learning Discoveries ──────────────────────────────────────── */
+  .sl-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.5rem;
+  }
+  .sl-toolbar h4 {
+    margin: 0; font-size: 1rem; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .sl-count-badge {
+    font-size: 0.7rem; background: var(--amber); color: #1a1300;
+    padding: 0.1rem 0.45rem; border-radius: 999px; font-weight: 700;
+  }
+  :root.light .sl-count-badge { color: #fff; }
+  .sl-actions-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .sl-btn {
+    font-size: 0.78rem; padding: 0.4rem 0.75rem; border-radius: 6px;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text2); white-space: nowrap; transition: filter 0.15s;
+  }
+  .sl-btn:hover { filter: brightness(1.25); }
+  .sl-btn.primary { background: color-mix(in srgb, var(--green) 15%, transparent); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .sl-btn.danger { border-color: var(--red); color: var(--red); }
+
+  .sl-intro {
+    font-size: 0.82rem; line-height: 1.55; color: var(--text2);
+    margin: 0 0 1rem; max-width: 70ch;
+  }
+
+  .sl-status-filters {
+    display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+    margin-bottom: 0.15rem;
+  }
+  .sl-status-filter {
+    appearance: none; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--surface2); color: var(--text2); cursor: pointer;
+    font-size: 0.7rem; font-weight: 600; line-height: 1;
+    padding: 0.32rem 0.58rem;
+  }
+  .sl-status-filter:hover { border-color: var(--border2); color: var(--text); }
+  .sl-status-filter.active {
+    border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .sl-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  /* Grouped review sections (mapping / annotations / insights / drift) */
+  .sl-section { display: flex; flex-direction: column; gap: 0.75rem; }
+  .sl-section-head {
+    margin: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text2);
+  }
+  .sl-section-hint { font-size: 0.75rem; font-style: italic; color: var(--text2); }
+  .sl-show-more {
+    display: block; width: 100%; margin: 0.5rem 0; padding: 0.45rem 0.75rem;
+    background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  }
+  .sl-show-more:hover { filter: brightness(1.15); }
+  .sl-show-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sl-insights-collapse > summary {
+    cursor: pointer; font-size: 0.78rem; font-weight: 600; color: var(--text2);
+    list-style: none; user-select: none;
+  }
+  .sl-insights-collapse > summary:hover { color: var(--text); }
+  .sl-insights-collapse[open] > summary { margin-bottom: 0.75rem; }
+
+  /* User-defined relationship form (#4) */
+  .sl-define {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.75rem 1rem; margin: 0 0 1.25rem;
+  }
+  .sl-define > summary {
+    cursor: pointer; font-size: 0.82rem; font-weight: 600; color: var(--text2);
+    list-style: none; user-select: none;
+  }
+  .sl-define > summary:hover { color: var(--text); }
+  .sl-define[open] > summary { margin-bottom: 0.75rem; }
+  .sl-define-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.6rem 0.9rem; margin-bottom: 0.85rem;
+  }
+  .sl-define-grid label {
+    display: flex; flex-direction: column; gap: 0.25rem;
+    font-size: 0.72rem; color: var(--text2);
+  }
+  .sl-define-grid label.sl-define-wide { grid-column: 1 / -1; }
+  .sl-define-grid input, .sl-define-grid select {
+    font-size: 0.8rem; padding: 0.4rem 0.55rem; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+  }
+  .sl-define-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .sl-define-msg { font-size: 0.78rem; }
+
+  .sl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--border2); border-radius: 10px; padding: 1rem 1.1rem;
+  }
+  .sl-card.pending { border-left-color: var(--amber); }
+  .sl-card.accepted { border-left-color: var(--green); }
+  .sl-card.rejected { border-left-color: var(--muted); opacity: 0.55; }
+
+  .sl-card-head {
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.85rem;
+  }
+  .sl-type {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.22rem 0.5rem; border-radius: 5px; color: #fff;
+  }
+  /* Advisory server-computed degeneracy verdict — muted amber chip; never
+     affects the Accept/Reject controls. */
+  .sl-low-value {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 0.22rem 0.5rem; border-radius: 5px; white-space: nowrap;
+    color: var(--amber);
+    background: color-mix(in srgb, var(--amber) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  }
+  .sl-conf { font-size: 0.78rem; font-family: 'IBM Plex Mono', monospace; color: var(--text2); }
+  .sl-conf b { color: var(--text); }
+  .sl-status {
+    font-size: 0.74rem; display: inline-flex; align-items: center; gap: 0.35rem; text-transform: capitalize;
+  }
+  .sl-status .dot { font-size: 0.6rem; line-height: 1; }
+  .sl-head-spacer { flex: 1; }
+  .sl-card-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .sl-accept, .sl-reject, .sl-edit {
+    border: none; border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.78rem;
+    cursor: pointer; font-weight: 600; transition: filter 0.15s;
+  }
+  .sl-accept { background: var(--green); color: #04260f; }
+  .sl-reject { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .sl-edit { background: var(--surface3, var(--surface2)); color: var(--accent); border: 1px solid var(--accent); }
+  .sl-accept:hover, .sl-reject:hover, .sl-edit:hover { filter: brightness(1.15); }
+  /* Schema-gated: the target column was not found, so acceptance is blocked. */
+  .sl-accept[disabled] {
+    background: var(--surface3, var(--surface2)); color: var(--muted);
+    cursor: not-allowed; filter: none; opacity: 0.55;
+  }
+  .sl-accept[disabled]:hover { filter: none; }
+  /* Light theme green is dark — flip Accept text to white for legible contrast */
+  :root.light .sl-accept { color: #fff; }
+
+  .sl-body { font-size: 0.88rem; line-height: 1.55; color: var(--text); }
+
+  /* Relation (join_path / value_mapping / identity_rule): From → To */
+  .sl-relation { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .sl-chip {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 7px;
+    padding: 0.4rem 0.65rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem;
+    word-break: break-word;
+  }
+  .sl-chip .sys { color: var(--accent); font-weight: 600; }
+  .sl-chip .val { color: var(--amber); }
+  .sl-arrow { color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
+  .sl-side-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+
+  /* Field annotation: a domain note added to one field */
+  .sl-anno-lead { font-size: 0.88rem; color: var(--text); margin-bottom: 0.45rem; }
+  .sl-anno-lead .sl-chip { display: inline-block; padding: 0.2rem 0.5rem; font-size: 0.8rem; }
+  .sl-anno-note {
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 7px; padding: 0.6rem 0.75rem; color: var(--text); font-size: 0.86rem; line-height: 1.5;
+  }
+  .sl-impact { font-size: 0.76rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.5; }
+  .sl-impact b { color: var(--text2); }
+  .sl-ai { font-size: 0.76rem; margin-top: 0.55rem; }
+
+  /* Schema-existence verdict (server-verified against the onboarded schema). A
+     definitive block is shown WITH proof of what was checked, so the displayed
+     reasoning is trustworthy and never contradicts an accept-rationale. */
+  .sl-card.blocked { border-left-color: var(--red); }
+  .sl-block {
+    margin-top: 0.6rem; border-radius: 8px; padding: 0.6rem 0.75rem;
+    background: color-mix(in srgb, var(--red) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--red) 40%, transparent);
+  }
+  .sl-block-head { font-size: 0.8rem; font-weight: 700; color: var(--red); }
+  .sl-block-proof { font-size: 0.76rem; color: var(--text2); margin-top: 0.3rem; line-height: 1.5; }
+  .sl-block-proof code, .sl-verified code {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    background: var(--surface2); padding: 0.05rem 0.3rem; border-radius: 4px;
+  }
+  .sl-verified { font-size: 0.78rem; color: var(--green); margin-top: 0.55rem; line-height: 1.5; }
+
+  /* Review-reason banner (ADR-0042 D4): a pending proposal held for review
+     states WHY. Quarantined (flip-flop circuit breaker) renders amber — it
+     needs human adjudication before the subject unfreezes; re-proposed-after-
+     rejection renders muted; the plain ambiguity note uses the neutral base. */
+  .sl-card.quarantined { border-left-color: var(--amber); }
+  .sl-review {
+    margin-top: 0.6rem; border-radius: 8px; padding: 0.6rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .sl-review-head { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+  .sl-review-reason { font-size: 0.76rem; color: var(--text2); margin-top: 0.3rem; line-height: 1.5; }
+  .sl-review--quarantine {
+    background: color-mix(in srgb, var(--amber) 10%, transparent);
+    border-color: color-mix(in srgb, var(--amber) 40%, transparent);
+  }
+  .sl-review--quarantine .sl-review-head { color: var(--amber); }
+  .sl-review--rejected {
+    background: color-mix(in srgb, var(--muted) 10%, transparent);
+    border-color: color-mix(in srgb, var(--muted) 35%, transparent);
+  }
+  /* ADR-0053 E6 tombstone flag — a re-proposal of a shape the steward
+     rejected inside the 90-day decay window renders distinctly red-tinged:
+     flagged, not dropped, so the steward can dismiss it in one glance. */
+  .sl-review--tombstone {
+    background: color-mix(in srgb, var(--red) 8%, transparent);
+    border-color: color-mix(in srgb, var(--red) 35%, transparent);
+  }
+  .sl-review--tombstone .sl-review-head { color: var(--red); }
+  
+  /* Value overlap signal (impact/confidence for join_path/crosswalk) */
+  .sl-overlap { font-size: 0.76rem; margin-top: 0.55rem; line-height: 1.5; color: var(--text2); }
+  .sl-overlap-label { font-weight: 600; color: var(--text); }
+  .sl-overlap-badge { font-weight: 700; margin-left: 0.4rem; }
+  .sl-overlap-signal { color: var(--muted); margin-left: 0.3rem; }
+  .sl-overlap-none { color: var(--muted); font-style: italic; }
+  .sl-applied {
+    font-size: 0.78rem; font-weight: 600; color: var(--green);
+    display: inline-flex; align-items: center;
+  }
+  .sl-applied--rejected { color: var(--muted); }
+
+  .sl-why { margin-top: 0.7rem; }
+  .sl-why summary {
+    cursor: pointer; font-size: 0.74rem; color: var(--accent); list-style: none; user-select: none;
+  }
+  .sl-why summary::-webkit-details-marker { display: none; }
+  .sl-why summary::before { content: '▸ '; }
+  .sl-why[open] summary::before { content: '▾ '; }
+  .sl-why-body {
+    font-size: 0.8rem; color: var(--text2); line-height: 1.6; margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem; border-left: 2px solid var(--border); background: var(--surface2); border-radius: 0 6px 6px 0;
+  }
+  .sl-why-body .lbl { color: var(--muted); font-weight: 600; }
+
+  /* Inline edit dialog */
+  .sl-edit-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sl-edit-modal {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; width: 90%; max-width: 500px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .sl-edit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .sl-edit-header h3 { margin: 0; font-size: 1.1rem; color: var(--text); }
+  .sl-edit-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted); }
+  .sl-edit-body { display: flex; flex-direction: column; gap: 0.75rem; }
+  .sl-edit-row { display: flex; gap: 0.75rem; }
+  .sl-edit-field { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
+  .sl-edit-field label { font-size: 0.75rem; font-weight: 600; color: var(--text2); }
+  .sl-edit-field input, .sl-edit-field textarea {
+    padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface2); color: var(--text); font-size: 0.85rem;
+  }
+  .sl-edit-field textarea { min-height: 60px; resize: vertical; }
+  .sl-edit-footer { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1rem; }
+  .sl-edit-cancel, .sl-edit-save {
+    padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  }
+  .sl-edit-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); }
+  .sl-edit-save { background: var(--accent); border: none; color: #fff; }
+  .sl-edit-save:disabled { opacity: 0.6; cursor: not-allowed; }
+  .sl-edit-error { margin-top: 0.75rem; padding: 0.6rem; background: color-mix(in srgb, var(--red) 10%, transparent); border-radius: 6px; color: var(--red); font-size: 0.8rem; }
+
+  /* Loading + empty states */
+  .sl-loading {
+    display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+    padding: 3rem 1rem; color: var(--muted); font-size: 0.85rem;
+  }
+  .sl-spinner {
+    width: 34px; height: 34px; border: 3px solid var(--border2);
+    border-top-color: var(--accent); border-radius: 50%; animation: sl-spin 0.8s linear infinite;
+  }
+  @keyframes sl-spin { to { transform: rotate(360deg); } }
+  .sl-empty {
+    padding: 3rem 1.5rem; text-align: center; color: var(--muted);
+    font-size: 0.9rem; line-height: 1.6; max-width: 60ch; margin: 0 auto;
+  }
+  .sl-error { padding: 1.25rem; color: var(--red); font-size: 0.85rem; }
+
+  @media (max-width: 640px) {
+    .sl-toolbar { gap: 0.6rem; }
+    .sl-actions-group { width: 100%; }
+    .sl-actions-group .sl-btn { flex: 1 1 auto; text-align: center; }
+    .sl-head-spacer { flex-basis: 100%; height: 0; }
+    .sl-card-actions { width: 100%; }
+    .sl-card-actions .sl-accept, .sl-card-actions .sl-reject { flex: 1; }
+    .sl-relation { flex-direction: column; align-items: stretch; }
+    .sl-relation .sl-chip { width: 100%; }
+    .sl-arrow { transform: rotate(90deg); align-self: center; }
+  }
+
+/* ── Uncovered-cards "Awaiting data" strip ─────────────────────────────────────
+   All cards whose status is uncovered/needs-data collapse into ONE compact,
+   muted strip at the bottom of the KPI row (rendered by _renderUncoveredStrip in
+   dashboard.js). One chip per awaiting card; the needed concept ids live in the
+   chip's title tooltip. Payload-driven — no card names in CSS/JS. */
+.uncovered-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px dashed var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: transparent;
+}
+.uncovered-strip-label {
+  font-weight: 600;
+  color: var(--muted);
+}
+.uncovered-strip-chip {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 999px;
+  color: var(--text2, var(--muted));
+  background: rgba(127, 127, 127, 0.08);
+  cursor: help;
+  white-space: nowrap;
+}
+.uncovered-strip-tail {
+  color: var(--muted);
+  font-style: italic;
+}
+
+
+/* ── Mobile dashboard, fleet, and architecture ───────────────────────────── */
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.dashboard-strip-scroll,
+.fleet-table-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  /* A horizontal-scroll container's automatic flex MINIMUM SIZE is 0 (the
+     overflow axis has no intrinsic content size to report upward), so as a
+     direct child of #dashboard-view's column flex it silently collapsed to
+     0px height whenever the view's total content overflowed the viewport —
+     which is the common case. Verified live (2026-08-06): both the Connected
+     Systems bar and the Awaiting-data strip were present in the DOM,
+     unclickable, and invisible at 1280x720 AND 1920x1080. flex-shrink: 0
+     keeps these bars at their content height regardless of sibling
+     overflow — they are always meant to be visible, never a candidate for
+     the shrink budget. */
+  flex-shrink: 0;
+}
+.agents-fleet,
+.fleet-systems-content,
+.fleet-systems-layout,
+.fleet-primary-card { min-width: 0; max-width: 100%; }
+.fleet-summary {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.fleet-summary-cell { text-align: center; min-width: 0; }
+.fleet-primary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  align-items: stretch;
+}
+.fleet-primary-card { display: flex; flex-direction: column; }
+.fleet-systems-tree { display: flex; align-items: stretch; }
+.fleet-tree-connector {
+  width: 20px;
+  flex: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fleet-tree-line { width: 2px; min-height: 12px; flex: 1; background: var(--accent); opacity: 0.3; }
+.fleet-tree-branch { width: 12px; height: 2px; background: var(--accent); opacity: 0.3; }
+.fleet-systems-content { flex: 1; padding-left: 0.5rem; }
+.fleet-systems-layout { display: flex; gap: 0.75rem; align-items: flex-start; }
+.fleet-log-placeholder { display: none; }
+.fleet-table-scroll table { min-width: 40rem; }
+.fleet-log {
+  max-width: 100%;
+  margin-top: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.fleet-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.fleet-log-title { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.fleet-log-body { max-width: 100%; overflow-x: auto; overflow-wrap: anywhere; }
+
+.arch-view-root { min-width: 0; height: 100%; }
+.arch-tabs {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+}
+.arch-tab { flex: 0 0 auto; }
+.arch-pane-toggle { display: none; }
+.kg-filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+.briefing-title-tooltip:hover::after,
+.briefing-title-tooltip:focus-visible::after,
+.briefing-title-tooltip.tooltip-open::after { opacity: 1; }
+.isa-tooltip:hover .isa-tooltip-body,
+.isa-tooltip:focus .isa-tooltip-body,
+.isa-tooltip:focus-within .isa-tooltip-body,
+.isa-tooltip.tooltip-open .isa-tooltip-body { display: block; }
+.briefing-title-tooltip:focus-visible,
+.isa-tooltip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .dashboard-summary-grid,
+  .panels-grid,
+  .metrics-row,
+  .pinned-cards-grid { grid-template-columns: minmax(0, 1fr); }
+  .pinned-cards-grid { min-width: 0; }
+  .kpi-row { grid-template-columns: minmax(0, 1fr); }
+  .dashboard-strip-scroll { margin-bottom: 1rem; }
+  .dashboard-strip-scroll .systems-bar,
+  .dashboard-strip-scroll .uncovered-strip {
+    width: max-content;
+    min-width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    flex-wrap: nowrap;
+  }
+  .heatmap-table-wrap,
+  .table-container,
+  .trace-timeline { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+
+  .agents-toolbar { align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+  .agents-time-filter { max-width: 100%; overflow-x: auto; }
+  .fleet-summary.agents-grid,
+  .fleet-primary-grid { grid-template-columns: minmax(0, 1fr); }
+  .fleet-systems-tree { display: block; }
+  .fleet-tree-connector { display: none; }
+  .fleet-systems-content { padding-left: 0; }
+  .fleet-systems-layout { display: block; }
+  .fleet-log-header { flex-wrap: wrap; }
+
+  .arch-tabs { padding-inline: 0.25rem; }
+  .arch-pane-toggle {
+    position: absolute;
+    top: 3.1rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+  }
+  .arch-pane-toggle button {
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .arch-pane-toggle button.active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--surface2);
+  }
+  .arch-split.arch-narrow.arch-has-pane-toggle { top: 6.25rem; min-width: 0; }
+  .arch-split.arch-narrow { min-width: 0; }
+  .active-query { max-width: calc(100% - 2rem); box-sizing: border-box; }
+  .active-query.visible { top: 6.4rem; }
+  .arch-split.arch-narrow #cy-map,
+  .arch-split.arch-narrow #cy-container,
+  .arch-split.arch-narrow #cy-neptune,
+  .arch-split.arch-narrow #reasoning-trace,
+  .arch-split.arch-narrow #kg-explorer-panel {
+    width: 100% !important;
+    max-width: 100%;
+    flex: 1 1 auto !important;
+    box-sizing: border-box;
+  }
+  .arch-split.arch-narrow #cy-neptune { right: 0 !important; }
+  .arch-split.arch-mobile-pane-graph #reasoning-trace,
+  .arch-split.arch-mobile-pane-graph #kg-explorer-panel { display: none !important; }
+  .arch-split.arch-mobile-pane-secondary #cy-container,
+  .arch-split.arch-mobile-pane-secondary #cy-neptune { display: none !important; }
+  .arch-split.arch-tab-investigation.arch-mobile-pane-secondary #reasoning-trace { display: flex !important; }
+  .arch-split.arch-tab-neptune.arch-mobile-pane-secondary #kg-explorer-panel { display: flex !important; }
+  #reasoning-trace { padding: 0 0.5rem 0.5rem; }
+  #kg-explorer-panel {
+    left: 0;
+    right: 0;
+    border-left: 0;
+    padding: 0.75rem max(0.75rem, env(safe-area-inset-right)) 0.75rem max(0.75rem, env(safe-area-inset-left));
+  }
+  .kg-filter-grid { grid-template-columns: minmax(0, 1fr); }
+  .arch-legend,
+  #map-legend,
+  #neptune-legend {
+    max-width: calc(100% - 1rem);
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+  .tool-hud { max-width: calc(100% - 1rem); }
+  .tool-hud > :not(.tool-hud-toggle) { max-width: 100%; overflow-wrap: anywhere; }
+  .briefing-title-tooltip::after,
+  .isa-tooltip .isa-tooltip-body { width: min(300px, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .arch-tab,
+  .arch-pane-toggle button,
+  .tool-hud-toggle,
+  .trace-expand-toggle,
+  .trace-show-toggle,
+  .kg-checkbox-item,
+  .agents-time-filter button,
+  .fleet-log button,
+  #cy-neptune button,
+  .briefing-title-tooltip,
+  .isa-tooltip {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .briefing-title-tooltip,
+  .isa-tooltip { display: inline-flex; align-items: center; }
+  .kg-checkbox-item { padding-block: 0.5rem; }
+}
+
+/* Dashboard honesty pass: dimension panels share the responsive panel grid. */
+.dashboard-dimension-grid > .quality-by-line-panel {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+/* Resolver internals remain available without dominating the error headline. */
+.panel-error-details {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.panel-error-details > summary {
+  width: max-content;
+  cursor: pointer;
+  color: var(--text2);
+}
+.panel-error-detail-text {
+  margin-top: 0.35rem;
+  padding: 0.45rem 0.55rem;
+  border-left: 2px solid var(--border2);
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Count bars are normalized to their largest row; expose that scale explicitly. */
+.dim-bar-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: -0.15rem 3.75rem 0.15rem calc(140px + 0.75rem);
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.58rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 760px) {
+  .dim-bar-axis { margin-left: 0; margin-right: 0; }
+}

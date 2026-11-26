@@ -1,0 +1,108 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+/* UserMenu styles — port of the base.css additions (dropdown trigger
+   + right-anchored panel). Rules are verbatim from the merged
+   static/css/base.css. base.css is owned by another lane, so the .user-menu
+   reset the legacy commit made there (drop the boxed look, become the
+   dropdown anchor) lives here, scoped to the index header's #user-menu —
+   admin.html keeps the flat icon-button look from base.css. */
+
+.user-menu#user-menu {
+  position: relative;        /* anchor for the right-aligned dropdown */
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Dropdown trigger (person-circle + chevron) */
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.user-menu-trigger:hover,
+.user-menu-trigger[aria-expanded="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.user-menu-trigger svg { display: block; flex-shrink: 0; }
+.user-menu-chevron { transition: transform var(--motion-fast) var(--ease-standard); }
+.user-menu-trigger[aria-expanded="true"] .user-menu-chevron { transform: rotate(180deg); }
+
+/* Dropdown panel — anchored right:0 so it can never push content or
+   overflow the viewport's right edge. Enter: removing [hidden] restores
+   display, restarting the shared item-enter rise (keyframe from base.css,
+   loaded on index + admin). */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 0.4rem;
+  z-index: 1200;
+  animation: item-enter-motion var(--motion-fast) var(--ease-enter) both;
+}
+.user-dropdown[hidden] { display: none; }
+.user-dropdown-section {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  padding: 0.4rem 0.6rem 0.25rem;
+}
+.user-dropdown-item,
+.user-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: var(--text2);
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+.user-dropdown-item { cursor: pointer; }
+.user-dropdown-item:hover {
+  background: var(--surface3);
+  color: var(--text);
+}
+.user-dropdown-item svg,
+.user-dropdown-row svg { flex-shrink: 0; color: var(--muted); }
+.user-dropdown-item:hover svg { color: var(--accent); }
+.user-dropdown-label { flex: 1; white-space: nowrap; }
+.user-dropdown-meta {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.user-dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.35rem 0.25rem;
+}
+/* The relocated language <select> keeps its global .lang-select look but
+   sits flush right inside its row (drop the old header margin). */
+.user-dropdown .lang-select {
+  margin-right: 0;
+  margin-left: auto;
+}

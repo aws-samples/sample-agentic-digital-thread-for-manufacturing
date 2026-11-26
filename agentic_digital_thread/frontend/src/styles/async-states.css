@@ -1,0 +1,136 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+
+.async-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  color: var(--text2);
+}
+
+.async-state--compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+/* Float a background-refresh indicator over content instead of pushing it.
+   Pair with .async-state-anchor on a zero-height wrapper so mounting the
+   indicator never shifts layout (the "content stays put, status floats"
+   convention). Enter fade reuses the shared panel-fade-motion keyframe
+   (opacity-only, compositor-safe); reduced-motion coverage in base.css. */
+.async-state-anchor {
+  position: relative;
+  height: 0;
+  overflow: visible;
+  z-index: 5;
+}
+
+.async-state--overlay {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: auto;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.22);
+  animation: panel-fade-motion var(--motion-base) var(--ease-enter) backwards;
+}
+
+.async-state--overlay .async-skeleton {
+  display: none;
+}
+
+.async-state__message {
+  min-width: 0;
+  line-height: 1.45;
+}
+
+.async-state--loading {
+  color: var(--muted);
+}
+
+.async-state--error {
+  border-color: color-mix(in srgb, var(--red) 55%, var(--border));
+  background: color-mix(in srgb, var(--red) 8%, var(--surface2));
+}
+
+.async-state--empty {
+  color: var(--muted);
+  border-style: dashed;
+}
+
+.async-state--no-data {
+  flex-direction: row;
+  align-items: center;
+  color: var(--muted);
+  border-color: color-mix(in srgb, var(--amber) 40%, var(--border));
+  background: color-mix(in srgb, var(--amber) 6%, var(--surface2));
+}
+
+.async-state__marker {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  border: 2px solid var(--amber);
+  border-radius: 50%;
+}
+
+.async-state__action {
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  background: var(--surface3);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.async-state__action:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.async-state__action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.async-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.async-skeleton__line {
+  display: block;
+  width: 100%;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: var(--surface3);
+}
+
+.async-skeleton__line:nth-child(2) {
+  width: 82%;
+}
+
+.async-skeleton__line:nth-child(3) {
+  width: 64%;
+}
+
+.async-skeleton.async-state--compact {
+  width: min(7rem, 35%);
+  padding: 0;
+}
+
+.async-skeleton.async-state--compact .async-skeleton__line {
+  height: 0.55rem;
+}

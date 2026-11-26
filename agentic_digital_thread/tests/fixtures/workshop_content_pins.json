@@ -1,0 +1,33 @@
+{
+  "_comment": "Values the ../adt-workshop content modules present as the expected answers (frozen story). Demo-data upgrades must not change these. Source: adt-workshop/content/{2-follow-the-thread,6-the-machine-is-still-running,7-prove-it,7b-brief-the-plant-manager}/index.en.md. A live frozen-story check asserts the app still returns these before a demo-data change ships.",
+  "source_repo": "../adt-workshop",
+  "story": "frozen",
+  "lot_numbers": [
+    "LOT-IND-BARAL7075150-H2240",
+    "LOT-IND-BARAL7075150-H2231"
+  ],
+  "equipment": [
+    "CMX-441"
+  ],
+  "work_orders": [
+    "WO-3101"
+  ],
+  "batch_defect": "B-2847",
+  "material_code": "BAR-AL7075-150",
+  "product": "7742",
+  "supplier_lot_traceability": {
+    "suspect_lot": "LOT-IND-BARAL7075150-H2240",
+    "earlier_same_supplier_lot": "LOT-IND-BARAL7075150-H2231",
+    "customers_and_units_module2": [
+      {"customer": "AnyCompany Precision Parts", "units": 48, "value_usd": 16320},
+      {"customer": "AnyCompany Drivetrain Assembly", "units": 12, "value_usd": 4080}
+    ],
+    "total_value_usd": 37400,
+    "your_batch_value_usd": 10200
+  },
+  "protected_linkage_invariants": [
+    "material_lots.supplier_id for the frozen Indianapolis chain is NEVER rewritten by a demo upgrade",
+    "the suspect/earlier lot numbers and their supplier/batch/customer linkage stay byte-identical",
+    "the per-customer units and dollar values the module promises stay byte-identical"
+  ]
+}

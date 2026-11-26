@@ -1,0 +1,341 @@
+{
+  "about": "GET /api/memory/events output for three stored sessions; written by tests/unit/test_memory_events_rehydrate.py, read by src/test/session-reload-integrity.test.tsx.",
+  "scenarios": {
+    "mode_a_enforce": {
+      "RESPONSE_INTEGRITY_MODE": "enforce",
+      "SYSTEM_QUERY_MODE": "agent",
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "How many orders shipped late last week?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_g1",
+                "tool": "explore_graph"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_g1",
+                "tool": "explore_graph",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"explore_graph\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: erp___query_erp",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_g2",
+                "tool": "erp___query_erp"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_g2",
+                "tool": "erp___query_erp",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"success\",\"row_count\":1,\"tool\":\"erp___query_erp\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": []
+          },
+          {
+            "role": "user",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": []
+          }
+        ],
+        "sessionId": "s1",
+        "totalCount": 8
+      }
+    },
+    "orchestrator_enforce": {
+      "RESPONSE_INTEGRITY_MODE": "enforce",
+      "SYSTEM_QUERY_MODE": "orchestrator",
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Which orders are still open?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the order history first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the order history first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_l1",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "open orders"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_l1",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "orders are kept in ERP"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: erp___query_erp",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_l2",
+                "tool": "erp___query_erp",
+                "input": {
+                  "sql": "select id from orders where open"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_l2",
+                "tool": "erp___query_erp",
+                "status": "success",
+                "summary": "2 records found: 1, 2"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Two orders are still open [1].\n\n---FOLLOWUPS---\nQ1: Which order is oldest?\nA1: Notify the order owner\n",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Two orders are still open [1].\n\n---FOLLOWUPS---\nQ1: Which order is oldest?\nA1: Notify the order owner\n"
+              }
+            ]
+          }
+        ],
+        "sessionId": "s1",
+        "totalCount": 6
+      }
+    },
+    "gate_turned_off": {
+      "RESPONSE_INTEGRITY_MODE": "report-only",
+      "SYSTEM_QUERY_MODE": "agent",
+      "payload": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "How many orders shipped late last week?",
+            "timestamp": "2026-10-18T15:00:00+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: explore_graph",
+            "timestamp": "2026-10-18T15:00:01+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_g1",
+                "tool": "explore_graph"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:02+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_g1",
+                "tool": "explore_graph",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"unknown\",\"tool\":\"explore_graph\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: erp___query_erp",
+            "timestamp": "2026-10-18T15:00:03+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_g2",
+                "tool": "erp___query_erp"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:00:04+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_g2",
+                "tool": "erp___query_erp",
+                "summary": "{\"transport_status\":\"success\",\"app_status\":\"success\",\"row_count\":1,\"tool\":\"erp___query_erp\"}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:05+00:00",
+            "blocks": []
+          },
+          {
+            "role": "user",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:06+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "",
+            "timestamp": "2026-10-18T15:00:07+00:00",
+            "blocks": []
+          },
+          {
+            "role": "user",
+            "content": "Which orders are still open?",
+            "timestamp": "2026-10-18T15:01:40+00:00",
+            "blocks": []
+          },
+          {
+            "role": "assistant",
+            "content": "Checking the order history first.\nTool call: explore_graph",
+            "timestamp": "2026-10-18T15:01:41+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Checking the order history first."
+              },
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_l1",
+                "tool": "explore_graph",
+                "input": {
+                  "question": "open orders"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:01:42+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_l1",
+                "tool": "explore_graph",
+                "status": "success",
+                "summary": "orders are kept in ERP"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Tool call: erp___query_erp",
+            "timestamp": "2026-10-18T15:01:43+00:00",
+            "blocks": [
+              {
+                "type": "tool_use",
+                "tool_id": "tooluse_l2",
+                "tool": "erp___query_erp",
+                "input": {
+                  "sql": "select id from orders where open"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "Tool result",
+            "timestamp": "2026-10-18T15:01:44+00:00",
+            "blocks": [
+              {
+                "type": "tool_result",
+                "tool_id": "tooluse_l2",
+                "tool": "erp___query_erp",
+                "status": "success",
+                "summary": "2 records found: 1, 2"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "Two orders are still open [1].\n\n---FOLLOWUPS---\nQ1: Which order is oldest?\nA1: Notify the order owner\n",
+            "timestamp": "2026-10-18T15:01:45+00:00",
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Two orders are still open [1].\n\n---FOLLOWUPS---\nQ1: Which order is oldest?\nA1: Notify the order owner\n"
+              }
+            ]
+          }
+        ],
+        "sessionId": "s1",
+        "totalCount": 14
+      }
+    }
+  }
+}

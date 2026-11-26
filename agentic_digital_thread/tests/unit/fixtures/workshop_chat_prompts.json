@@ -1,0 +1,101 @@
+{
+ "_comment": "Every chat prompt on the workshop pages (captured 2026-10-18, module 7b re-captured 2026-11-07, from the workshop content's content/*/index.en.md: the copyable text blocks that are not openCypher or shell). Placeholders stay as the pages write them; tests substitute an attendee run number. Re-capture when a page's prompt changes.",
+ "prompts": [
+  {
+   "page": "1b-start-in-quick",
+   "prompt": "AnyCompany Drivetrain Assembly says the Precision Shaft 7742 parts they\nreceived over the past 7 days have out-of-tolerance bores. Which batch were\nthey from, and which other customers received parts made from the same\nmaterial lot?"
+  },
+  {
+   "page": "1b-start-in-quick",
+   "prompt": "You answer questions about our plants using the Digital thread actions.\nFor any question about orders, customers, batches, lots, machines,\nmaintenance or sensors, call the Digital thread submit_query action once,\nwith the whole question exactly as the user wrote it. Never split one\nquestion into several submit_query calls. Then call its get_query_result\naction with the job_id, again and again, while the status is running. A\nquery can take ten minutes or more; keep polling, never stop early, and\nnever ask the user whether to continue. If the status is error or unknown,\nstop, tell the user and show the job_id. If submit_query answers\nbusy, a query is already running: poll that one with get_query_result\nfirst. Show the answer as it comes back, including its sources. Never\nanswer a plant question from your own knowledge. If the user says hello,\ncall the get_prompts action and list the questions it returns."
+  },
+  {
+   "page": "1b-start-in-quick",
+   "prompt": "AnyCompany Drivetrain Assembly says the Precision Shaft 7742 parts they\nreceived over the past 7 days have out-of-tolerance bores. Which batch were\nthey from, and which other customers received parts made from the same\nmaterial lot?"
+  },
+  {
+   "page": "2-follow-the-thread",
+   "prompt": "AnyCompany Drivetrain Assembly says the Precision Shaft 7742 parts they\nreceived over the past 7 days have out-of-tolerance bores. Which production\nbatches did their shipments come from, and did any of those batches fail\ninspection at the Indianapolis plant?"
+  },
+  {
+   "page": "2-follow-the-thread",
+   "prompt": "Which supplier lot of raw material did that batch consume, who supplied it\nand when did it arrive, and which other batches drew from the same lot?"
+  },
+  {
+   "page": "2-follow-the-thread",
+   "prompt": "Did the other batches made from that lot pass their dimensional\ninspection?"
+  },
+  {
+   "page": "2-follow-the-thread",
+   "prompt": "Which customers received parts from any batch made with that lot? Give the\nunits each customer received, the value of those parts, and the total."
+  },
+  {
+   "page": "2-follow-the-thread",
+   "prompt": "Which customers received parts from any batch that drew the same supplier\nlot as production run <your run number>? Give the units each customer\nreceived, the value of those parts, and the total."
+  },
+  {
+   "page": "3-the-wall",
+   "prompt": "Was machine L3-M1 maintained on schedule before production run\n<your run number> ran?"
+  },
+  {
+   "page": "4-onboard-the-cmms",
+   "prompt": "Was machine L3-M1 maintained on schedule before production run\n<your run number> ran?"
+  },
+  {
+   "page": "5-ask-it-again",
+   "prompt": "Was machine L3-M1 maintained on schedule before production run\n<your run number> ran?"
+  },
+  {
+   "page": "5-ask-it-again",
+   "prompt": "Summarize the likely root cause of the failed batch, production run\n<your run number>, on machine L3-M1."
+  },
+  {
+   "page": "5-ask-it-again",
+   "prompt": "Which other batches ran on Indianapolis line 3 (machine L3-M1, CMMS asset\n1001-CMX-441) after maintenance work order 3101 on that asset was originally\ndue, and did any of them fail inspection?"
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "Is vibration on the CMX-441 trending up over the last hour, and which\ncurrent work orders and open shipments are at risk if it fails?"
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "When reporting a vibration trend for the CMX-441, state the reading at the\nstart of the window, the lowest reading, and the latest reading, each with\nits time."
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "Draft the containment list for production run <your run number> and the\nmachine that made it: batches, orders, and shipments to hold."
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "Does the CMX-441's temperature correlate with the vibration trend over the\nlast hour?"
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "List every vibration reading on the CMX-441 from the last hour."
+  },
+  {
+   "page": "6-the-machine-is-still-running",
+   "prompt": "What is the current state of the CMX-441 right now?"
+  },
+  {
+   "page": "7b-brief-the-plant-manager",
+   "prompt": "Give me the recall picture for batch RUN-YYYYMMDD-NNNNN at Indianapolis:\nthe machine that made it, the root cause including the machine's\nmaintenance history and its condition now, and the customers it shipped to\nwith their order value. Then tell me which customers received parts from\nany batch made with the same supplier lot as that batch, including that\nbatch, the value of the parts each of them received, and the total."
+  },
+  {
+   "page": "7b-brief-the-plant-manager",
+   "prompt": "Which customers received parts from batch RUN-YYYYMMDD-NNNNN or from any other batch made from the same material lot? Give the units each customer received, the value of those parts, and the total."
+  },
+  {
+   "page": "7b-brief-the-plant-manager",
+   "prompt": "Here is last quarter's quality escape report. Write this week's report for\nthe line 3 complaint in exactly the same format and tone. Use the digital\nthread for every fact. Where the digital thread did not confirm something,\nwrite \"not confirmed\" instead of filling it in. Here is the report:\n\nQUALITY ESCAPE REPORT\nSite / line: Indianapolis / line 1\nDate opened: 2026-06-12\nOwner: J. Rivera, Quality\n\n1. What happened: A customer found burrs on 40 bracket housings from batch\n   RUN-20260608-10044. The parts had passed final inspection.\n2. Scope: 600 made, 410 shipped, 40 rejected by the customer.\n3. Customers and orders affected:\n   | Customer | Order | Units | Value |\n   | Example Corp Freight | SO-118204 | 410 | $6,150 |\n4. Containment: 190 units held in finished goods, bay 4.\n5. Root cause: L1-M3 deburr station, worn brush (CMMS work order 2207,\n   replaced 2026-06-13).\n6. Corrective actions: Add brush wear to the weekly PM (owner J. Rivera,\n   due 2026-06-30).\n7. Open questions: Were batches -10045 and -10046 affected?"
+  },
+  {
+   "page": "7b-brief-the-plant-manager",
+   "prompt": "Turn this report into a five-slide deck for the plant manager's 3 pm call.\nOne slide each for what happened, scope and customers, containment, root\ncause, and next steps. No more than four bullets per slide."
+  },
+  {
+   "page": "8b-swap-the-cmms",
+   "prompt": "Was machine L3-M1 maintained on schedule before production run\n<your run number> ran?"
+  }
+ ]
+}

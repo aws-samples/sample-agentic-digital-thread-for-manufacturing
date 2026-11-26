@@ -1,0 +1,9 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+pg8000==1.31.6
+# The layer's python/ comes before the Lambda runtime's own packages on
+# sys.path, so the runtime's boto3/botocore import this copy of dateutil too:
+# keep it inside botocore's python-dateutil<3.0.0 (the release the app and
+# db-init locks carry).
+python-dateutil==2.9.0.post0

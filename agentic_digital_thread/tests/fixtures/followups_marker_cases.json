@@ -1,0 +1,271 @@
+{
+  "_comment": "ONE shared FOLLOWUPS-marker case list: read by frontend/src/test/followups-marker-parity.test.ts (findFollowupsMarker/splitFollowups) AND tests/unit/test_followups_marker_parity.py (eval_core._FOLLOWUPS_RE / strip_followups). body = text before the marker, right-trimmed; block = text after the marker line (null when no marker).",
+  "cases": [
+    {
+      "name": "variant: canonical",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---FOLLOWUPS---\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: canonical",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---FOLLOWUPS---",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: rules around (blank-separated)",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---\n\nFOLLOWUPS\n\n---\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\n\n---\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: rules around (blank-separated)",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---\n\nFOLLOWUPS\n\n---",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\n\n---"
+    },
+    {
+      "name": "variant: rules around (tight)",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---\nFOLLOWUPS\n---\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\n---\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: rules around (tight)",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n---\nFOLLOWUPS\n---",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\n---"
+    },
+    {
+      "name": "variant: bold",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n**FOLLOWUPS**\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: bold",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n**FOLLOWUPS**",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: bold with colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n**FOLLOWUPS:**\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: bold with colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n**FOLLOWUPS:**",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: heading",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n## FOLLOWUPS\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: heading",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n## FOLLOWUPS",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: heading h3 colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n### FOLLOWUPS:\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: heading h3 colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n### FOLLOWUPS:",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS:\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: colon",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS:",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: bare",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: bare",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: underscores",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n__FOLLOWUPS__\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: underscores",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n__FOLLOWUPS__",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: asterisk rule above",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n***\nFOLLOWUPS\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: asterisk rule above",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n***\nFOLLOWUPS",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: dashes hugging",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n--FOLLOWUPS--\nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: dashes hugging",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\n--FOLLOWUPS--",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "variant: trailing spaces",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS:   \nQ1: What about line 3?\nA1: Schedule PM\n",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: What about line 3?\nA1: Schedule PM\n"
+    },
+    {
+      "name": "variant at end, empty block: trailing spaces",
+      "text": "Line 2 ran at 92% OEE yesterday.\n\nFOLLOWUPS:   ",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": ""
+    },
+    {
+      "name": "marker at the very start",
+      "text": "FOLLOWUPS:\nQ1: a",
+      "match": true,
+      "body": "",
+      "block": "\nQ1: a"
+    },
+    {
+      "name": "canonical mid-line",
+      "text": "Line 2 ran at 92% OEE yesterday. ---FOLLOWUPS---\nQ1: x",
+      "match": true,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": "\nQ1: x"
+    },
+    {
+      "name": "first marker wins",
+      "text": "a\nFOLLOWUPS:\nQ1: b\n---FOLLOWUPS---\nQ2: c",
+      "match": true,
+      "body": "a",
+      "block": "\nQ1: b\n---FOLLOWUPS---\nQ2: c"
+    },
+    {
+      "name": "no marker",
+      "text": "Line 2 ran at 92% OEE yesterday.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.",
+      "block": null
+    },
+    {
+      "name": "empty",
+      "text": "",
+      "match": false,
+      "body": "",
+      "block": null
+    },
+    {
+      "name": "prose: We discussed the FOLLOWUPS from the audit yesterday.",
+      "text": "Line 2 ran at 92% OEE yesterday.\nWe discussed the FOLLOWUPS from the audit yesterday.\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\nWe discussed the FOLLOWUPS from the audit yesterday.\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: The followups: none were filed.",
+      "text": "Line 2 ran at 92% OEE yesterday.\nThe followups: none were filed.\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\nThe followups: none were filed.\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: FOLLOWUPS were scheduled for Tuesday.",
+      "text": "Line 2 ran at 92% OEE yesterday.\nFOLLOWUPS were scheduled for Tuesday.\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\nFOLLOWUPS were scheduled for Tuesday.\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: ## FOLLOWUPS from the audit",
+      "text": "Line 2 ran at 92% OEE yesterday.\n## FOLLOWUPS from the audit\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\n## FOLLOWUPS from the audit\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: - FOLLOWUPS",
+      "text": "Line 2 ran at 92% OEE yesterday.\n- FOLLOWUPS\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\n- FOLLOWUPS\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: followups:",
+      "text": "Line 2 ran at 92% OEE yesterday.\nfollowups:\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\nfollowups:\nMore text.",
+      "block": null
+    },
+    {
+      "name": "prose: #######FOLLOWUPS",
+      "text": "Line 2 ran at 92% OEE yesterday.\n#######FOLLOWUPS\nMore text.",
+      "match": false,
+      "body": "Line 2 ran at 92% OEE yesterday.\n#######FOLLOWUPS\nMore text.",
+      "block": null
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+/* Prompt-library hover fix — port of the merged static/css/dashboard.css
+   scoped rules (shipped in the legacy 7db6c09/e6cb717 work). Scoped to
+   .chat-input so these rules (0,2,0) beat the generic accent
+   `.chat-input button` rule (0,1,1) in styles/dashboard.css. Without the
+   scope the generic rule kept the accent background while
+   `.prompt-library-btn:hover` recolored the stroke to accent →
+   accent-on-accent → the icon disappeared on hover. styles/dashboard.css is
+   owned by the dashboard lane, so the fix lives here next to the component. */
+.chat-input .prompt-library-btn { width:2.75rem; height:2.75rem; flex-shrink:0; padding:0; background:var(--surface2); border:1px solid var(--border); border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:color 0.2s, border-color 0.2s, background 0.2s; }
+.chat-input .prompt-library-btn:hover { background:var(--surface2); color:var(--accent); border-color:var(--accent); }
+.chat-input .prompt-library-btn svg { width:20px; height:20px; display:block; }

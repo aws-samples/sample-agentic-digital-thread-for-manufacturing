@@ -1,0 +1,283 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+   SPDX-License-Identifier: MIT-0 */
+/* Chat activity line — ONE line per run of back-to-back tool calls
+   (chat/ToolActivityGroup.tsx). Theme tokens only; motion tokens come from
+   base.css :root, and reduced motion is handled by base.css's single policy
+   block (.tool-activity / .shimmer-text / status dots are listed there). */
+
+.tool-activity {
+  margin: 0.15rem 0;
+  white-space: normal; /* .reasoning-container is pre-wrap */
+  animation: item-enter-motion var(--motion-base) var(--ease-enter) both;
+  animation-iteration-count: 1;
+}
+
+.tool-activity-line {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+.tool-activity-line:hover { background: var(--surface2); }
+.tool-activity-line:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.tool-activity[data-open="true"] > .tool-activity-line {
+  background: var(--surface2);
+  border-color: var(--border);
+}
+
+/* Status dot: pulses while any call runs, then settles to the group's worst
+   outcome (green ok · amber no-data/partial · red failed/timed out · muted
+   when calls finished without a result to judge). */
+.tool-activity-status {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.tool-activity[data-tone="ok"] .tool-activity-status { background: var(--green); }
+.tool-activity[data-tone="warn"] .tool-activity-status { background: var(--amber); }
+.tool-activity[data-tone="error"] .tool-activity-status { background: var(--red); }
+.tool-activity[data-state="active"] .tool-activity-status {
+  background: var(--accent);
+  animation: activity-pulse-motion 1.4s var(--ease-standard) infinite;
+}
+@keyframes activity-pulse-motion {
+  0%, 100% { opacity: 1; transform: scale(0.85); }
+  50% { opacity: 0.45; transform: scale(1.15); }
+}
+
+.tool-activity-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Open: the full summary wraps instead of truncating (a narrow sidebar cut it
+   to "Searched the knowledg…" next to the meta), and the meta drops to its
+   own row under the text so the summary keeps the full width. */
+.tool-activity[data-open="true"] > .tool-activity-line {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  row-gap: 0.1rem;
+}
+.tool-activity[data-open="true"] .tool-activity-text {
+  flex: 1 1 0;
+  white-space: normal;
+  overflow: visible;
+}
+.tool-activity[data-open="true"] .tool-activity-status { margin-top: 0.4em; }
+.tool-activity[data-open="true"] .tool-activity-chevron { order: 2; margin-top: 0.45em; }
+.tool-activity[data-open="true"] .tool-activity-meta {
+  order: 3;
+  flex-basis: 100%;
+  padding-left: calc(7px + 0.5rem);
+}
+.tool-activity[data-state="done"] .tool-activity-text {
+  color: var(--muted);
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+.tool-activity[data-state="done"] .tool-activity-line:hover .tool-activity-text,
+.tool-activity[data-open="true"] .tool-activity-text { color: var(--text2); }
+
+.tool-activity-meta {
+  flex: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.66rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.tool-activity-chevron {
+  flex: none;
+  width: 0.38rem;
+  height: 0.38rem;
+  margin: 0 0.2rem 0.1rem 0.1rem;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform var(--motion-base) var(--ease-standard);
+}
+.tool-activity[data-open="true"] .tool-activity-chevron { transform: rotate(45deg); }
+
+/* Expand: grid rows 0fr → 1fr (smooth height without measuring). Collapsed
+   rows stay mounted but leave the accessibility tree and tab order once the
+   collapse finishes (visibility flips after the transition). */
+.tool-activity-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--motion-base) var(--ease-standard);
+}
+.tool-activity[data-open="true"] > .tool-activity-body { grid-template-rows: 1fr; }
+.tool-activity-calls {
+  min-height: 0;
+  overflow: hidden;
+  margin-left: 0.8rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--border);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--motion-base) var(--ease-standard),
+    visibility 0s linear var(--motion-base);
+}
+.tool-activity[data-open="true"] .tool-activity-calls {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Per-call rows (keep the .tool-pill.inline / .tool-trace contract). */
+.tool-activity-call {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+.tool-activity-call::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.tool-activity-call[data-outcome="success"]::before { background: var(--green); }
+.tool-activity-call[data-outcome="empty"]::before,
+.tool-activity-call[data-outcome="partial"]::before,
+.tool-activity-call[data-outcome="filtered"]::before { background: var(--amber); }
+.tool-activity-call[data-outcome="failed"]::before,
+.tool-activity-call[data-outcome="timeout"]::before { background: var(--red); }
+.tool-activity-call[data-outcome="running"]::before {
+  background: var(--accent);
+  animation: activity-pulse-motion 1.4s var(--ease-standard) infinite;
+}
+
+.tool-activity .tool-pill.inline {
+  appearance: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0.2rem 0.3rem;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+.tool-activity .tool-pill.inline:hover { background: var(--surface2); }
+.tool-activity .tool-pill.inline:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.tool-activity-call-time {
+  flex: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.64rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.tool-activity .tool-trace { margin: 0.1rem 0 0.4rem 0.8rem; }
+
+/* The call's stored telemetry lines, beside the summary rather than in it:
+   coverage lines above it, the sample line below it. Plain text, so no id
+   in them is read as markdown. */
+.trace-coverage-line { margin: 0 0 0.3rem; overflow-wrap: anywhere; }
+.trace-sample-line { margin: 0.3rem 0 0; overflow-wrap: anywhere; }
+
+/* A call's routing context (its `kg_context` ROUTE block), shown with its
+   real line breaks in its own expander beside "raw args". The display copy
+   is capped in routingContextOf; the block itself is bounded and scrolls. */
+.trace-input-route { margin-top: 0.25rem; }
+.trace-input-route > summary { cursor: pointer; color: var(--muted); font-size: 0.65rem; }
+.trace-input-route pre {
+  margin: 0.25rem 0 0;
+  max-block-size: var(--trace-block-max, 18rem);
+  overflow: auto;
+  overscroll-behavior: contain;
+  font-size: 0.65rem;
+  color: var(--text2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.trace-input-route-truncated { margin: 0.2rem 0 0; color: var(--amber); font-size: 0.62rem; }
+/* Some of the shown lines came from the knowledge graph, not the model. */
+.trace-input-route-added { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.62rem; }
+
+/* Live text shimmer — a highlight sweeping across the words of whatever is
+   in progress (activity line, "Thinking…"). */
+.shimmer-text {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    var(--muted) 40%,
+    var(--text) 50%,
+    var(--muted) 60%,
+    var(--muted) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-shimmer-motion 2.2s linear infinite;
+}
+@keyframes text-shimmer-motion {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
+}
+
+/* Reasoning fold (done-collapse <details>): CSS chevron that rotates, and an
+   animated open where the browser supports ::details-content. */
+.tool-calls-details > .tool-calls-summary-toggle {
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+.tool-calls-details > .tool-calls-summary-toggle:hover { color: var(--text); }
+.tool-calls-details > .tool-calls-summary-toggle::before {
+  content: '';
+  display: inline-block;
+  width: 0.35rem;
+  height: 0.35rem;
+  margin: 0 0.5rem 0.1rem 0.1rem;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform var(--motion-base) var(--ease-standard);
+}
+.tool-calls-details[open] > .tool-calls-summary-toggle::before {
+  content: '';
+  transform: rotate(45deg);
+}
+@supports selector(::details-content) {
+  .tool-calls-details { interpolate-size: allow-keywords; }
+  .tool-calls-details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size var(--motion-base) var(--ease-standard),
+      content-visibility var(--motion-base) allow-discrete;
+  }
+  .tool-calls-details[open]::details-content { block-size: auto; }
+}

@@ -1,0 +1,57 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# Streamlit Dashboard Dockerfile for ERP Beverage Simulation
+# This container runs the Streamlit dashboard for visualizing ERP simulation data
+#
+# Requirements: 2.3, 10.2
+#
+# Build context should be the distribution package root
+# Usage: docker build -f docker/Dockerfile.dashboard -t erp-dashboard .
+
+# Digest-pinned (multi-arch index) for reproducible builds.
+FROM public.ecr.aws/docker/library/python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce
+
+# Set working directory
+WORKDIR /app
+
+# Install curl for the container HEALTHCHECK.
+# apt-get upgrade pulls OS security patches (e.g. openssl CVEs) newer than the base image.
+# No compiler/libpq needed: the PostgreSQL client is pg8000 (pure Python).
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the exact Python 3.11 ARM64 deployment lock; direct requirements remain
+# the human-maintained resolver input.
+COPY requirements/erp-dashboard-py311-linux-arm64.lock requirements.lock
+RUN pip install --no-cache-dir --require-hashes --only-binary=:all: \
+    -r requirements.lock
+
+# Create non-root user (CKV_DOCKER_3)
+RUN useradd -m -u 1000 streamlit && chown -R streamlit:streamlit /app
+USER streamlit
+
+# Copy ERP simulation code
+COPY erp_simulation/ ./erp_simulation/
+
+# Copy lambda-db-init handler (single source of truth for seed data)
+COPY lambda-db-init/handler.py ./lambda-db-init/handler.py
+
+# Expose Streamlit port
+EXPOSE 8501
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+# Environment variables (must be set at runtime)
+# AWS_DEFAULT_REGION must be provided via -e AWS_DEFAULT_REGION=<region>
+ENV USE_SECRETS_MANAGER=true
+
+# Run Streamlit dashboard
+CMD ["streamlit", "run", "erp_simulation/streamlit_dashboard.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true", \
+     "--browser.gatherUsageStats=false"]

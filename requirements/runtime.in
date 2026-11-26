@@ -1,0 +1,10 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+# Added to agentic_digital_thread/pyproject.toml for the AgentCore runtime image.
+# Exact: 0.22.0 is the first release whose SigV4 exporter session retries a
+# credential lookup that returned None (0.19-0.21 cached the miss for the
+# process lifetime, so every span batch in that session went out unsigned
+# and X-Ray answered 403 Forbidden). 0.23.0 keeps that retry and pins
+# opentelemetry-api 1.45.2, the fix for CVE-2026-126360.
+aws-opentelemetry-distro==0.23.0

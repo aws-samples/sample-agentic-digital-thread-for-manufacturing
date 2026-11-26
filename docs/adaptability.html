@@ -1,0 +1,453 @@
+<!-- Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic Digital Thread — Adaptability: any system, any format</title>
+<meta name="description" content="How the Agentic Digital Thread (ADT) engine adapts to any manufacturing system landscape — any vendor, any schema, any identifier format, relational or OT time-series — without custom integration code.">
+<!-- No external font loads (repo policy: no runtime Google Fonts). The font stacks below use locally installed fonts and fall back to system fonts, so the page renders fully offline. No external dependency exists. No JavaScript. -->
+<style>
+  :root{
+    --bg:#16181d;
+    --bg2:#1b1e24;
+    --panel:#1f232b;
+    --panel2:#23272f;
+    --ink:#e8e6e1;
+    --ink-dim:#a9aab2;
+    --ink-faint:#90929c;
+    --line:#33363f;
+    --line-soft:#2a2d35;
+    --hot:#ff8a1e;
+    --hot-deep:#e06a00;
+    --hot-soft:rgba(255,138,30,.12);
+    --ok:#7dc98f;
+    --display:"Saira Condensed","Arial Narrow","Avenir Next Condensed","Helvetica Neue",Arial,sans-serif;
+    --body:"Saira",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --maxw:1020px;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{
+    margin:0;
+    background:
+      linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px),
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+      var(--bg);
+    background-size:24px 24px,24px 24px,120px 120px,120px 120px;
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--hot);text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::selection{background:var(--hot);color:#181203}
+  .skip{position:absolute;left:-999px;top:0;background:var(--hot);color:#181203;padding:.5rem 1rem;z-index:99;font-weight:600}
+  .skip:focus{left:0}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(1.1rem,4vw,2.2rem)}
+  code{font-family:var(--mono);font-size:.86em;color:var(--hot);background:var(--hot-soft);padding:.08em .35em;border-radius:2px;white-space:nowrap}
+  .tag{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--hot);display:inline-flex;align-items:center;gap:.6em;
+  }
+  .tag::before{content:"";display:inline-block;width:2.2em;height:1px;background:var(--hot)}
+  .src{
+    display:block;margin-top:.7rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--ink-faint);
+  }
+  .src::before{content:"⌁ grounded in ";color:var(--ink-faint)}
+
+  header.hero{padding:clamp(2.6rem,6vw,4.2rem) 0 clamp(1.6rem,3vw,2.2rem)}
+  .hero .mark{font-family:var(--display);font-weight:800;font-size:1rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim)}
+  .hero .mark b{color:var(--hot)}
+  .hero h1{
+    font-family:var(--display);font-weight:800;text-transform:uppercase;
+    font-size:clamp(2.3rem,6vw,3.9rem);line-height:.98;letter-spacing:.01em;margin:.8rem 0 .9rem;
+  }
+  .hero h1 .hot{color:var(--hot)}
+  .hero .pitch{font-size:clamp(1rem,1.7vw,1.15rem);color:var(--ink-dim);max-width:46rem;margin:0}
+  .hero .pitch b{color:var(--ink);font-weight:600}
+
+  section{padding:clamp(1.8rem,4vw,2.8rem) 0;border-top:1px solid var(--line-soft)}
+  h2{
+    font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    font-size:clamp(1.45rem,3vw,2rem);line-height:1.05;margin:.55rem 0 .7rem;
+  }
+  .lede{color:var(--ink-dim);max-width:46rem;margin:.2rem 0 0}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* problem silos */
+  .silos{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1.3rem 0 0}
+  .silo{border:1px dashed var(--line);background:var(--bg2);padding:.8rem .9rem}
+  .silo .sys{font-family:var(--display);font-weight:700;font-size:1.02rem;letter-spacing:.04em;text-transform:uppercase;display:block}
+  .silo .id{font-family:var(--mono);font-size:.74rem;color:var(--hot);display:block;margin-top:.25rem;overflow-wrap:anywhere}
+  .silo .role{font-size:.78rem;color:var(--ink-faint);display:block;margin-top:.2rem}
+  .pull{
+    border-left:3px solid var(--hot);padding:.35rem 0 .35rem 1rem;margin:1.4rem 0 0;
+    font-family:var(--display);font-weight:600;font-size:1.18rem;line-height:1.3;color:var(--ink);font-style:normal;max-width:46rem;
+  }
+  .pull cite{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:.45rem;font-style:normal}
+
+  /* pillar cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:1.4rem}
+  .card{border:1px solid var(--line);background:var(--panel);padding:1.15rem 1.15rem 1.25rem;position:relative}
+  .card::before,.card::after{content:"";position:absolute;width:8px;height:8px;border-color:var(--hot);border-style:solid}
+  .card::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+  .card::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+  .card .no{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;color:var(--ink-faint);display:block;margin-bottom:.6rem;text-transform:uppercase}
+  .card h3{font-family:var(--display);font-weight:700;font-size:1.22rem;letter-spacing:.03em;text-transform:uppercase;margin:0 0 .45rem;line-height:1.15}
+  .card h3 em{color:var(--hot);font-style:normal}
+  .card p{margin:0;font-size:.9rem;color:var(--ink-dim)}
+  .card p b{color:var(--ink);font-weight:600}
+
+  /* svg diagram */
+  .diagram{margin-top:1.5rem;border:1px solid var(--line);background:var(--bg2);padding:clamp(.9rem,2.5vw,1.5rem);position:relative}
+  .diagram::after{
+    content:"FIG. 01 — THE ADAPTATION LOOP";position:absolute;top:.6rem;right:.8rem;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--ink-faint);
+  }
+  .diagram svg{display:block;width:100%;height:auto;max-width:880px;margin:0 auto}
+
+  /* identifier strip */
+  .idstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-top:1.3rem}
+  .idcard{border:1px solid var(--line);background:var(--panel);padding:.85rem .9rem;text-align:left}
+  .idcard .fmt{font-family:var(--mono);font-size:.82rem;color:var(--hot);display:block;overflow-wrap:anywhere}
+  .idcard .who{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;display:block;margin-top:.35rem}
+  .idcard .note{font-size:.76rem;color:var(--ink-faint);display:block;margin-top:.15rem}
+  .resolve{
+    margin-top:.9rem;border:1px solid var(--hot);background:linear-gradient(180deg,var(--hot-soft),transparent 90%),var(--panel);
+    padding:.85rem 1rem;font-size:.9rem;color:var(--ink-dim);
+  }
+  .resolve b{color:var(--ink)}
+  .resolve .rule{font-family:var(--mono);font-size:.78rem;color:var(--hot);display:block;margin-top:.4rem;overflow-wrap:anywhere}
+
+  /* honesty list */
+  .honest{list-style:none;margin:1.3rem 0 0;padding:0;display:grid;gap:.7rem}
+  .honest li{border:1px solid var(--line);background:var(--panel);padding:.9rem 1.05rem;position:relative}
+  .honest li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ok)}
+  .honest li b{font-family:var(--display);font-weight:700;letter-spacing:.03em;text-transform:uppercase;font-size:1.02rem;display:block;margin-bottom:.2rem}
+  .honest li span{font-size:.9rem;color:var(--ink-dim)}
+
+  footer{border-top:1px solid var(--line);background:var(--bg2);padding:2rem 0 2.4rem;margin-top:1rem}
+  footer h2{font-size:1.2rem;margin:0 0 .7rem}
+  footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.35rem}
+  footer li{font-size:.9rem;color:var(--ink-dim)}
+  footer .footmark{margin-top:1.4rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+  footer .disc{font-size:.82rem;color:var(--ink-faint);max-width:46rem;margin:.9rem 0 0}
+
+  @media (max-width:760px){
+    .silos,.idstrip{grid-template-columns:1fr 1fr}
+    .cards{grid-template-columns:1fr}
+  }
+  @media (max-width:440px){
+    .silos,.idstrip{grid-template-columns:1fr}
+  }
+
+  /* ---------- print (A4 / Letter) ---------- */
+  @media print{
+    :root{
+      --bg:#ffffff;--bg2:#ffffff;--panel:#ffffff;--panel2:#f4f4f4;
+      --ink:#111318;--ink-dim:#3c3f47;--ink-faint:#5c5f68;
+      --line:#9a9da6;--line-soft:#c4c6cc;
+      --hot:#b34e00;--hot-soft:rgba(179,78,0,.08);--ok:#2c6e3f;
+    }
+    body{background:#fff;font-size:11pt;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    a{color:var(--hot);text-decoration:underline}
+    .hero h1{font-size:26pt}
+    section{padding:.9rem 0}
+    .card,.idcard,.silo,.honest li,.diagram,.resolve{break-inside:avoid}
+    .cards,.silos,.idstrip{break-inside:avoid}
+    footer{background:#fff}
+    .skip{display:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="mark">Agentic <b>Digital Thread</b> · One-Pager</span>
+    <h1>Any system.<br>Any schema.<br><span class="hot">Any identifier format.</span></h1>
+    <p class="pitch">The ADT engine contains <b>no assumptions about your systems</b> — not the
+    vendor, not the schema, not how identifiers are shaped, not whether the source is a
+    relational database or an OT time-series feed. Everything system-specific is
+    <b>discovered at onboarding, stored as metadata, and refined by feedback</b> — never
+    hard-coded. That is why the same engine serves bottling, machining, food, or chemicals
+    without custom integration code.</p>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ 01 · THE PROBLEM ============ -->
+  <section aria-labelledby="problem-h">
+    <div class="wrap">
+      <span class="tag">Sec. 01 — The Problem</span>
+      <h2 id="problem-h">Same physical thing, four names</h2>
+      <p class="lede">Every manufacturing system names the world its own way. A production run,
+      a work order, a machine — each carries a <b>different identifier in every system that
+      touches it</b>. The bundled sample landscape shows the shape of the problem:</p>
+
+      <div class="silos">
+        <div class="silo">
+          <span class="sys">MES · Bottling</span>
+          <span class="id">WO-YYYYMMDD-XXXXX</span>
+          <span class="role">date-encoded work orders</span>
+        </div>
+        <div class="silo">
+          <span class="sys">MES · Machining</span>
+          <span class="id">DET-RUN-0001</span>
+          <span class="role">site-prefixed sequences</span>
+        </div>
+        <div class="silo">
+          <span class="sys">CMMS</span>
+          <span class="id">KF2000-MKE-01</span>
+          <span class="role">MODEL-SITE-SEQ serials</span>
+        </div>
+        <div class="silo">
+          <span class="sys">Other systems</span>
+          <span class="id">7f3a…-uuid</span>
+          <span class="role">opaque UUIDs</span>
+        </div>
+      </div>
+
+      <blockquote class="pull">"The same physical thing carries a different identifier in each
+      system — that is exactly the gap the digital thread closes."
+        <cite>docs/architecture.md · data model</cite>
+      </blockquote>
+
+      <p class="lede" style="margin-top:1.2rem">The classic answer is a point integration per
+      system pair — each one a project, each one maintained by hand, each one hard-wired to one
+      vendor's schema. ADT's answer is a <b>generic engine</b>: cross-system answers stop being
+      integration projects.</p>
+    </div>
+  </section>
+
+  <!-- ============ 02 · THE MECHANISM ============ -->
+  <section aria-labelledby="mech-h">
+    <div class="wrap">
+      <span class="tag">Sec. 02 — The Mechanism</span>
+      <h2 id="mech-h">Four pillars of adaptability</h2>
+      <p class="lede">Adaptability is not a claim — it is an architecture. Four design decisions,
+      each with its own decision record, keep every system-specific fact <b>out of the code and
+      in the data</b>.</p>
+
+      <div class="cards">
+        <article class="card">
+          <span class="no">Pillar / 01</span>
+          <h3>AI-driven onboarding discovers <em>any</em> schema</h3>
+          <p>One registration path for every system: <code>discover → map → resolve →
+          provision</code>. The pipeline introspects whatever schema it finds, maps fields to
+          canonical manufacturing concepts, resolves identity keys, and <b>creates a dynamic
+          query tool per system</b>. Entity resolution is layered — a deterministic path first,
+          then a precedent-based heuristic, then a constrained LLM classification that can even
+          <b>mint a new entity concept</b> for a genuinely novel table. Every table resolves to
+          exactly one entity, so any system can join the thread. Connections, too, are owned by
+          onboarding: the record it writes is the single source of truth, resolved dynamically
+          at connect-time — no redeploy to point at a new system.</p>
+          <span class="src">ADR-0040 (dynamic entity + identity for ANY system) · ADR-0031 (onboarding-driven connections) · docs/architecture.md (provision creates the dynamic tool)</span>
+        </article>
+
+        <article class="card">
+          <span class="no">Pillar / 02</span>
+          <h3>The graph holds <em>rules</em>, never data</h3>
+          <p>The Amazon Neptune Analytics knowledge graph is a <b>rules engine in a semantic-layer
+          position</b>: it stores which systems exist, what their fields mean, and how to
+          translate identifiers between them — concepts, field mappings, identity rules.
+          <b>Metadata only.</b> No production rows, no sensor readings, no credential values.
+          Because the engine consults these rules at question time instead of baking them in,
+          no assumption about a source's format ever hardens into code — swap the source,
+          re-onboard, and the rules change while the engine does not.</p>
+          <span class="src">docs/architecture.md (rules-engine concept) · ADR-0057 (semantic-layer positioning: "rules engine" = what's inside; "semantic layer" = where it sits)</span>
+        </article>
+
+        <article class="card">
+          <span class="no">Pillar / 03</span>
+          <h3>Crosswalks are <em>learned</em>, humans confirm</h3>
+          <p>How one system's identifiers map to another's is <b>mined from the data itself</b> —
+          same-row identifier sets and intra-system joins are captured at onboarding, and repeated
+          per-value matches observed during real questions are promoted into a single general rule
+          when enough <b>independent confirmations</b> accumulate (a count, deliberately not LLM
+          confidence). Every learned mapping enters one proposal lifecycle —
+          <code>pending → accepted / rejected / superseded</code> — and <b>auto-accept stays off
+          by default</b>: a human steward confirms before a proposal becomes applied truth in the
+          graph. User feedback and corrections flow through the very same lifecycle.</p>
+          <span class="src">ADR-0003 (unified proposal lifecycle) · ADR-0041 (onboarding-time capture) · ADR-0043 (per-value → rule promotion; auto-accept OFF)</span>
+        </article>
+
+        <article class="card">
+          <span class="no">Pillar / 04</span>
+          <h3>Domain context is <em>data</em>, not code</h3>
+          <p>What a "batch" means in your plant, which lifecycle states are bookkeeping, which
+          system is authoritative for each shared concept, what the data does <b>not</b> cover —
+          a standard <b>ten-question intake</b> captures it, and each answer lands on an engine
+          surface: business context, field annotations, identifier-semantics patterns,
+          per-concept authority rules, coverage statements. Vocabulary and semantics live in the
+          graph as steward-supplied data, so the <b>same engine</b> serves bottling, machining,
+          food, or chemicals — the domain is loaded, not programmed.</p>
+          <span class="src">docs/domain-context-intake.md (the ten questions and where each answer lands) · docs/architecture.md (concept authority written at onboarding)</span>
+        </article>
+      </div>
+
+      <!-- FIG 01 — adaptation loop -->
+      <div class="diagram">
+        <svg viewBox="0 0 880 250" role="img" aria-labelledby="fig1-title fig1-desc">
+          <title id="fig1-title">The adaptation loop: onboard, graph, ask, learn</title>
+          <desc id="fig1-desc">Flow diagram. Step one, Onboard: the AI pipeline discovers, maps,
+          resolves, and provisions any system schema. It writes rules into step two, the
+          Knowledge Graph, which holds metadata only — concepts, field mappings, and identity
+          rules. Step three, Ask: agents consult the graph's rules to query live systems and
+          answer cross-system questions. Step four, Learn: patterns observed while answering
+          become proposals that a human steward confirms, which flow back into the knowledge
+          graph — closing the loop.</desc>
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" fill="#90929c"/>
+            </marker>
+          </defs>
+          <g font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace">
+            <!-- ONBOARD -->
+            <rect x="20" y="60" width="185" height="86" fill="#1f232b" stroke="#33363f"/>
+            <path d="M20 60 h9 M20 60 v9 M205 146 h-9 M205 146 v-9" stroke="#ff8a1e" fill="none"/>
+            <text x="112" y="92" text-anchor="middle" fill="#e8e6e1" font-size="17" font-weight="700" font-family="'Saira Condensed','Arial Narrow',Arial,sans-serif">1 · ONBOARD</text>
+            <text x="112" y="114" text-anchor="middle" fill="#90929c" font-size="10">discover → map →</text>
+            <text x="112" y="129" text-anchor="middle" fill="#90929c" font-size="10">resolve → provision</text>
+            <!-- GRAPH -->
+            <rect x="250" y="60" width="185" height="86" fill="#1f232b" stroke="#ff8a1e"/>
+            <text x="342" y="92" text-anchor="middle" fill="#ff8a1e" font-size="17" font-weight="700" font-family="'Saira Condensed','Arial Narrow',Arial,sans-serif">2 · KNOWLEDGE GRAPH</text>
+            <text x="342" y="114" text-anchor="middle" fill="#90929c" font-size="10">metadata only: concepts,</text>
+            <text x="342" y="129" text-anchor="middle" fill="#90929c" font-size="10">mappings, identity rules</text>
+            <!-- ASK -->
+            <rect x="480" y="60" width="185" height="86" fill="#1f232b" stroke="#33363f"/>
+            <path d="M480 60 h9 M480 60 v9 M665 146 h-9 M665 146 v-9" stroke="#ff8a1e" fill="none"/>
+            <text x="572" y="92" text-anchor="middle" fill="#e8e6e1" font-size="17" font-weight="700" font-family="'Saira Condensed','Arial Narrow',Arial,sans-serif">3 · ASK</text>
+            <text x="572" y="114" text-anchor="middle" fill="#90929c" font-size="10">agents query live systems</text>
+            <text x="572" y="129" text-anchor="middle" fill="#90929c" font-size="10">using the graph's rules</text>
+            <!-- LEARN -->
+            <rect x="675" y="185" width="185" height="55" fill="#1f232b" stroke="#33363f"/>
+            <path d="M675 185 h9 M675 185 v9 M860 240 h-9 M860 240 v-9" stroke="#7dc98f" fill="none"/>
+            <text x="767" y="208" text-anchor="middle" fill="#e8e6e1" font-size="15" font-weight="700" font-family="'Saira Condensed','Arial Narrow',Arial,sans-serif">4 · LEARN</text>
+            <text x="767" y="226" text-anchor="middle" fill="#90929c" font-size="10">propose → steward confirms</text>
+            <!-- arrows -->
+            <line x1="205" y1="103" x2="248" y2="103" stroke="#90929c" marker-end="url(#arr)"/>
+            <text x="226" y="94" text-anchor="middle" fill="#90929c" font-size="9">writes rules</text>
+            <line x1="435" y1="103" x2="478" y2="103" stroke="#90929c" marker-end="url(#arr)"/>
+            <text x="457" y="94" text-anchor="middle" fill="#90929c" font-size="9">consults</text>
+            <path d="M665 130 h60 v53" stroke="#90929c" fill="none" marker-end="url(#arr)"/>
+            <text x="748" y="168" text-anchor="middle" fill="#90929c" font-size="9">observed patterns</text>
+            <path d="M675 212 h-333 v-64" stroke="#7dc98f" fill="none" marker-end="url(#arr)"/>
+            <text x="500" y="204" text-anchor="middle" fill="#7dc98f" font-size="9">accepted proposals become applied truth</text>
+            <!-- systems row -->
+            <text x="112" y="40" text-anchor="middle" fill="#90929c" font-size="9" letter-spacing="2">ANY SYSTEM: ERP · MES · CMMS · PLM · OT / TIME-SERIES</text>
+            <line x1="112" y1="46" x2="112" y2="58" stroke="#90929c" marker-end="url(#arr)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · ANY FORMAT ============ -->
+  <section aria-labelledby="fmt-h">
+    <div class="wrap">
+      <span class="tag">Sec. 03 — Any Format</span>
+      <h2 id="fmt-h">Identifier styles the engine never assumes</h2>
+      <p class="lede">Four identifier conventions from the bundled sample landscape — structured,
+      sequenced, model-encoded, opaque. None of them appears in engine code. Each is discovered
+      at onboarding and related to the others through <b>identity rules in the graph</b>.</p>
+
+      <div class="idstrip">
+        <div class="idcard">
+          <span class="fmt">WO-YYYYMMDD-XXXXX</span>
+          <span class="who">Bottling MES</span>
+          <span class="note">date-encoded work order</span>
+        </div>
+        <div class="idcard">
+          <span class="fmt">DET-RUN-0001</span>
+          <span class="who">Machining MES</span>
+          <span class="note">site-prefixed run sequence</span>
+        </div>
+        <div class="idcard">
+          <span class="fmt">KF2000-MKE-01</span>
+          <span class="who">CMMS asset serial</span>
+          <span class="note">MODEL-SITE-SEQ convention</span>
+        </div>
+        <div class="idcard">
+          <span class="fmt">7f3a41e2-…</span>
+          <span class="who">Opaque UUID</span>
+          <span class="note">no embedded meaning at all</span>
+        </div>
+      </div>
+
+      <div class="resolve">
+        <b>Resolved through identity rules, never guessed.</b> A confirmed crosswalk — for
+        example, a CMMS serial to another system's opaque UUID — is a precise, reusable rule in
+        the graph. Name-similarity guessing produces wrong joins; a stored rule produces the same
+        join every time.
+        <span class="rule">cmms&nbsp;assets.serial_number&nbsp;"KF2000-MKE-01" ⇄ uuid&nbsp;"7f3a…" &nbsp;·&nbsp; value_mapping → identity rule (steward-accepted)</span>
+      </div>
+      <span class="src">docs/architecture.md (data-model identifier table) · docs/domain-context-intake.md Q4 (identifier families, structured code vs opaque UUID) · ADR-0003/0043 (crosswalk proposal grains)</span>
+    </div>
+  </section>
+
+  <!-- ============ 04 · WHAT STAYS HONEST ============ -->
+  <section aria-labelledby="honest-h">
+    <div class="wrap">
+      <span class="tag">Sec. 04 — What Stays Honest</span>
+      <h2 id="honest-h">Adaptable, not credulous</h2>
+      <p class="lede">A learning engine is only trustworthy if its knowledge is inspectable and
+      its boundaries are declared. Three guarantees hold no matter what systems are connected:</p>
+
+      <ul class="honest">
+        <li>
+          <b>No production data in the graph</b>
+          <span>The graph stores how to reach systems and how to translate between them — never
+          production rows, never sensor readings, never credential values (secrets live in AWS
+          Secrets Manager; the graph carries only the ARN). "Rules engine, not a data store" is
+          the governance claim, and it is deliberately load-bearing.</span>
+        </li>
+        <li>
+          <b>Absence honesty — "no coverage" beats an invented number</b>
+          <span>Declared coverage boundaries are part of the domain context. Where the data does
+          not cover — a site without OT telemetry, an all-NULL inspection column — the engine
+          says so instead of fabricating a plausible figure. Absence is where fabrication lives;
+          declaring it is the honest answer that builds trust.</span>
+        </li>
+        <li>
+          <b>Every learned rule is reviewable, with provenance</b>
+          <span>All learned mappings pass through one proposal lifecycle with a full audit trail:
+          who or what proposed it, from which evidence, and when it was accepted, rejected, or
+          superseded. Auto-accept is off by default — applied truth in the graph is
+          steward-confirmed truth.</span>
+        </li>
+      </ul>
+      <span class="src">docs/architecture.md &amp; README (rules engine, not a data store) · ADR-0031 (secret ARN only) · docs/domain-context-intake.md Q6 (coverage / "no coverage") · ADR-0003 (proposal audit trail) · ADR-0043 (auto-accept OFF)</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer aria-labelledby="footer-h">
+  <div class="wrap">
+    <h2 id="footer-h">Go deeper</h2>
+    <ul>
+      <li><a href="../README.md"><code>README.md</code></a> — overview, quickstart, cost, and the full security table</li>
+      <li><a href="architecture.md"><code>docs/architecture.md</code></a> — stacks, data flow, the rules-engine concept, the data model</li>
+      <li><a href="onboarding.md"><code>docs/onboarding.md</code></a> — the discover → map → resolve → provision pipeline in depth</li>
+      <li><a href="self-learning.md"><code>docs/self-learning.md</code></a> — proposals, promotion, and the steward review loop</li>
+      <li><a href="domain-context-intake.md"><code>docs/domain-context-intake.md</code></a> — the ten questions and where each answer lands</li>
+    </ul>
+    <p class="disc"><b>This is a reference sample, not production-hardened software.</b> It
+    demonstrates the pattern under the MIT-0 license. All company names, product names, and
+    operational data in the bundled sample content are fictitious.</p>
+    <p class="footmark">Agentic Digital Thread · Amazon Web Services · MIT-0 · Generated from repository documentation — see docs/ for canonical sources</p>
+  </div>
+</footer>
+
+</body>
+</html>

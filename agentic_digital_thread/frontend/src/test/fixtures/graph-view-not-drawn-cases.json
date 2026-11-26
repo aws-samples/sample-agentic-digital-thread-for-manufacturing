@@ -1,0 +1,58 @@
+{
+  "_comment": "Graph Explorer left-out label counts, one shared case list. The server half (tests/unit/test_server_graph_view_not_drawn.py) runs /api/neptune/graph with `count_rows` as what the one aggregate count read returns (or `count_error` when it raises) and checks the response's `not_drawn`. The frontend half (graph-view-not-drawn-parity.test.tsx) loads that `not_drawn` through loadNeptuneGraph, renders the node legend with the real NODE_FILTERS, and checks `legend` (badge text and note per row label) and `absent` (rows that must not exist). A count that could not be read is null and must never show as 0.",
+  "cases": [
+    {
+      "id": "all-counts-read",
+      "count_rows": [{"field_count": 1922, "property_count": 840, "onboarding_log_count": 16}],
+      "not_drawn": {"Field": 1922, "Property": 840, "OnboardingLog": 16},
+      "legend": {
+        "Field": {"count": "1922", "note": "not drawn"},
+        "Onboarding Log": {"count": "16", "note": "not drawn"},
+        "Property": {"count": "840", "note": "not drawn"}
+      },
+      "absent": []
+    },
+    {
+      "id": "real-zero-counts",
+      "count_rows": [{"field_count": 0, "property_count": 0, "onboarding_log_count": 0}],
+      "not_drawn": {"Field": 0, "Property": 0, "OnboardingLog": 0},
+      "legend": {
+        "Field": {"count": "0", "note": null},
+        "Onboarding Log": {"count": "0", "note": null}
+      },
+      "absent": ["Property"]
+    },
+    {
+      "id": "count-read-failed",
+      "count_error": true,
+      "not_drawn": {"Field": null, "Property": null, "OnboardingLog": null},
+      "legend": {
+        "Field": {"count": "?", "note": "count unavailable"},
+        "Onboarding Log": {"count": "?", "note": "count unavailable"},
+        "Property": {"count": "?", "note": "count unavailable"}
+      },
+      "absent": []
+    },
+    {
+      "id": "count-read-returned-no-row",
+      "count_rows": [],
+      "not_drawn": {"Field": null, "Property": null, "OnboardingLog": null},
+      "legend": {
+        "Field": {"count": "?", "note": "count unavailable"},
+        "Onboarding Log": {"count": "?", "note": "count unavailable"}
+      },
+      "absent": []
+    },
+    {
+      "id": "one-count-unreadable",
+      "count_rows": [{"property_count": 840, "onboarding_log_count": 16}],
+      "not_drawn": {"Field": null, "Property": 840, "OnboardingLog": 16},
+      "legend": {
+        "Field": {"count": "?", "note": "count unavailable"},
+        "Onboarding Log": {"count": "16", "note": "not drawn"},
+        "Property": {"count": "840", "note": "not drawn"}
+      },
+      "absent": []
+    }
+  ]
+}

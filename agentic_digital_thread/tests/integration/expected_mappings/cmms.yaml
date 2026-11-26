@@ -1,0 +1,96 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# ─────────────────────────────────────────────────────────────────────────────
+# AUTHORED FROM DOMAIN MEANING — NEVER transcribed from observed LLM output.
+#
+# ADR-0012 integrity guardrail: this key encodes what each cmms_maintenance
+# field MEANS in the real world (read from lambda-adt-seed/004_cmms_maintenance.sql),
+# authored BLIND to what the mapper produced. A key written from model output is
+# a circular, self-fulfilling eval and is explicitly disallowed.
+#
+# Concept ids below are validated at load time against
+# agents.catalog.CORE_CONCEPTS (load_key fails fast on any unknown id).
+# All ids used here exist in CORE_CONCEPT_DEFINITIONS — no substitutions needed.
+#
+# Keys are "<bare-table>.<column>" because the eval reads se.name from the
+# audit's CYPHER_FIELD_CONCEPT (bare table name, e.g. `assets`, `work_orders`).
+# discover surfaces BOTH the perpetual-freshness views (work_orders,
+# maintenance_schedules) AND their *_raw base tables; any live field not listed
+# in `fields` and not in `ignore` is treated as OUT-OF-KEY (reported separately,
+# excluded from the accuracy denominator) so *_raw noise never fails the floor.
+# ─────────────────────────────────────────────────────────────────────────────
+system: cmms
+schema: cmms_maintenance
+
+# min fraction of scored (keyed, present, non-ignored) fields whose actual
+# concept must fall inside its acceptable set.
+overall_floor: 0.90
+# min r.confidence required on EVERY must-map tracer field.
+must_map_min_confidence: 0.60
+
+fields:
+  # ── assets ────────────────────────────────────────────────────────────────
+  # Equipment tag modeled after IBM Maximo (MKE-FILL-001): the cross-system identity anchor.
+  assets.asset_tag:          { acceptable: [equipment-id],            must_map: true }
+  # Surrogate-but-business id; equipment-id def explicitly lists asset_id.
+  assets.asset_id:           { acceptable: [equipment-id] }
+  assets.serial_number:      { acceptable: [equipment-id] }
+  assets.asset_name:         { acceptable: [equipment-id, asset-class] }
+  # Equipment class (washer/filler/cnc_machine/...).
+  assets.asset_type:         { acceptable: [asset-class],             must_map: true }
+  # operational/maintenance/decommissioned — asset lifecycle.
+  assets.operational_status: { acceptable: [lifecycle-state],         must_map: true }
+  # critical/high/medium/low.
+  assets.criticality:        { acceptable: [criticality],             must_map: true }
+  assets.facility:           { acceptable: [facility, site] }
+  # Bottling-L1 / AutoParts-L2 — the canonical cross-system production-line link;
+  # `location` is a defensible alternative reading (physical area).
+  assets.area:               { acceptable: [production-line, location] }
+  assets.manufacturer:       { acceptable: [supplier, equipment-id] }
+  assets.install_date:       { acceptable: [equipment-id, schedule] }
+
+  # ── work_orders (view) ──────────────────────────────────────────────────────
+  # WO-MKE-2026-0041 — maintenance work order number.
+  work_orders.wo_number:     { acceptable: [work-order, maintenance-event], must_map: true }
+  work_orders.wo_type:       { acceptable: [maintenance-event, work-order] }
+  work_orders.priority:      { acceptable: [criticality] }
+  work_orders.status:        { acceptable: [order-status, lifecycle-state] }
+  # INSTR-DRIFT / VIB-BEARING / SEAL-FAIL — failure mode codes.
+  work_orders.failure_code:  { acceptable: [failure-mode],            must_map: true }
+  work_orders.assigned_to:   { acceptable: [operator, personnel] }
+  work_orders.description:   { acceptable: [work-order, maintenance-event] }
+
+  # ── maintenance_schedules (view) ────────────────────────────────────────────
+  # preventive/calibration/inspection recurring schedule.
+  maintenance_schedules.maintenance_type: { acceptable: [maintenance-schedule, maintenance-event], must_map: true }
+  maintenance_schedules.frequency_days:   { acceptable: [maintenance-schedule, schedule] }
+  maintenance_schedules.next_due:         { acceptable: [maintenance-schedule, schedule] }
+  maintenance_schedules.assigned_team:    { acceptable: [operator, personnel] }
+
+  # ── spare_parts ─────────────────────────────────────────────────────────────
+  # KT-FVS-2000 — spare part number.
+  spare_parts.part_number:   { acceptable: [spare-part],             must_map: true }
+  spare_parts.part_name:     { acceptable: [spare-part] }
+  spare_parts.compatible_asset_type: { acceptable: [asset-class, spare-part] }
+  # quantity_on_hand — the S0.1 F9 MRO on-hand tracer.
+  spare_parts.quantity_on_hand: { acceptable: [mro-inventory],      must_map: true }
+  spare_parts.reorder_point: { acceptable: [mro-inventory] }
+  spare_parts.unit_cost:     { acceptable: [cost] }
+  spare_parts.supplier:      { acceptable: [supplier] }
+  spare_parts.lead_time_days: { acceptable: [schedule, spare-part] }
+
+# Surrogate / duplicate / audit-trail fields — not scored (see README rationale).
+# Any live field that is neither in `fields` nor here is OUT-OF-KEY: reported
+# separately and excluded from the denominator (covers *_raw base-table noise).
+ignore:
+  - assets.created_at
+  - assets.model_number
+  - spare_parts.part_id
+  - work_orders.work_order_id
+  - work_orders.estimated_hours
+  - work_orders.actual_hours
+  - work_orders.created_at
+  - work_orders.completed_at
+  - maintenance_schedules.schedule_id
+  - maintenance_schedules.last_performed
+  - maintenance_schedules.status

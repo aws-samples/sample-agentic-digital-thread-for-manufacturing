@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "python_locks": [
+    "requirements.txt",
+    "agentic_digital_thread/requirements/app-py312-linux-arm64.lock",
+    "agentic_digital_thread/requirements/runtime-py312-linux-arm64.lock",
+    "lambda-layers/pg8000/requirements-py312-linux-x86_64.lock",
+    "lambda-db-init/requirements-py311-linux-arm64.lock",
+    "requirements/erp-simulation-py311-linux-arm64.lock",
+    "requirements/erp-dashboard-py311-linux-arm64.lock"
+  ],
+  "python_manifests": {
+    "erp_simulation/requirements-simulation.txt": "compile input for requirements/erp-simulation-py311-linux-arm64.lock (uv pip compile, requirements/README.md); no build installs it",
+    "erp_simulation/requirements-erp-streamlit.txt": "compile input for requirements/erp-dashboard-py311-linux-arm64.lock (uv pip compile, requirements/README.md); scripts/local_dev.sh installs it into a local venv only"
+  },
+  "npm_locks": [
+    "package-lock.json",
+    "agentic_digital_thread/frontend/package-lock.json",
+    "highbyte/lambda/highbyte-setup/package-lock.json",
+    "highbyte/components/opc-server/package-lock.json"
+  ],
+  "approved_licenses": [
+    "0BSD",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "BlueOak-1.0.0",
+    "CC-BY-4.0",
+    "CC0-1.0",
+    "ISC",
+    "MIT",
+    "MIT-0",
+    "MIT-CMU",
+    "MPL-2.0",
+    "OFL-1.1",
+    "PSF-2.0",
+    "Python-2.0",
+    "Unlicense",
+    "Zlib"
+  ],
+  "denied_licenses": [
+    "AGPL-1.0-only",
+    "AGPL-3.0-only",
+    "BUSL-1.1",
+    "GPL-2.0-only",
+    "GPL-3.0-only",
+    "LGPL-3.0-only",
+    "LGPL-3.0-or-later",
+    "SSPL-1.0"
+  ],
+  "exceptions": [],
+  "metadata_overrides": {
+    "npm:dequeue==1.0.5": {
+      "license": "BSD-2-Clause",
+      "source": "npm published tarball LICENSE explicitly identifies BSD-2-Clause"
+    },
+    "npm:humanize==0.0.9": {
+      "license": "MIT",
+      "source": "npm published tarball LICENSE contains the MIT grant"
+    },
+    "npm:precond==0.2.3": {
+      "license": "MIT",
+      "source": "npm published tarball README License section identifies MIT"
+    },
+    "pypi:altair==6.3.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE contains the three-clause BSD terms"
+    },
+    "pypi:aws-requests-auth==0.4.3": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/LICENSE contains numbered three-clause BSD terms"
+    },
+    "pypi:itsdangerous==2.2.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/LICENSE.txt contains numbered three-clause BSD terms"
+    },
+    "pypi:jinja2==3.1.6": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE.txt contains numbered three-clause BSD terms"
+    },
+    "pypi:mpmath==1.3.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/LICENSE contains three-clause BSD terms"
+    },
+    "pypi:nodeenv==1.12.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE contains three-clause BSD terms"
+    },
+    "pypi:pandas==3.0.5": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/LICENSE is titled BSD 3-Clause License"
+    },
+    "pypi:prompt-toolkit==3.0.53": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE contains three-clause BSD terms"
+    },
+    "pypi:pyperclip==1.11.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE.txt contains three-clause BSD terms"
+    },
+    "pypi:pg8000==1.31.6": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE contains three-clause BSD terms; metadata License field is the free-text 'BSD 3-Clause License'"
+    },
+    "pypi:python-dateutil==2.9.0.post0": {
+      "license": "Apache-2.0 OR BSD-3-Clause",
+      "source": "wheel metadata declares dual Apache/BSD licensing; retained LICENSE files provide both grants"
+    },
+    "pypi:sympy==1.14.0": {
+      "license": "BSD-3-Clause",
+      "source": "wheel dist-info/licenses/LICENSE contains three-clause BSD terms"
+    }
+  },
+  "attributions": {
+    "npm:@fontsource-variable/outfit": "@fontsource-variable/outfit",
+    "npm:@fontsource/ibm-plex-mono": "@fontsource/ibm-plex-mono",
+    "npm:@popperjs/core": "@popperjs/core",
+    "npm:@tanstack/react-query": "@tanstack/react-query",
+    "npm:chart.js": "Chart.js",
+    "npm:cytoscape": "cytoscape",
+    "npm:cytoscape-cola": "cytoscape-cola",
+    "npm:cytoscape-popper": "cytoscape-popper",
+    "npm:dompurify": "DOMPurify",
+    "npm:marked": "marked",
+    "npm:node-opcua": "node-opcua",
+    "npm:react": "React SPA",
+    "npm:react-dom": "react-dom",
+    "npm:react-markdown": "react-markdown",
+    "npm:remark-gfm": "remark-gfm",
+    "npm:tippy.js": "tippy.js",
+    "npm:webcola": "webcola",
+    "pypi:strands-agents": "Strands Agents"
+  },
+  "attribution_files": [
+    "NOTICE",
+    "THIRD_PARTY_LICENSES"
+  ]
+}

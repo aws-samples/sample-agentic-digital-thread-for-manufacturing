@@ -1,0 +1,61 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+/* PlantClockChip (ADR-0091) — a small read-only status pill in #user-menu, before
+   the notification bell. Phase tints mirror the Workshop tab's phase bar
+   (workshop.css .workshop-phase-*). */
+
+/* The link around the chip: no underline, the chip's own border shows focus. */
+.plant-clock-chip-link {
+  display: inline-flex;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 999px;
+}
+.plant-clock-chip-link:hover .plant-clock-chip { border-color: var(--text); }
+.plant-clock-chip-link:focus-visible { outline: 2px solid var(--accent, #38bdf8); outline-offset: 2px; }
+
+.plant-clock-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.plant-clock-chip-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex: none;
+  background: var(--muted);
+}
+
+.plant-clock-chip-degrading { border-color: var(--amber, #d97706); }
+.plant-clock-chip-degrading .plant-clock-chip-dot { background: var(--amber, #d97706); }
+.plant-clock-chip-bpfo_alarm {
+  border-color: var(--red, #dc2626);
+  background: color-mix(in srgb, var(--red, #dc2626) 14%, var(--surface2));
+}
+.plant-clock-chip-bpfo_alarm .plant-clock-chip-dot { background: var(--red, #dc2626); }
+.plant-clock-chip-repair { border-color: var(--accent, #38bdf8); }
+.plant-clock-chip-repair .plant-clock-chip-dot { background: var(--accent, #38bdf8); }
+.plant-clock-chip-healthy { border-color: var(--green, #16a34a); }
+.plant-clock-chip-healthy .plant-clock-chip-dot { background: var(--green, #16a34a); }
+/* Design C: the first-sign-in auto-place failed — "not started. Ask for help." */
+.plant-clock-chip-failed {
+  border-color: var(--red, #dc2626);
+  background: color-mix(in srgb, var(--red, #dc2626) 14%, var(--surface2));
+}
+.plant-clock-chip-failed .plant-clock-chip-dot { background: var(--red, #dc2626); }
+
+@media (max-width: 900px) {
+  .plant-clock-chip { max-width: 14rem; overflow: hidden; text-overflow: ellipsis; }
+}

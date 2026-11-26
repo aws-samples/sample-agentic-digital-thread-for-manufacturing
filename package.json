@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "agentic-digital-thread",
+  "description": "Local install of the AWS CDK CLI (Node-based) used to deploy the Python CDK app. The Python construct library is installed via `pip install -r requirements.txt`.",
+  "scripts": {
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "aws-cdk": "2.1132.0"
+  }
+}

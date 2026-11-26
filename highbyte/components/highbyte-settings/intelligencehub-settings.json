@@ -1,0 +1,67 @@
+{
+  "settings" : {
+    "directories" : {
+      "appData" : null,
+      "storeForwardData" : null,
+      "configData" : null
+    },
+    "configuration" : {
+      "scheme" : "http",
+      "schemeCertificate" : "ssl-certificate-private-key",
+      "port" : 45245,
+      "centralConfig" : false,
+      "autoSaveIntervalSeconds" : 60,
+      "backupCopies" : 50
+    },
+    "hbMqttBroker" : {
+      "enabled" : true,
+      "allowAnonymous" : true,
+      "endpoints" : [ {
+        "hostname" : "0.0.0.0",
+        "port" : 1883,
+        "useSSL" : false,
+        "certificateKeyAlias" : "",
+        "protocol" : "mqtt.tcp"
+      }, {
+        "hostname" : "0.0.0.0",
+        "port" : 1884,
+        "useSSL" : false,
+        "certificateKeyAlias" : "",
+        "protocol" : "mqtt.ws"
+      } ]
+    },
+    "restDataServer" : {
+      "enabled" : true,
+      "hostname" : "0.0.0.0",
+      "port" : 8885,
+      "useHttps" : false,
+      "schemeCertificate" : "",
+      "allowAnonymous" : false,
+      "authenticationModes" : [ "API_KEY" ],
+      "mcpServerEnabled" : true,
+      "mcpConfigTools" : "disabled"
+    },
+    "log" : {
+      "debugLogging" : "NONE",
+      "fileSizeMB" : 100,
+      "logAuditEvents" : false
+    },
+    "redundancy" : {
+      "backup" : {
+        "enabled" : false,
+        "primary" : {
+          "uri" : "",
+          "pingIntervalSeconds" : 10,
+          "pingAttempts" : 1
+        }
+      }
+    },
+    "expressionEngine" : {
+      "allowExpressionEval" : false,
+      "allowEnvironmentVariables" : false,
+      "expressionEngineTimeoutSeconds" : 10,
+      "hubBindingName" : "hub",
+      "allowExpressionImports" : false
+    }
+  }
+}

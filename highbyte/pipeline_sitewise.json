@@ -1,0 +1,135 @@
+{
+  "productInfo": {
+    "company": "HighByte",
+    "product": "IntelligenceHub",
+    "version": "4.4.0",
+    "build": "2026.3.27.401",
+    "stage": "Release"
+  },
+  "project": {
+    "version": 13,
+    "connections": [],
+    "inputs": [],
+    "outputs": [],
+    "modeling": {
+      "models": [],
+      "instances": []
+    },
+    "conditions": [],
+    "functions": [],
+    "tags": [],
+    "pipelines": [
+      {
+        "name": "NameSpace_to_SiteWise",
+        "tags": [],
+        "inputStages": [
+          "readNamespace"
+        ],
+        "stages": [
+          {
+            "name": "readNamespace",
+            "display": {
+              "position": {
+                "x": 240,
+                "y": 0
+              }
+            },
+            "description": "",
+            "config": {
+              "type": ".SmartQueryConfig",
+              "query": {
+                "from": [
+                  "**"
+                ],
+                "where": "",
+                "select": {
+                  "what": [
+                    "value"
+                  ],
+                  "as": "Hierarchy",
+                  "delim": "."
+                }
+              },
+              "breakup": false
+            },
+            "outputs": [
+              "reshapePayload"
+            ]
+          },
+          {
+            "name": "reshapePayload",
+            "display": {
+              "position": {
+                "x": 690,
+                "y": 0
+              }
+            },
+            "description": "Reshape namespace into HighByte SiteWise hierarchy-keyed payload (Sites/Areas/Lines/Processes_<Model> arrays)",
+            "config": {
+              "type": ".JavaScriptTransformConfig",
+              "transformExpression": "function getModel(suffix,attrs,area){var hasPump=false;var ak=Object.keys(attrs);for(var i=0;i<ak.length;i++){if(ak[i].indexOf('Pump')>=0){hasPump=true;break;}}if(suffix==='Washer')return hasPump?'WasherPump':'Washer';if(suffix==='Filler')return hasPump?'FillerPump':'Filler';if(suffix==='Capper'||suffix==='CasePacker'||suffix==='WeighCheck'||suffix==='Labeller')return 'BottlingMachine';if(suffix==='Palletizer'){if(area&&(area.indexOf('Food')>=0||area.indexOf('Cedar')>=0))return 'FoodPalletizer';return 'BottlingMachine';}if(suffix==='Buffer'||suffix==='BufferEnd'||suffix==='BufferStart'||suffix==='Conveyor')return 'Level';if(suffix==='Environment'){var keys=Object.keys(attrs);for(var j=0;j<keys.length;j++){if(keys[j].indexOf('AmbientTemp')>=0||keys[j].indexOf('CompressedAir')>=0)return 'AutoEnvironment';if(keys[j].indexOf('RoomTemp')>=0||keys[j].indexOf('Refrigeration')>=0)return 'FoodEnvironment';}return 'FoodEnvironment';}return suffix;}var ns=event.value.AnyCompany||{};var enterprise={_name:'AnyCompany',_model:'Enterprise'};var sites=[];var siteKeys=Object.keys(ns);for(var si=0;si<siteKeys.length;si++){var siteName=siteKeys[si];var siteData=ns[siteName];if(!siteData||typeof siteData!=='object')continue;var site={_name:siteName,_model:'Site'};var areas=[];var areaKeys=Object.keys(siteData);for(var ai=0;ai<areaKeys.length;ai++){var areaName=areaKeys[ai];var areaData=siteData[areaName];if(!areaData||typeof areaData!=='object')continue;var area={_name:areaName,_model:'Area'};var lines=[];var lineKeys=Object.keys(areaData);for(var li=0;li<lineKeys.length;li++){var lineName=lineKeys[li];var lineData=areaData[lineName];if(!lineData||typeof lineData!=='object')continue;var line={_name:lineName,_model:'Line'};var procsByModel={};var procKeys=Object.keys(lineData);for(var pi=0;pi<procKeys.length;pi++){var k=procKeys[pi];var v=lineData[k];if(v!==null&&v!==undefined&&typeof v==='object'&&!Array.isArray(v)){var suffix=k.replace(new RegExp('^'+lineName),'').replace(new RegExp('[0-9]+$'),'');if(!suffix){suffix=k;}var modelName=getModel(suffix,v,areaName);var proc={_name:k,_model:modelName};var attrKeys=Object.keys(v);for(var ki=0;ki<attrKeys.length;ki++){var ak2=attrKeys[ki];var ck=ak2.replace(new RegExp('^'+k+'_?'),'');if(!ck){ck=ak2;}if(ck.charAt(0)==='_'){ck=ck.substring(1);}if(ck==='EngineeringUnits'){continue;}proc[ck]=v[ak2];}var hierKey='Processes_'+modelName;if(!procsByModel[hierKey]){procsByModel[hierKey]=[];}procsByModel[hierKey].push(proc);}}var hierNames=Object.keys(procsByModel);for(var hi=0;hi<hierNames.length;hi++){line[hierNames[hi]]=procsByModel[hierNames[hi]];}lines.push(line);}area['Lines']=lines;areas.push(area);}site['Areas']=areas;sites.push(site);}enterprise['Sites']=sites;stage.setValue(enterprise);"
+            },
+            "outputs": [
+              "writeSiteWise"
+            ]
+          },
+          {
+            "name": "writeSiteWise",
+            "display": {
+              "position": {
+                "x": 1140,
+                "y": 0
+              }
+            },
+            "description": "Write full hierarchy to SiteWise using _name/_model payload format",
+            "config": {
+              "type": ".DynamicWriteConfig",
+              "failureOutputs": [],
+              "connectionReference": "{{Connection.SIteWise}}",
+              "qualifier": {
+                "breakupArrays": false,
+                "create": true,
+                "connectionType": "aws.iotsitewise",
+                "timestamp": "",
+                "writePath": "realtime"
+              },
+              "qualifierExpression": "",
+              "writeReturn": "ignore"
+            },
+            "outputs": []
+          }
+        ],
+        "trackActivity": false,
+        "triggers": [
+          {
+            "name": "every5Seconds",
+            "display": {
+              "position": {
+                "x": -450,
+                "y": 0
+              }
+            },
+            "description": "",
+            "config": {
+              "type": ".TriggerPolled",
+              "enabled": false,
+              "interval": {
+                "duration": 5,
+                "units": "Seconds"
+              },
+              "mode": "interval"
+            }
+          }
+        ],
+        "errorHandler": {
+          "type": "default"
+        }
+      }
+    ],
+    "namespace": []
+  },
+  "network": {
+    "groups": [],
+    "hubs": []
+  }
+}

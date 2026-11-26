@@ -1,0 +1,147 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+   SPDX-License-Identifier: MIT-0 */
+/* Agent Analysis panel (chat/analysis-panel.tsx). Formerly inline styles;
+   only the data-driven segment width/colour stays inline. Theme tokens only.
+   Neutral composition: no pass/fail colouring of counts. */
+
+.analysis-box {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.analysis-help { cursor: help; }
+.analysis-caption {
+  cursor: help;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Stacked distribution bar + legend. */
+.analysis-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface3);
+  margin-bottom: 0.5rem;
+}
+.analysis-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-bottom: 0.6rem;
+}
+.analysis-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--text2);
+}
+.analysis-legend-swatch {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.analysis-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  color: var(--text2);
+  font-size: 0.75rem;
+}
+.analysis-stat-graph { color: var(--accent2); }
+.analysis-stat-muted { color: var(--muted); }
+
+/* Knowledge-graph contribution. */
+.analysis-kg-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.analysis-kg-header .analysis-caption { margin-bottom: 0; }
+.analysis-part { margin-bottom: 0.4rem; }
+.analysis-part-label {
+  cursor: help;
+  color: var(--muted);
+  font-size: 0.7rem;
+  margin-right: 0.5rem;
+}
+.analysis-part-counts {
+  color: var(--text2);
+  font-size: 0.75rem;
+}
+.analysis-chips { margin-top: 0.2rem; }
+.analysis-chip {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  margin: 0.15rem 0.3rem 0.15rem 0;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--text2);
+  text-decoration: none;
+}
+.cost-chip.analysis-chip { margin: 0; }
+.analysis-chip-link {
+  color: var(--accent2);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+.analysis-chip-link:hover { border-color: var(--accent2); }
+.analysis-chip-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Post-query review. */
+.analysis-review-summary {
+  color: var(--text2);
+  margin-bottom: 0.6rem;
+}
+.analysis-review-steps { margin-top: 0.5rem; }
+.analysis-review-steps-title {
+  font-weight: 600;
+  color: var(--amber);
+  margin-bottom: 0.3rem;
+}
+.analysis-review-step {
+  padding: 0.3rem 0.5rem;
+  margin-bottom: 0.3rem;
+  background: var(--surface3);
+  border-left: 2px solid var(--amber);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.75rem;
+  color: var(--text2);
+}
+.analysis-suggestion-label { color: var(--green); }
+
+/* Self-Learning call-outs (schema hints, new optimizations). */
+.analysis-callout {
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface3);
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+.analysis-callout-hints { color: var(--amber); border-color: var(--amber); }
+.analysis-callout-optimizations {
+  margin-top: 0.75rem;
+  color: var(--accent2);
+  border-color: var(--accent2);
+}
+.analysis-callout-link {
+  color: inherit;
+  text-decoration: underline;
+}
+.analysis-callout-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

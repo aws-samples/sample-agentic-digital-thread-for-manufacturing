@@ -1,0 +1,38 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# Lambda Container Dockerfile for ERP Seed Data Deployer
+# This container seeds reference data and runs database migrations
+#
+# Build context should be the app/ directory in the distribution package
+# Usage: finch build -f Dockerfile.seed -t erp-seed:latest .
+#
+# checkov:skip=CKV_DOCKER_2: AWS Lambda manages container health checks internally
+# checkov:skip=CKV_DOCKER_3: AWS Lambda runs containers as a managed sandbox user (sbx_user1051)
+
+# Digest-pinned (manifest list) for reproducible builds: the list the 3.11 tag served on 2026-10-12.
+FROM public.ecr.aws/lambda/python:3.11@sha256:67d572c2eb30da5fdaa720bcdc56460cb4d1a54ef8c980c70eafc5f799cb1e96
+
+# No system build deps needed: the PostgreSQL client is pg8000 (pure Python),
+# so gcc/postgresql-devel are unnecessary. This also keeps the build free of the
+# Amazon Linux OS package mirrors, which are unreachable when building off-EC2.
+
+# Install the exact Python 3.11 ARM64 deployment lock; direct requirements remain
+# the human-maintained resolver input.
+COPY requirements/erp-simulation-py311-linux-arm64.lock /tmp/requirements.lock
+RUN pip install --no-cache-dir --require-hashes --only-binary=:all: \
+    -r /tmp/requirements.lock
+
+# Copy the erp_simulation module (includes seed_data.py, database.py, migrations/)
+COPY erp_simulation/ ${LAMBDA_TASK_ROOT}/erp_simulation/
+
+# Copy lambda-db-init handler (single source of truth for all seed data)
+COPY lambda-db-init/handler.py ${LAMBDA_TASK_ROOT}/lambda-db-init/handler.py
+
+# Copy Lambda handler
+COPY lambda_/lambda_seed_data.py ${LAMBDA_TASK_ROOT}/
+
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Set the Lambda handler
+CMD ["lambda_seed_data.lambda_handler"]

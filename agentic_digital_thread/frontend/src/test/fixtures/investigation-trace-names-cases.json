@@ -1,0 +1,303 @@
+{
+  "_comment": "Investigation trace card naming cases. Each is a stored final answer (`answer`) and the names the graph gives its ids (`names`). The trace route returns the answer as stored plus `final_answer_names`, the names of the ids in it (tests/unit/test_investigation_trace_card_names.py); the card applies them after the markdown is parsed (frontend/src/test/investigation-trace-names.test.tsx). The card must render the named answer with exactly the elements of the stored answer, show every `shown` string as text and no `absent` string. `chat_trace`, on single-paragraph prose answers, is both what the chat trace's `id_name_resolver.annotate_ids_in_text` makes of the answer and the text the card shows, so the two views name ids one way. Ids and names are made up.",
+  "cases": [
+    {
+      "id": "sample-line",
+      "answer": "Inlet pressure held between 4.1 and 4.3 bar.\n\n[engine] Telemetry samples, not every value: 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c / 7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d: 3 of 720 values read returned (first, last, lowest and highest value read included, the rest at evenly spaced positions in the series).",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4",
+        "7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d": "Inlet Pressure"
+      },
+      "shown": [
+        "Telemetry samples, not every value: Test Rig 4 (5f2c8e1a…) / Inlet Pressure (7a9b0c1d…): 3 of 720"
+      ],
+      "absent": [
+        "5f2c8e1a-0b3d",
+        "7a9b0c1d-2e3f"
+      ]
+    },
+    {
+      "id": "plain-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "Asset Test Rig 4 (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset Test Rig 4 (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "name-holding-another-id",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reads 7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Rig 7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d",
+        "7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d": "Inlet Pressure"
+      },
+      "shown": [
+        "Asset Rig 7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d (5f2c8e1a…) reads Inlet Pressure (7a9b0c1d…)."
+      ],
+      "chat_trace": "Asset Rig 7a9b0c1d-2e3f-4a5b-8c6d-9e0f1a2b3c4d (5f2c8e1a…) reads Inlet Pressure (7a9b0c1d…)."
+    },
+    {
+      "id": "url-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "https://rigs.example/rig-4"
+      },
+      "shown": [
+        "Asset https://rigs.example/rig-4 (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset https://rigs.example/rig-4 (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "www-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "www.rigs.example"
+      },
+      "shown": [
+        "Asset www.rigs.example (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset www.rigs.example (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "email-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "rig4@rigs.example"
+      },
+      "shown": [
+        "Asset rig4@rigs.example (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset rig4@rigs.example (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "utc-time-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "2026-10-27 12:00 UTC"
+      },
+      "shown": [
+        "Asset 2026-10-27 12:00 UTC (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset 2026-10-27 12:00 UTC (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "bold-name",
+      "answer": "Rig 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c stopped at the second stage.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "**Rig** 4"
+      },
+      "shown": [
+        "Rig **Rig** 4 (5f2c8e1a…) stopped at the second stage."
+      ],
+      "chat_trace": "Rig **Rig** 4 (5f2c8e1a…) stopped at the second stage."
+    },
+    {
+      "id": "link-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "[x](y)"
+      },
+      "shown": [
+        "Asset [x](y) (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset [x](y) (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "backtick-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Rig `4`"
+      },
+      "shown": [
+        "Asset Rig `4` (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset Rig `4` (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "chart-tag-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "<chart-block type=\"line\" />"
+      },
+      "shown": [
+        "Asset <chart-block type=\"line\" /> (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset <chart-block type=\"line\" /> (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "entity-name",
+      "answer": "Asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c reported a fault.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "R&amp;D Rig"
+      },
+      "shown": [
+        "Asset R&amp;D Rig (5f2c8e1a…) reported a fault."
+      ],
+      "chat_trace": "Asset R&amp;D Rig (5f2c8e1a…) reported a fault."
+    },
+    {
+      "id": "heading-start-name",
+      "answer": "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c is idle.\n\nThe other rigs are running.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "# Rig 4"
+      },
+      "shown": [
+        "# Rig 4 (5f2c8e1a…) is idle."
+      ]
+    },
+    {
+      "id": "list-start-name",
+      "answer": "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c is idle.\n\nThe other rigs are running.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "1. Rig 4"
+      },
+      "shown": [
+        "1. Rig 4 (5f2c8e1a…) is idle."
+      ]
+    },
+    {
+      "id": "table-cell-pipe-name",
+      "answer": "| asset | state |\n| --- | --- |\n| 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c | idle |",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Rig | 4"
+      },
+      "shown": [
+        "Rig | 4 (5f2c8e1a…)"
+      ]
+    },
+    {
+      "id": "line-break-name",
+      "answer": "| asset | state |\n| --- | --- |\n| 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c | idle |",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Rig 4\n\n# Hall B"
+      },
+      "shown": [
+        "Rig 4\n\n# Hall B (5f2c8e1a…)"
+      ]
+    },
+    {
+      "id": "marked-name-in-code-span",
+      "answer": "Asset `5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c` is idle.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Rig `4` **now**"
+      },
+      "shown": [
+        "Rig `4` **now** (5f2c8e1a…)"
+      ]
+    },
+    {
+      "id": "marked-name-in-fenced-code",
+      "answer": "Rows read:\n\n```text\n5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c,idle\n```",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "[x](y) ```"
+      },
+      "shown": [
+        "[x](y) ``` (5f2c8e1a…),idle"
+      ]
+    },
+    {
+      "id": "id-in-link-text",
+      "answer": "See [asset 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c](https://plant.example/assets) now.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "https://rigs.example/rig-4"
+      },
+      "shown": [
+        "See asset https://rigs.example/rig-4 (5f2c8e1a…) now."
+      ]
+    },
+    {
+      "id": "id-in-link-destination",
+      "answer": "See [the asset](https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c) now.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "See the asset now."
+      ],
+      "absent": [
+        "Test Rig 4"
+      ]
+    },
+    {
+      "id": "id-in-autolink",
+      "answer": "See <https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c> now.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "See https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c now."
+      ],
+      "absent": [
+        "Test Rig 4"
+      ]
+    },
+    {
+      "id": "id-in-literal-url",
+      "answer": "See https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c now.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "See https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c now."
+      ],
+      "absent": [
+        "Test Rig 4"
+      ]
+    },
+    {
+      "id": "id-in-image-alt",
+      "answer": "Rig photo: ![rig 5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c](https://plant.example/rig.png) on file.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "Rig photo: rig Test Rig 4 (5f2c8e1a…) on file."
+      ],
+      "absent": [
+        "5f2c8e1a-0b3d"
+      ]
+    },
+    {
+      "id": "id-label-is-destination-suffix",
+      "answer": "See [5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c](https://plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c) now.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "See Test Rig 4 (5f2c8e1a…) now."
+      ],
+      "absent": [
+        "5f2c8e1a-0b3d"
+      ]
+    },
+    {
+      "id": "id-in-uppercase-www-literal",
+      "answer": "Open WWW.plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c for the record.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "Open WWW.plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c for the record."
+      ],
+      "absent": [
+        "Test Rig 4"
+      ]
+    },
+    {
+      "id": "id-in-mixed-case-www-literal",
+      "answer": "Open Www.plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c for the record.",
+      "names": {
+        "5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c": "Test Rig 4"
+      },
+      "shown": [
+        "Open Www.plant.example/assets/5f2c8e1a-0b3d-4c6e-9a7f-1d2e3f4a5b6c for the record."
+      ],
+      "absent": [
+        "Test Rig 4"
+      ]
+    }
+  ]
+}

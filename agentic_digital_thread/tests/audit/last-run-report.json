@@ -1,0 +1,235 @@
+{
+  "status": "pass",
+  "target_system": "cmms",
+  "requested_system_id": "cmms",
+  "auto_picked": false,
+  "graph_identifier": "g-example1234",
+  "aws_region": "us-east-1",
+  "field_concept": {
+    "pass": true,
+    "cypher": "MATCH (s:System {id:$sid})-[:HAS_SCHEMA]->(se:SchemaEntry)-[:HAS_FIELD]->(f:Field)-[r:MAPS_TO]->(c:Concept) RETURN se.name AS table, f.name AS column, c.id AS concept, r.role AS role, r.confidence AS confidence",
+    "system_id": "cmms",
+    "count": 61,
+    "distinct_concepts": [
+      "asset-class",
+      "cost",
+      "criticality",
+      "equipment-id",
+      "failure-mode",
+      "inventory-level",
+      "lifecycle-state",
+      "location",
+      "maintenance-event",
+      "maintenance-schedule",
+      "personnel",
+      "spare-part",
+      "supplier",
+      "work-order"
+    ],
+    "distinct_concept_count": 14,
+    "rows_missing_role": 0,
+    "rows_missing_confidence": 0,
+    "sample": [
+      {
+        "table": "spare_parts",
+        "column": "quantity_on_hand",
+        "concept": "inventory-level",
+        "role": "measure",
+        "confidence": 0.9
+      },
+      {
+        "table": "spare_parts",
+        "column": "part_name",
+        "concept": "spare-part",
+        "role": "correlate",
+        "confidence": 0.8
+      },
+      {
+        "table": "spare_parts",
+        "column": "unit_cost",
+        "concept": "cost",
+        "role": "measure",
+        "confidence": 0.9
+      },
+      {
+        "table": "maintenance_schedules",
+        "column": "asset_id",
+        "concept": "equipment-id",
+        "role": "correlate",
+        "confidence": 0.9
+      },
+      {
+        "table": "work_orders_raw",
+        "column": "asset_id",
+        "concept": "equipment-id",
+        "role": "identifier",
+        "confidence": 1
+      }
+    ]
+  },
+  "authority": {
+    "pass": true,
+    "cypher": "MATCH (ar:AuthorityRule)-[:APPLIES_TO]->(s:System {id:$sid}) RETURN ar.concept, ar.system_id, ar.rule, ar.priority",
+    "system_id": "cmms",
+    "count": 10,
+    "rule_concepts": [
+      "asset-class",
+      "criticality",
+      "equipment-id",
+      "failure-mode",
+      "lifecycle-state",
+      "location",
+      "maintenance-event",
+      "maintenance-schedule",
+      "personnel",
+      "spare-part"
+    ],
+    "resolvable_to_mapped_concepts": [
+      "asset-class",
+      "criticality",
+      "equipment-id",
+      "failure-mode",
+      "lifecycle-state",
+      "location",
+      "maintenance-event",
+      "maintenance-schedule",
+      "personnel",
+      "spare-part"
+    ],
+    "queryable_by_property": true,
+    "queryable_by_edge": false,
+    "about_concept_edge_count": 0,
+    "rules": [
+      {
+        "concept": "spare-part",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for spare-part at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "asset-class",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for asset-class at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "location",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for location at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "maintenance-event",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for maintenance-event at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "personnel",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for personnel at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "failure-mode",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for failure-mode at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "lifecycle-state",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for lifecycle-state at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "maintenance-schedule",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for maintenance-schedule at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "equipment-id",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for equipment-id at All Sites",
+        "priority": 1
+      },
+      {
+        "concept": "criticality",
+        "system_id": "cmms",
+        "rule": "CMMS is the authoritative source for criticality at All Sites",
+        "priority": 1
+      }
+    ]
+  },
+  "joins": {
+    "pass": true,
+    "cypher": "MATCH (jp:JoinPath) WHERE jp.from_system=$sid OR jp.to_system=$sid RETURN jp.from_system, jp.from_table, jp.from_field, jp.to_system, jp.to_table, jp.to_field",
+    "system_id": "cmms",
+    "count": 5,
+    "property_count": 5,
+    "from_system_edge_count": 5,
+    "to_system_edge_count": 5,
+    "edge_count": 10,
+    "property_edge_agreement": true,
+    "joins": [
+      {
+        "from_system": "cmms",
+        "from_table": "cmms_maintenance.maintenance_schedules_raw",
+        "from_field": "asset_id",
+        "to_system": "cmms",
+        "to_table": "cmms_maintenance.assets",
+        "to_field": "asset_id"
+      },
+      {
+        "from_system": "cmms",
+        "from_table": "cmms_maintenance.work_orders",
+        "from_field": "asset_id",
+        "to_system": "cmms",
+        "to_table": "cmms_maintenance.assets",
+        "to_field": "asset_id"
+      },
+      {
+        "from_system": "cmms",
+        "from_table": "cmms_maintenance.maintenance_schedules",
+        "from_field": "asset_id",
+        "to_system": "cmms",
+        "to_table": "cmms_maintenance.assets",
+        "to_field": "asset_id"
+      },
+      {
+        "from_system": "cmms",
+        "from_table": "cmms_maintenance.work_orders_raw",
+        "from_field": "work_order_id",
+        "to_system": "cmms",
+        "to_table": "cmms_maintenance.work_orders",
+        "to_field": "work_order_id"
+      },
+      {
+        "from_system": "cmms",
+        "from_table": "cmms_maintenance.work_orders_raw",
+        "from_field": "asset_id",
+        "to_system": "cmms",
+        "to_table": "cmms_maintenance.assets",
+        "to_field": "asset_id"
+      }
+    ]
+  },
+  "identity_rule_edge_probe": {
+    "system_id": "cmms",
+    "resolves_edge_count": 0,
+    "links_concept_edge_count": 0,
+    "cypher_resolves": "MATCH (:IdentityRule)-[:RESOLVES]->(:Concept) RETURN count(*) AS n",
+    "cypher_links_concept": "MATCH (:IdentityRule)-[:LINKS_CONCEPT]->(:Concept) RETURN count(*) AS n",
+    "note": "resolve.py reads RESOLVES; onboard.py/server.py/self_learning.py write LINKS_CONCEPT. A nonzero LINKS_CONCEPT with zero RESOLVES indicates the resolver would not find identity rules \u2014 candidate ADR/CONTEXT finding."
+  },
+  "value_read": {
+    "system_id": "cmms",
+    "table": "spare_parts",
+    "column": "quantity_on_hand",
+    "concept": "inventory-level",
+    "schema": "cmms_maintenance",
+    "value": null,
+    "reason": "OperationalError: connection to server at \"localhost\" (::1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\nconnection to server at \"localhost\" (127.0.0.1), port 5432 failed: Connection refused\n\tIs the server running on that host and accepting TCP/IP connections?\n"
+  }
+}

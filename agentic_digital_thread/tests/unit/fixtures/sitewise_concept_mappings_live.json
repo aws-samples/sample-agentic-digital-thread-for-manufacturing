@@ -1,0 +1,1265 @@
+{
+ "source": "concept mappings of the onboarded workshop SiteWise system, as the graph serves them",
+ "items": [
+  {
+   "concept": "scrap-waste",
+   "field": "Assembly.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Assembly.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Assembly.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Assembly.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "Assembly.TorqueTarget",
+   "role": "measure"
+  },
+  {
+   "concept": "torque",
+   "field": "Assembly.TorqueValue",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Assembly.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Assembly._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Assembly._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Assembly._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "temperature",
+   "field": "AutoEnvironment.AmbientTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "pressure",
+   "field": "AutoEnvironment.CompressedAirPressure",
+   "role": "measure"
+  },
+  {
+   "concept": "humidity",
+   "field": "AutoEnvironment.Humidity",
+   "role": "measure"
+  },
+  {
+   "concept": "production-line",
+   "field": "AutoEnvironment._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "production-line",
+   "field": "AutoEnvironment._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "BottlingMachine.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "BottlingMachine.Blocked",
+   "role": "correlate"
+  },
+  {
+   "concept": "machine-state",
+   "field": "BottlingMachine.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "BottlingMachine.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "BottlingMachine.Starved",
+   "role": "correlate"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "BottlingMachine.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "BottlingMachine._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "BottlingMachine._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "BottlingMachine._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "bath-concentration",
+   "field": "CIP.ChemConcentration",
+   "role": "measure"
+  },
+  {
+   "concept": "cycle-time",
+   "field": "CIP.Duration",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "CIP.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "CIP.Temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "CIP._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "CIP._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.BPFI_Hz",
+   "role": "measure"
+  },
+  {
+   "concept": "alarm",
+   "field": "CNC.BPFO_Alarm",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.BPFO_Hz",
+   "role": "measure"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "CNC.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "flow-rate",
+   "field": "CNC.CoolantFlowRate",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "CNC.CoolantTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "cycle-time",
+   "field": "CNC.CycleTime",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "CNC.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "feed-rate",
+   "field": "CNC.FeedRate",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "CNC.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "hydraulic-pressure",
+   "field": "CNC.HydraulicPressure",
+   "role": "measure"
+  },
+  {
+   "concept": "power-consumption",
+   "field": "CNC.PowerConsumption",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Spectrum_1X",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Spectrum_BPFI",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Spectrum_BPFO",
+   "role": "measure"
+  },
+  {
+   "concept": "spindle-speed",
+   "field": "CNC.SpindleSpeed",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "CNC.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "tool-life",
+   "field": "CNC.ToolChangeEvent",
+   "role": "correlate"
+  },
+  {
+   "concept": "tool-life",
+   "field": "CNC.ToolLifeRemaining",
+   "role": "measure"
+  },
+  {
+   "concept": "tool-position",
+   "field": "CNC.ToolPosition_X",
+   "role": "measure"
+  },
+  {
+   "concept": "tool-position",
+   "field": "CNC.ToolPosition_Y",
+   "role": "measure"
+  },
+  {
+   "concept": "tool-position",
+   "field": "CNC.ToolPosition_Z",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "CNC.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Vibration_X",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Vibration_Y",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "CNC.Vibration_Z",
+   "role": "measure"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "CNC._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "inspection-result",
+   "field": "CheckWeigher.Pass",
+   "role": "measure"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "CheckWeigher.RejectCount",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "CheckWeigher.TargetWeight",
+   "role": "measure"
+  },
+  {
+   "concept": "fill-weight",
+   "field": "CheckWeigher.Weight",
+   "role": "measure"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Cooler.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Cooler.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Cooler.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Cooler.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Cooler.Temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Cooler.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Cooler._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Extruder.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Extruder.DieTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Extruder.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Extruder.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "pressure",
+   "field": "Extruder.Pressure",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "Extruder.ScrewSpeed",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Extruder.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Extruder.TempZone1",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Extruder.TempZone2",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Extruder.TempZone3",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Extruder.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Extruder._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Extruder._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Extruder._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "FillerPump.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "failure-mode",
+   "field": "FillerPump.Blocked",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "FillerPump.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "FillerPump.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_motor_journal_bearing_de_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_motor_journal_bearing_de_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_motor_journal_bearing_de_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_motor_journal_bearing_nde_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_motor_journal_bearing_nde_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_motor_journal_bearing_nde_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "FillerPump.Pump_pump_general_speed",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_pump_journal_bearing_de_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_journal_bearing_de_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_journal_bearing_de_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_pump_journal_bearing_nde_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_journal_bearing_nde_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_journal_bearing_nde_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "flow-rate",
+   "field": "FillerPump.Pump_pump_process_flow",
+   "role": "measure"
+  },
+  {
+   "concept": "pressure",
+   "field": "FillerPump.Pump_pump_process_inlet_pressure",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_pump_process_oil_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_pump_thrust_bearing_active_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_thrust_bearing_axial_position_1",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "FillerPump.Pump_pump_thrust_bearing_axial_position_2",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FillerPump.Pump_pump_thrust_bearing_inactive_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "failure-mode",
+   "field": "FillerPump.Starved",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "FillerPump.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "FillerPump._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "FillerPump._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "FillerPump._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "humidity",
+   "field": "FoodEnvironment.Humidity",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FoodEnvironment.RefrigerationTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "FoodEnvironment.RoomTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "production-line",
+   "field": "FoodEnvironment._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "production-line",
+   "field": "FoodEnvironment._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "FoodPalletizer.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "FoodPalletizer.Blocked",
+   "role": "correlate"
+  },
+  {
+   "concept": "machine-state",
+   "field": "FoodPalletizer.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "FoodPalletizer.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "FoodPalletizer.Starved",
+   "role": "correlate"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "FoodPalletizer.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "FoodPalletizer._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "FoodPalletizer._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "FoodPalletizer._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP.AllergenVerified",
+   "role": "measure"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP.CriticalTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP.LabelVerified",
+   "role": "measure"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP.PackageIntegrity",
+   "role": "measure"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP.TempCompliant",
+   "role": "measure"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "food-safety",
+   "field": "HACCP._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "HeatTreat.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "HeatTreat.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "HeatTreat.FurnaceTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "HeatTreat.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "HeatTreat.QuenchTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "cycle-time",
+   "field": "HeatTreat.SoakTime",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "HeatTreat.Status",
+   "role": "correlate"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "HeatTreat.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "Level.Level",
+   "role": "measure"
+  },
+  {
+   "concept": "production-line",
+   "field": "Line._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "inspection-result",
+   "field": "MetalDetect.Pass",
+   "role": "measure"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "MetalDetect.RejectCount",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "MetalDetect.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection",
+   "field": "MetalDetect.TotalScanned",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "MetalDetect._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "MetalDetect._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "MetalDetect._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Mixer.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "batch",
+   "field": "Mixer.BatchWeight",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Mixer.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Mixer.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "cycle-time",
+   "field": "Mixer.MixTime",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "Mixer.Speed",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Mixer.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Mixer.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Mixer._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Mixer._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Mixer._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "availability",
+   "field": "OEE.Availability",
+   "role": "measure"
+  },
+  {
+   "concept": "oee-score",
+   "field": "OEE.Overall",
+   "role": "measure"
+  },
+  {
+   "concept": "performance",
+   "field": "OEE.Performance",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-yield-rate",
+   "field": "OEE.Quality",
+   "role": "measure"
+  },
+  {
+   "concept": "oee-score",
+   "field": "OEE._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "oee-score",
+   "field": "OEE._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Oven.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "Oven.ConveyorSpeed",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Oven.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Oven.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Oven.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Oven.Temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Oven.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Oven._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Packager.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packager.Blocked",
+   "role": "correlate"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packager.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "fill-weight",
+   "field": "Packager.FillWeight",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Packager.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "pressure",
+   "field": "Packager.SealPressure",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "Packager.SealTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "Packager.Speed",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packager.Starved",
+   "role": "correlate"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packager.Status",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Packager.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Packager._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "asset-class",
+   "field": "Packager._path",
+   "role": "correlate"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Packager._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Packaging.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packaging.Blocked",
+   "role": "correlate"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packaging.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Packaging.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Packaging.Starved",
+   "role": "correlate"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Packaging.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "production-line",
+   "field": "Packaging._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "production-line",
+   "field": "Packaging._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "inspection",
+   "field": "QualityInspect.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "defect-type",
+   "field": "QualityInspect.DefectCode",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "QualityInspect.DimensionX",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "QualityInspect.DimensionY",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "QualityInspect.DimensionZ",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-yield-rate",
+   "field": "QualityInspect.FirstPassYield",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection",
+   "field": "QualityInspect.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "specification",
+   "field": "QualityInspect.SurfaceFinish_Ra",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection-result",
+   "field": "QualityInspect.TolerancePass",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection",
+   "field": "QualityInspect.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection",
+   "field": "QualityInspect._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "inspection",
+   "field": "QualityInspect._path",
+   "role": "identifier"
+  },
+  {
+   "concept": "site",
+   "field": "Site._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "SurfaceTreat.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "bath-concentration",
+   "field": "SurfaceTreat.BathConcentration",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "SurfaceTreat.BathTemp",
+   "role": "measure"
+  },
+  {
+   "concept": "coating-thickness",
+   "field": "SurfaceTreat.CoatingThickness",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "SurfaceTreat.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "SurfaceTreat.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "SurfaceTreat.Status",
+   "role": "correlate"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "SurfaceTreat.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "Washer.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "Washer.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "Washer.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "Washer.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "Washer._hierarchyName",
+   "role": "correlate"
+  },
+  {
+   "concept": "scrap-waste",
+   "field": "WasherPump.Bad",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-state",
+   "field": "WasherPump.Down",
+   "role": "measure"
+  },
+  {
+   "concept": "quality-metric",
+   "field": "WasherPump.Good",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_motor_journal_bearing_de_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_motor_journal_bearing_de_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_motor_journal_bearing_de_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_motor_journal_bearing_nde_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_motor_journal_bearing_nde_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_motor_journal_bearing_nde_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "machine-speed",
+   "field": "WasherPump.Pump_pump_general_speed",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_pump_journal_bearing_de_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_journal_bearing_de_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_journal_bearing_de_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_pump_journal_bearing_nde_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_journal_bearing_nde_x_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_journal_bearing_nde_y_displacement",
+   "role": "measure"
+  },
+  {
+   "concept": "flow-rate",
+   "field": "WasherPump.Pump_pump_process_flow",
+   "role": "measure"
+  },
+  {
+   "concept": "pressure",
+   "field": "WasherPump.Pump_pump_process_inlet_pressure",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_pump_process_oil_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_pump_thrust_bearing_active_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_thrust_bearing_axial_position_1",
+   "role": "measure"
+  },
+  {
+   "concept": "vibration",
+   "field": "WasherPump.Pump_pump_thrust_bearing_axial_position_2",
+   "role": "measure"
+  },
+  {
+   "concept": "temperature",
+   "field": "WasherPump.Pump_pump_thrust_bearing_inactive_temperature",
+   "role": "measure"
+  },
+  {
+   "concept": "actual-quantity",
+   "field": "WasherPump.Total",
+   "role": "measure"
+  },
+  {
+   "concept": "site",
+   "field": "asset_hierarchy.area_name",
+   "role": "identifier"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "asset_hierarchy.asset_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "asset-class",
+   "field": "asset_hierarchy.asset_model",
+   "role": "correlate"
+  },
+  {
+   "concept": "production-line",
+   "field": "asset_hierarchy.line_name",
+   "role": "identifier"
+  },
+  {
+   "concept": "equipment-id",
+   "field": "asset_hierarchy.process_name",
+   "role": "identifier"
+  },
+  {
+   "concept": "site",
+   "field": "asset_hierarchy.site_name",
+   "role": "identifier"
+  }
+ ]
+}

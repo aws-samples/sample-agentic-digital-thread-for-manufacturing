@@ -1,0 +1,120 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. */
+/* SPDX-License-Identifier: MIT-0 */
+/* NotificationBell styles — same trigger/panel treatment as user-menu.css
+   (right-anchored dropdown off the header), scoped under .notif-*. */
+
+.notif-bell {
+  position: relative; /* anchor for the right-aligned dropdown */
+  display: inline-flex;
+  margin-right: 0.5rem;
+}
+
+.notif-bell-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.notif-bell-trigger:hover,
+.notif-bell-trigger[aria-expanded="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.notif-bell-trigger svg { display: block; flex-shrink: 0; }
+
+.notif-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  box-sizing: border-box;
+}
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 280px;
+  max-width: 360px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 0.4rem;
+  z-index: 1200;
+  animation: item-enter-motion var(--motion-fast) var(--ease-enter) both;
+}
+.notif-dropdown[hidden] { display: none; }
+
+.notif-section {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  padding: 0.4rem 0.6rem 0.25rem;
+}
+
+.notif-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  border-radius: 6px;
+  color: var(--text2);
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+a.notif-item:hover {
+  background: var(--surface3);
+  color: var(--text);
+}
+.notif-item-label { flex: 1; }
+
+.notif-meta,
+.notif-state {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.notif-state-running { color: var(--accent); }
+.notif-state-done { color: var(--ok, #3fb950); }
+.notif-state-error { color: var(--danger, #f85149); }
+
+.notif-empty {
+  color: var(--muted);
+  font-size: 0.8rem;
+  padding: 0.75rem 0.6rem;
+  text-align: center;
+}
+
+.notif-unavailable {
+  color: var(--muted);
+  font-size: 0.68rem;
+  padding: 0.4rem 0.6rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.35rem;
+}

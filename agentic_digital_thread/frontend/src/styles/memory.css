@@ -1,0 +1,459 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved. SPDX-License-Identifier: MIT-0 */
+/* Agentic Digital Thread — Memory Sidebar */
+
+.memory-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.2s ease;
+  position: relative;
+  z-index: 20;
+}
+
+.memory-sidebar.collapsed {
+  width: 0;
+  border-left: none;
+}
+
+.memory-toggle-btn {
+  /* now handled by .sidebar-toggles in base.css */
+}
+
+.memory-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.memory-header span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex: 1;
+}
+
+.memory-header-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex: 1;
+}
+
+.memory-header button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.memory-header button:hover { color: var(--accent); border-color: var(--accent); }
+
+.memory-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.memory-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  text-transform: capitalize;
+}
+
+.memory-tab:hover { color: var(--text); }
+
+.memory-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.memory-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.memory-event {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.memory-role {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  align-self: flex-start;
+}
+
+.memory-role--user { background: rgba(88,166,255,0.15); color: var(--accent2); }
+.memory-role--assistant { background: rgba(0,216,255,0.12); color: var(--accent); }
+
+.memory-event-text {
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.memory-card {
+  padding: 0.6rem 0.75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.memory-card-text {
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.memory-ts {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  align-self: flex-end;
+}
+
+.memory-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.memory-empty-icon {
+  font-size: 1.5rem;
+  opacity: 0.4;
+}
+
+.memory-loading {
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* ── Facts: clean bulleted list ─────────────────────────────────────────── */
+.memory-fact {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.memory-fact-bullet {
+  color: var(--accent);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* ── Preferences: statement + category chips ────────────────────────────── */
+.memory-pref-context {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.memory-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+}
+
+.memory-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.12rem 0.45rem;
+  border-radius: 10px;
+  background: rgba(88,166,255,0.12);
+  color: var(--accent2);
+  border: 1px solid var(--border);
+}
+
+/* ── Summaries: overview lead line + collapsible topic sections ─────────── */
+.memory-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.memory-summary-overview {
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.memory-summary-plain {
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.memory-topic {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.memory-topic-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 0.4rem 0.55rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.memory-topic-name::-webkit-details-marker { display: none; }
+.memory-topic-name::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.4rem;
+  transition: transform 0.15s ease;
+  color: var(--muted);
+}
+.memory-topic[open] > .memory-topic-name::before { transform: rotate(90deg); }
+.memory-topic-name:hover { color: var(--accent2); }
+
+.memory-topic-body {
+  padding: 0.15rem 0.6rem 0.5rem 1.1rem;
+  font-size: 0.78rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.memory-body-head {
+  font-weight: 600;
+  color: var(--accent2);
+  margin-top: 0.35rem;
+}
+
+.memory-body-item {
+  padding-left: 0.3rem;
+}
+
+.memory-body-line {
+  word-break: break-word;
+}
+
+/* ── Sessions: real buttons (click → rehydrate + open chat) ─────────────── */
+button.memory-session {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+button.memory-session:hover,
+button.memory-session:focus-visible {
+  border-color: var(--accent2);
+  background: rgba(88, 166, 255, 0.08);
+}
+
+.memory-session--active {
+  border-color: var(--accent);
+}
+
+/* ── Record delete affordance (facts / summaries / prefs) ───────────────── */
+.memory-card,
+.memory-summary {
+  position: relative;
+}
+
+.memory-del-btn {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0.1rem;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.memory-card:hover .memory-del-btn,
+.memory-summary:hover .memory-del-btn,
+.memory-del-btn:focus-visible {
+  opacity: 1;
+}
+
+.memory-del-btn:hover {
+  color: #f66;
+}
+
+
+/* ── Mobile memory drawer + touch affordances (Task 9.1) ──────────────── */
+.memory-header button:focus-visible,
+.memory-header button:active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.memory-tab:focus-visible,
+.memory-tab:active,
+.memory-topic-name:focus-visible,
+.memory-topic-name:active {
+  color: var(--text);
+}
+button.memory-session:active {
+  border-color: var(--accent2);
+  background: rgba(88, 166, 255, 0.08);
+}
+.memory-del-btn:focus-visible,
+.memory-del-btn:active {
+  opacity: 1;
+  color: #f66;
+}
+
+@media (max-width: 768px) {
+  /* Pinned to BOTH viewport edges with width auto, so the drawer is exactly
+     the viewport wide and its header controls (close) stay on screen; a
+     100vw width anchored on one side could run past the visible area on a
+     ~390px phone. */
+  .memory-sidebar {
+    position: fixed;
+    inset: 0;
+    width: auto !important;
+    min-width: 0;
+    max-width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 61;
+  }
+  .memory-sidebar.collapsed {
+    left: auto;
+    width: 0 !important;
+    min-width: 0;
+    pointer-events: none;
+  }
+  .memory-header {
+    min-width: 0;
+    max-width: 100%;
+    padding-top: max(0.6rem, env(safe-area-inset-top));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+  }
+  .memory-header span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .memory-header > div { flex-shrink: 0; }
+  .memory-tabs { min-width: 0; max-width: 100%; }
+  .memory-content {
+    min-width: 0;
+    max-width: 100%;
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+    /* Room to scroll the last row clear of the toggle rail fixed at the
+       bottom-right corner (base.css .sidebar-toggles). */
+    padding-bottom: calc(2 * var(--sidebar-rail-w) + 2px + 0.5rem + max(0.75rem, env(safe-area-inset-bottom)));
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+  }
+}
+
+@media (max-width: 430px) {
+  .memory-tabs {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .memory-tab { flex: 1 0 auto; }
+}
+
+@media (pointer: coarse) {
+  .memory-header button,
+  .memory-tab,
+  button.memory-session,
+  .memory-topic-name,
+  .memory-del-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .memory-card,
+  .memory-summary {
+    padding-right: 3.25rem;
+  }
+  .memory-del-btn {
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+  }
+  .memory-card:hover .memory-del-btn,
+  .memory-card:focus-within .memory-del-btn,
+  .memory-card:active .memory-del-btn,
+  .memory-summary:hover .memory-del-btn,
+  .memory-summary:focus-within .memory-del-btn,
+  .memory-summary:active .memory-del-btn {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "_comment": "Workshop fixture (lever 2: the planted wrong mapping). Consumed by the generic ADT_MAPPING_OVERRIDES_FILE seam in agents.onboard_agent.map_fields: rows below deterministically REPLACE the model-proposed mapping for the same field during the CMMS mapping-proposal step, so the trap fires identically for every attendee. The WRONG mapping: assets.asset_num is the IBM Maximo ASSETNUM (the equipment/asset tag, e.g. 1001-CMX-441) and should map to equipment-id; it is planted as work-order with plausible reasoning. Attendees must catch and correct it in the review step.",
+  "cmms-ind": [
+    {
+      "field": "assets.asset_num",
+      "table": "assets",
+      "mappings": [
+        {"concept": "work-order", "role": "identifier", "confidence": 0.82}
+      ],
+      "reasoning": "Values like 1001-CMX-441 follow a site-prefixed sequential numbering pattern typical of maintenance work order identifiers (site id + code + number), so asset_num is this record's work order number."
+    }
+  ]
+}

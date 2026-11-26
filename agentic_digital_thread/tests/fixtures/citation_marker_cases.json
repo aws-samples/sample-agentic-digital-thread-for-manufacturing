@@ -1,0 +1,704 @@
+{
+  "_comment": "ONE shared case list for where the chat client links a citation marker: read by frontend/src/test/citation-marker-parity.test.ts (buildAnswerModel, which splits chart tags and runs injectCitationLinks) AND tests/unit/test_citation_marker_parity.py (agents.citation_markers.linked_markers). current = the turn's citation numbers, earlier = its earlier labels; linked = text with each linked marker written {{N}} or {{E<k>}}, a linked group as its members' markers in order joined by one space.",
+  "cases": [
+    {
+      "name": "a given-out number",
+      "text": "Vibration rose [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Vibration rose {{1}}."
+    },
+    {
+      "name": "two numbers side by side",
+      "text": "Both rose [1][2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose {{1}}{{2}}."
+    },
+    {
+      "name": "two numbers with a space",
+      "text": "Both rose [1] [2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose {{1}} {{2}}."
+    },
+    {
+      "name": "a grouped pair is linked as separate chips",
+      "text": "Both rose [1, 2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose {{1}} {{2}}."
+    },
+    {
+      "name": "a grouped pair without a space is linked as separate chips",
+      "text": "Both rose [1,2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose {{1}} {{2}}."
+    },
+    {
+      "name": "grouped earlier labels are linked as separate chips",
+      "text": "Both rose [E1, E2].",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Both rose {{E1}} {{E2}}."
+    },
+    {
+      "name": "a group of three keeps its order",
+      "text": "All rose [3, 1 ,2].",
+      "current": [
+        1,
+        2,
+        3
+      ],
+      "earlier": [],
+      "linked": "All rose {{3}} {{1}} {{2}}."
+    },
+    {
+      "name": "a mixed group of a number and an earlier label",
+      "text": "Now and before [1, E1].",
+      "current": [
+        1
+      ],
+      "earlier": [
+        1
+      ],
+      "linked": "Now and before {{1}} {{E1}}."
+    },
+    {
+      "name": "a group with a number the turn never gave out stays as written",
+      "text": "Both rose [1, 3] and [1].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose [1, 3] and {{1}}."
+    },
+    {
+      "name": "a group with an earlier label the turn does not have stays as written",
+      "text": "Both rose [E1, E3].",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Both rose [E1, E3]."
+    },
+    {
+      "name": "a group with a leading zero stays as written",
+      "text": "Both rose [01, 2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both rose [01, 2]."
+    },
+    {
+      "name": "a group never names an earlier citation by a bare number",
+      "text": "Before [1, 2].",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Before [1, 2]."
+    },
+    {
+      "name": "a grouped link text is not linked",
+      "text": "See [1, 2](https://example.invalid/c).",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "See [1, 2](https://example.invalid/c)."
+    },
+    {
+      "name": "a group in inline code is not linked",
+      "text": "Use `rows[1, 2]` then [1, 2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Use `rows[1, 2]` then {{1}} {{2}}."
+    },
+    {
+      "name": "a group in a fence is not linked",
+      "text": "```\npair[1, 2]\n```\nAfter [1, 2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "```\npair[1, 2]\n```\nAfter {{1}} {{2}}."
+    },
+    {
+      "name": "grouped earlier labels in inline code are not linked",
+      "text": "Use `matrix[E1, E2]` and `[E1, E2]` here.",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Use `matrix[E1, E2]` and `[E1, E2]` here."
+    },
+    {
+      "name": "grouped earlier labels in a fence are not linked",
+      "text": "```\nmatrix[E1, E2]\n[E1, E2]\n```\nDone.",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "```\nmatrix[E1, E2]\n[E1, E2]\n```\nDone."
+    },
+    {
+      "name": "grouped earlier labels in a chart tag are not linked",
+      "text": "Chart <chart-block type=\"line\" title=\"[E1, E2]\"/> done.",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Chart <chart-block type=\"line\" title=\"[E1, E2]\"/> done."
+    },
+    {
+      "name": "a group with another separator is not a group",
+      "text": "Range [1-2] and [1; 2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Range [1-2] and [1; 2]."
+    },
+    {
+      "name": "a group with a trailing comma is not a group",
+      "text": "Both [1, 2,].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Both [1, 2,]."
+    },
+    {
+      "name": "a group right after a word is not linked",
+      "text": "Read pair[1, 2] first.",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Read pair[1, 2] first."
+    },
+    {
+      "name": "an earlier label written in other digits is not linked",
+      "text": "Same [E\u0663] and [\u0661].",
+      "current": [
+        1
+      ],
+      "earlier": [
+        3
+      ],
+      "linked": "Same [E\u0663] and [\u0661]."
+    },
+    {
+      "name": "a number the turn never gave out",
+      "text": "Rose [3].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Rose [3]."
+    },
+    {
+      "name": "a two-digit number the turn never gave out",
+      "text": "The interval is [12].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "The interval is [12]."
+    },
+    {
+      "name": "a leading zero is not the number",
+      "text": "Rose [01].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Rose [01]."
+    },
+    {
+      "name": "a number right after a word is not linked",
+      "text": "Read sensor[1] first.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Read sensor[1] first."
+    },
+    {
+      "name": "a number right after a digit is not linked",
+      "text": "Rose to 42[1] and [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Rose to 42[1] and {{1}}."
+    },
+    {
+      "name": "a marker right after a letter of another script is linked",
+      "text": "\u632f\u52d5\u304c\u4e0a\u6607[1]\u3002",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "\u632f\u52d5\u304c\u4e0a\u6607{{1}}\u3002"
+    },
+    {
+      "name": "a number right after an underscore or a closing parenthesis is not linked",
+      "text": "Read row_[1] and f(x)[1], then [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Read row_[1] and f(x)[1], then {{1}}."
+    },
+    {
+      "name": "an earlier label right after a word is not linked",
+      "text": "Read x[E1], then [E1].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Read x[E1], then {{E1}}."
+    },
+    {
+      "name": "a reference-link label is not linked",
+      "text": "See [the guide][1] and [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "See [the guide][1] and {{1}}."
+    },
+    {
+      "name": "an index chain after a word is not linked",
+      "text": "Read m[1][2], then [1][2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Read m[1][2], then {{1}}{{2}}."
+    },
+    {
+      "name": "a marker after other punctuation is linked",
+      "text": "Rose ([1]), 5%[1] and \"x\"[1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Rose ({{1}}), 5%{{1}} and \"x\"{{1}}."
+    },
+    {
+      "name": "a marker right after a code span is linked",
+      "text": "Run `x`[1] now.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Run `x`{{1}} now."
+    },
+    {
+      "name": "a word-adjacent number never given out",
+      "text": "Read sensor[2] first.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Read sensor[2] first."
+    },
+    {
+      "name": "a footnote definition with a given-out number is not linked",
+      "text": "Value [1].\n\n[1]: the method.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Value {{1}}.\n\n[1]: the method."
+    },
+    {
+      "name": "a footnote definition with a number never given out",
+      "text": "Value [1].\n\n[2]: the method.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Value {{1}}.\n\n[2]: the method."
+    },
+    {
+      "name": "an indented footnote definition with a group is not linked",
+      "text": "Value [1, 2].\n  [1, 2]: both methods.",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Value {{1}} {{2}}.\n  [1, 2]: both methods."
+    },
+    {
+      "name": "a footnote definition with an earlier label is not linked",
+      "text": "Value [E1].\n[E1]: the method.",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Value {{E1}}.\n[E1]: the method."
+    },
+    {
+      "name": "a marker starting a line without a colon is linked",
+      "text": "[1] Opens the line.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "{{1}} Opens the line."
+    },
+    {
+      "name": "a colon after a marker inside a line is linked",
+      "text": "Source [1]: the method.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Source {{1}}: the method."
+    },
+    {
+      "name": "a colon after a marker that follows a code span is linked",
+      "text": "`x` [1]: the method.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "`x` {{1}}: the method."
+    },
+    {
+      "name": "an interval of numbers never given out",
+      "text": "Accepted range [4, 7] and [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Accepted range [4, 7] and {{1}}."
+    },
+    {
+      "name": "a markdown link with the number as its text",
+      "text": "See [1](https://example.invalid/a) and [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "See [1](https://example.invalid/a) and {{1}}."
+    },
+    {
+      "name": "inline code",
+      "text": "Use `rows[1]` then [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Use `rows[1]` then {{1}}."
+    },
+    {
+      "name": "a double-backtick code span",
+      "text": "Use ``a `[1]` b`` then [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Use ``a `[1]` b`` then {{1}}."
+    },
+    {
+      "name": "a marker just before a code span",
+      "text": "Rose [1]`(raw)`.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Rose {{1}}`(raw)`."
+    },
+    {
+      "name": "a backtick fence",
+      "text": "```\nlist[1]\n```\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```\nlist[1]\n```\nAfter {{1}}."
+    },
+    {
+      "name": "a tilde fence",
+      "text": "~~~\n[1]\n~~~\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "~~~\n[1]\n~~~\nAfter {{1}}."
+    },
+    {
+      "name": "a fence with an info string",
+      "text": "```text\n[1]\n```\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```text\n[1]\n```\nAfter {{1}}."
+    },
+    {
+      "name": "a four-backtick fence holds a three-backtick line",
+      "text": "````\n```\nx[1]\n```\ny[1]\n````\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "````\n```\nx[1]\n```\ny[1]\n````\nAfter {{1}}."
+    },
+    {
+      "name": "a tilde line inside a backtick fence",
+      "text": "```\n~~~\nx[1]\n~~~\ny[1]\n```\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```\n~~~\nx[1]\n~~~\ny[1]\n```\nAfter {{1}}."
+    },
+    {
+      "name": "a backtick line inside a tilde fence",
+      "text": "~~~\n```\nx[1]\n```\ny[1]\n~~~\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "~~~\n```\nx[1]\n```\ny[1]\n~~~\nAfter {{1}}."
+    },
+    {
+      "name": "a four-tilde fence holds a three-tilde line",
+      "text": "~~~~\n~~~\nx[1]\n~~~\n~~~~\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "~~~~\n~~~\nx[1]\n~~~\n~~~~\nAfter {{1}}."
+    },
+    {
+      "name": "a longer closing run closes the fence",
+      "text": "```\ncode [1]\n`````\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```\ncode [1]\n`````\nAfter {{1}}."
+    },
+    {
+      "name": "a closing run with text after it does not close",
+      "text": "```\n``` not a close [1]\n```\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```\n``` not a close [1]\n```\nAfter {{1}}."
+    },
+    {
+      "name": "an indented fence",
+      "text": "  ```\n  x[1]\n  ```\nAfter [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "  ```\n  x[1]\n  ```\nAfter {{1}}."
+    },
+    {
+      "name": "an unclosed fence runs to the end",
+      "text": "Before [1].\n```\nx [1]",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Before {{1}}.\n```\nx [1]"
+    },
+    {
+      "name": "a chart tag",
+      "text": "Chart <chart-block type=\"line\" datasets='[{\"data\":[1]}]'/> then [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Chart <chart-block type=\"line\" datasets='[{\"data\":[1]}]'/> then {{1}}."
+    },
+    {
+      "name": "a chart tag with > in a quoted value",
+      "text": "See <chart-block title=\"a -> b [1]\"/> and [1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "See <chart-block title=\"a -> b [1]\"/> and {{1}}."
+    },
+    {
+      "name": "a chart tag splits the answer into parts that each start outside code",
+      "text": "```\n<chart-block a=\"1\"/>\n[1]\n```",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "```\n<chart-block a=\"1\"/>\n{{1}}\n```"
+    },
+    {
+      "name": "an earlier label",
+      "text": "Same as before [E1].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Same as before {{E1}}."
+    },
+    {
+      "name": "an earlier label the turn never gave out",
+      "text": "Same [E3].",
+      "current": [],
+      "earlier": [
+        1,
+        2
+      ],
+      "linked": "Same [E3]."
+    },
+    {
+      "name": "an earlier label with a leading zero",
+      "text": "Same [E01].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Same {{E1}}."
+    },
+    {
+      "name": "a three-digit earlier label",
+      "text": "Same [E123].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Same [E123]."
+    },
+    {
+      "name": "an earlier label as a link",
+      "text": "See [E1](https://example.invalid/b).",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "See [E1](https://example.invalid/b)."
+    },
+    {
+      "name": "a number and an earlier label on one line",
+      "text": "Now [1], before [E1].",
+      "current": [
+        1
+      ],
+      "earlier": [
+        1
+      ],
+      "linked": "Now {{1}}, before {{E1}}."
+    },
+    {
+      "name": "a bare number never links an earlier citation",
+      "text": "Before [1].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Before [1]."
+    },
+    {
+      "name": "nested brackets",
+      "text": "Rows [[1]] here.",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Rows [{{1}}] here."
+    },
+    {
+      "name": "no citations",
+      "text": "Rose [1] and [E1].",
+      "current": [],
+      "earlier": [],
+      "linked": "Rose [1] and [E1]."
+    },
+    {
+      "name": "two lines",
+      "text": "Line one [1].\nLine two [2].",
+      "current": [
+        1,
+        2
+      ],
+      "earlier": [],
+      "linked": "Line one {{1}}.\nLine two {{2}}."
+    },
+    {
+      "name": "a recalled value in fullwidth brackets is never a marker",
+      "text": "Tolerance \uff3b3, 5\uff3d mm/s, steps \uff3b1\uff3d and \uff3b1\uff3d\uff3b2\uff3d.",
+      "current": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "earlier": [],
+      "linked": "Tolerance \uff3b3, 5\uff3d mm/s, steps \uff3b1\uff3d and \uff3b1\uff3d\uff3b2\uff3d."
+    },
+    {
+      "name": "a real marker right after a recalled value still links",
+      "text": "Tolerance \uff3b3, 5\uff3d[1].",
+      "current": [
+        1
+      ],
+      "earlier": [],
+      "linked": "Tolerance \uff3b3, 5\uff3d{{1}}."
+    },
+    {
+      "name": "an earlier label right after a recalled value still links",
+      "text": "Tolerance \uff3b3, 5\uff3d[E1].",
+      "current": [],
+      "earlier": [
+        1
+      ],
+      "linked": "Tolerance \uff3b3, 5\uff3d{{E1}}."
+    }
+  ]
+}

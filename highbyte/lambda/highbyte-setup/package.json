@@ -1,0 +1,12 @@
+{
+    "name": "highbyte-setup",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "main": "index.mjs",
+    "dependencies": {
+        "@aws-sdk/client-secrets-manager": "3.1088.0",
+        "@aws-sdk/client-s3": "3.1088.0",
+        "@aws-sdk/client-ecs": "3.1088.0"
+    }
+}

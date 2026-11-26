@@ -1,0 +1,4 @@
+# Settings files a HighByte hub wrote (test fixtures). Their tests skip when
+# the files are absent, as in an export.
+tests/fixtures/highbyte_settings/persisted-4.4.2.json export-ignore
+tests/fixtures/highbyte_settings/persisted-4.5.3.json export-ignore

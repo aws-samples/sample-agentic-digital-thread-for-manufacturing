@@ -1,0 +1,41 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# Disposable local Postgres substrate for the S0.2 integration harness.
+#
+# This is the credential-free, deterministic VALUE-READ lane: the resolver/audit
+# tracer (e.g. inventory-level -> cmms_maintenance.spare_parts.quantity_on_hand)
+# reads real values from this local DB instead of the deployed demo RDS.
+#
+# Db/user defaults MUST match agents/db.py::get_conn_params(). The password is
+# NOT defaulted: both this compose file and get_conn_params() read the same
+# POSTGRES_PASSWORD environment variable (fail-closed when unset), so the
+# container and the app code always agree with a single exported value.
+#
+# SECURITY: the port is published on the loopback interface ONLY (127.0.0.1).
+# Never bind 0.0.0.0 — this substrate must not be reachable off-host.
+#
+#   docker compose -f tests/integration/docker-compose.yml up -d
+#   python tests/integration/seed_pg.py        # from agentic_digital_thread/
+#   docker compose -f tests/integration/docker-compose.yml down -v
+services:
+  postgres:
+    image: postgres:16
+    container_name: adt-integration-postgres
+    environment:
+      POSTGRES_DB: adt_demo
+      POSTGRES_USER: postgres
+      # Required local-only credential. Set it in the shell or .env.local and
+      # do not reuse it for any non-development environment.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in your environment or .env.local}
+    ports:
+      # Loopback only — never 0.0.0.0; this substrate must not be reachable off-host.
+      - "127.0.0.1:5432:5432"
+    tmpfs:
+      # Ephemeral storage — the container holds no state across `down -v`.
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d adt_demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 15

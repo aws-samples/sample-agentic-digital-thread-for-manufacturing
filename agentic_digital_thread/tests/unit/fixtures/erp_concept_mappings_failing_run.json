@@ -1,0 +1,965 @@
+{
+ "source": "concept mappings of the workshop ERP from the 2026-10-14 rehearsal run where the order line total came back without the money concept, as provision shipped them (192 items)",
+ "items": [
+  {
+   "concept": "batch",
+   "field": "inventory_transactions.batch_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "batch",
+   "field": "lot_mes_tracking.batch_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "batch",
+   "field": "shipment_items.batch_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "bill-of-materials",
+   "field": "bill_of_materials.quantity_required",
+   "role": "measure"
+  },
+  {
+   "concept": "bill-of-materials",
+   "field": "bill_of_materials.scrap_factor",
+   "role": "correlate"
+  },
+  {
+   "concept": "cost",
+   "field": "customer_orders.shipping_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "customer_orders.subtotal",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "customer_orders.tax_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "customer_orders.total_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "customers.credit_limit",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "inventory_items.unit_cost",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "inventory_transactions.unit_cost",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoice_line_items.line_total",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoice_line_items.unit_price",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoices.balance_due",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoices.subtotal",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoices.tax_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "invoices.total_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "order_line_items.unit_price",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "po_line_items.line_total",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "po_line_items.unit_price",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "products.list_price",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "products.standard_cost",
+   "role": "measure"
+  },
+  {
+   "concept": "cost",
+   "field": "purchase_orders.total_amount",
+   "role": "measure"
+  },
+  {
+   "concept": "criticality",
+   "field": "product_site_routing.priority",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customer_orders.customer_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_address_line1",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_address_line2",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_city",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_country",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_postal_code",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.billing_state",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.company_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.contact_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.customer_code",
+   "role": "identifier"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.customer_segment",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.email",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.payment_terms",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.phone",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_address_line1",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_address_line2",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_city",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_country",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_postal_code",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "customers.shipping_state",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "invoices.customer_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "customer",
+   "field": "payments.customer_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "customer",
+   "field": "shipments.customer_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "event-time",
+   "field": "inventory_transfers.approved_at",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "inventory_transfers.completed_at",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "inventory_transfers.requested_at",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "lot_mes_tracking.consumption_date",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "lot_production_usage.usage_date",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "lot_warehouse_movements.movement_date",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "material_lots.expiry_date",
+   "role": "measure"
+  },
+  {
+   "concept": "event-time",
+   "field": "material_lots.received_date",
+   "role": "measure"
+  },
+  {
+   "concept": "inspection-result",
+   "field": "material_lots.quality_status",
+   "role": "correlate"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "inventory_balances.quantity_allocated",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "inventory_balances.quantity_available",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "inventory_balances.quantity_on_hand",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "material_lots.received_quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-level",
+   "field": "material_lots.remaining_quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_balances.last_transaction_date",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.reference_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.reference_type",
+   "role": "correlate"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.transaction_date",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.transaction_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transactions.transaction_type",
+   "role": "correlate"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "inventory_transfers.quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "lot_warehouse_movements.movement_type",
+   "role": "correlate"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "lot_warehouse_movements.quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "po_line_items.quantity_received",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "po_receipts.receipt_date",
+   "role": "measure"
+  },
+  {
+   "concept": "inventory-transaction",
+   "field": "po_receipts.receipt_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoice_line_items.invoice_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoice_line_items.line_item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoice_line_items.quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoices.invoice_date",
+   "role": "measure"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoices.invoice_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "invoice",
+   "field": "invoices.invoice_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "invoice",
+   "field": "order_line_items.line_item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "invoice",
+   "field": "order_line_items.line_total",
+   "role": "measure"
+  },
+  {
+   "concept": "invoice",
+   "field": "order_line_items.quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "invoice",
+   "field": "payments.invoice_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_balances.location_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_locations.location_code",
+   "role": "correlate"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_locations.location_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_locations.location_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_locations.location_type",
+   "role": "correlate"
+  },
+  {
+   "concept": "location",
+   "field": "inventory_transactions.location_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "location",
+   "field": "lot_warehouse_movements.from_location_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "location",
+   "field": "lot_warehouse_movements.to_location_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "location",
+   "field": "material_lots.current_location_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "lot-number",
+   "field": "lot_mes_tracking.lot_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "lot-number",
+   "field": "lot_production_usage.lot_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "lot-number",
+   "field": "lot_warehouse_movements.lot_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "lot-number",
+   "field": "material_lots.lot_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "lot-number",
+   "field": "material_lots.lot_number",
+   "role": "correlate"
+  },
+  {
+   "concept": "maintenance-schedule",
+   "field": "invoice_line_items.line_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "maintenance-schedule",
+   "field": "order_line_items.line_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "maintenance-schedule",
+   "field": "po_line_items.line_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "material",
+   "field": "bill_of_materials.component_item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_balances.item_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_items.item_code",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_items.item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_items.item_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_items.item_type",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_transactions.item_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "inventory_transfers.item_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "item_suppliers.item_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "material",
+   "field": "material_lots.item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "material",
+   "field": "po_line_items.item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "material-consumption",
+   "field": "lot_mes_tracking.quantity_consumed",
+   "role": "measure"
+  },
+  {
+   "concept": "material-consumption",
+   "field": "lot_production_usage.quantity_used",
+   "role": "measure"
+  },
+  {
+   "concept": "mro-inventory",
+   "field": "inventory_items.reorder_point",
+   "role": "measure"
+  },
+  {
+   "concept": "mro-inventory",
+   "field": "inventory_items.reorder_quantity",
+   "role": "measure"
+  },
+  {
+   "concept": "order-status",
+   "field": "customer_orders.status",
+   "role": "correlate"
+  },
+  {
+   "concept": "order-status",
+   "field": "inventory_transfers.status",
+   "role": "correlate"
+  },
+  {
+   "concept": "order-status",
+   "field": "invoices.status",
+   "role": "correlate"
+  },
+  {
+   "concept": "order-status",
+   "field": "purchase_orders.status",
+   "role": "correlate"
+  },
+  {
+   "concept": "order-status",
+   "field": "shipments.status",
+   "role": "correlate"
+  },
+  {
+   "concept": "payment",
+   "field": "invoices.amount_paid",
+   "role": "measure"
+  },
+  {
+   "concept": "payment",
+   "field": "payments.amount",
+   "role": "measure"
+  },
+  {
+   "concept": "payment",
+   "field": "payments.payment_date",
+   "role": "measure"
+  },
+  {
+   "concept": "payment",
+   "field": "payments.payment_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "personnel",
+   "field": "inventory_transfers.approved_by",
+   "role": "correlate"
+  },
+  {
+   "concept": "personnel",
+   "field": "inventory_transfers.requested_by",
+   "role": "correlate"
+  },
+  {
+   "concept": "personnel",
+   "field": "lot_warehouse_movements.performed_by",
+   "role": "correlate"
+  },
+  {
+   "concept": "personnel",
+   "field": "po_receipts.received_by",
+   "role": "correlate"
+  },
+  {
+   "concept": "product",
+   "field": "bill_of_materials.product_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "product",
+   "field": "inventory_items.product_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "product",
+   "field": "invoice_line_items.product_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "product",
+   "field": "order_line_items.product_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "product",
+   "field": "products.engineering_part_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "product",
+   "field": "products.product_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "product",
+   "field": "products.product_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "product",
+   "field": "products.sku",
+   "role": "identifier"
+  },
+  {
+   "concept": "product",
+   "field": "shipment_items.product_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "product-category",
+   "field": "product_site_routing.product_category",
+   "role": "identifier"
+  },
+  {
+   "concept": "product-category",
+   "field": "products.category",
+   "role": "identifier"
+  },
+  {
+   "concept": "production-line",
+   "field": "lot_mes_tracking.line",
+   "role": "correlate"
+  },
+  {
+   "concept": "production-run",
+   "field": "lot_production_usage.production_run_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "material_lots.po_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "po_line_items.po_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "po_line_items.quantity_ordered",
+   "role": "measure"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "po_receipts.po_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "purchase_orders.actual_delivery_date",
+   "role": "measure"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "purchase_orders.po_date",
+   "role": "measure"
+  },
+  {
+   "concept": "purchase-order",
+   "field": "purchase_orders.po_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "sales-order",
+   "field": "customer_orders.order_date",
+   "role": "measure"
+  },
+  {
+   "concept": "sales-order",
+   "field": "customer_orders.order_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "sales-order",
+   "field": "invoices.order_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "sales-order",
+   "field": "order_line_items.order_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "sales-order",
+   "field": "shipments.order_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "schedule",
+   "field": "customer_orders.requested_delivery_date",
+   "role": "measure"
+  },
+  {
+   "concept": "schedule",
+   "field": "invoices.due_date",
+   "role": "measure"
+  },
+  {
+   "concept": "schedule",
+   "field": "item_suppliers.lead_time_days",
+   "role": "measure"
+  },
+  {
+   "concept": "schedule",
+   "field": "purchase_orders.expected_delivery_date",
+   "role": "measure"
+  },
+  {
+   "concept": "schedule",
+   "field": "shipments.estimated_delivery_date",
+   "role": "measure"
+  },
+  {
+   "concept": "shipment",
+   "field": "invoices.shipment_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipment_items.line_item_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipment_items.quantity_shipped",
+   "role": "measure"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipment_items.shipment_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipments.actual_delivery_date",
+   "role": "measure"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipments.carrier",
+   "role": "correlate"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipments.shipment_date",
+   "role": "measure"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipments.shipment_number",
+   "role": "identifier"
+  },
+  {
+   "concept": "shipment",
+   "field": "shipments.tracking_number",
+   "role": "correlate"
+  },
+  {
+   "concept": "site",
+   "field": "inventory_transfers.destination_site_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "site",
+   "field": "inventory_transfers.source_site_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "site",
+   "field": "lot_mes_tracking.site",
+   "role": "correlate"
+  },
+  {
+   "concept": "site",
+   "field": "product_site_routing.site_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "supplier",
+   "field": "item_suppliers.is_preferred",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "item_suppliers.supplier_id",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "material_lots.supplier_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "supplier",
+   "field": "purchase_orders.supplier_id",
+   "role": "identifier"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.address_line1",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.address_line2",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.city",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.company_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.contact_name",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.country",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.email",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.lead_time_days",
+   "role": "measure"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.payment_terms",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.phone",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.postal_code",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.qualification_status",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.state",
+   "role": "correlate"
+  },
+  {
+   "concept": "supplier",
+   "field": "suppliers.supplier_code",
+   "role": "identifier"
+  },
+  {
+   "concept": "work-order",
+   "field": "lot_mes_tracking.work_order_id",
+   "role": "identifier"
+  }
+ ]
+}

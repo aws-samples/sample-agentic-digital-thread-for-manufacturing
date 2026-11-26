@@ -1,0 +1,131 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+   SPDX-License-Identifier: MIT-0 */
+/* Port-only UX enhancements — kept OUT of dashboard.css/thread.css etc. so
+   those ported stylesheets stay unmodified from their reference form.
+
+   .thinking-inline — the live in-thread progress indicator appended as the
+   LAST element of #messages while a turn streams (useAskStream.runAskTurn).
+   Reuses the global .loading-dots bounce animation from dashboard.css. */
+.thinking-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.25rem 0.5rem;
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace;
+}
+/* Muted expectation line under "Working... m:ss" once a turn passes 60 s
+   (ChatThread ThinkingIndicator). Full row width, body font. */
+.thinking-inline .thinking-slow-hint {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Composer hint while a turn streams (ChatSidebar / ChatModal): an attempted
+   send is held in the composer, never cleared or overwritten. */
+.chat-composer-hint {
+  padding: 0 1rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* "Ask again" on an errored turn (AssistantTurn .turn-error): chip look on a
+   real <button>, so reset the native button font and colour. */
+.ask-again-btn {
+  font-family: inherit;
+  color: var(--text);
+  margin: 0.25rem 0 0;
+}
+
+/* #active-query (Investigation tab) — the legacy rule (dashboard.css:143,
+   verbatim in both trees) stretched the bubble edge-to-edge (left:1rem;
+   right:1rem; z-index:10), so a long question painted OVER the
+   #reasoning-trace column (right 35%) and the .tool-hud overlay. Cap it to
+   the left 40% and drop it below the .arch-legend(5)/#kg-explorer-panel(6)
+   chrome — it only needs to sit above the cytoscape canvas. Override lives
+   here (id selector beats the .active-query class rule) so dashboard.css
+   stays unmodified. */
+#active-query.active-query {
+  right: auto;
+  max-width: 40%;
+  z-index: 4;
+}
+
+/* Investigation-legend swatch for the purple Knowledge Graph hub node
+   (NODE_COLORS.neptune — colors.ts): the entry's COLORS are set inline from
+   the exported palette by Legends.tsx (single source with the node fills);
+   no css color rules here. */
+
+/* First-load overlay for the System Map (#cy-map) — shown by <MapLoadingOverlay/>
+   only while the very first /api/systems fetch runs (system-map.ts
+   mapLoadingStore); revisits reconcile silently and never show it. Mirrors the
+   #cy-neptune-empty overlay styling. */
+.cy-map-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Investigation-trace show more/less (arch-visual-polish) ──────────────
+   dashboard.css clamps .trace-body to 120px with overflow-y:auto — long
+   sections just cut off behind an inner scrollbar. The SPA overrides (id
+   ancestor beats the bare class rule; dashboard.css stays unmodified):
+   - .clamped (set only when the content MEASURES as overflowing) hides the
+     inner scrollbar and fades the last ~44px out to signal "there's more";
+   - expansion animates max-height between the 120px clamp and the measured
+     scrollHeight (inline px from TraceEntries.tsx; the measured pixel height
+     is required for a smooth transition);
+   - .trace-show-toggle is the keyboard-accessible Show more / Show less
+     button under the faded body. */
+#trace-entries .trace-body {
+  transition: max-height var(--motion-slow) var(--ease-standard);
+}
+#trace-entries .trace-body.clamped {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
+}
+.trace-show-toggle {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0.15rem 0;
+  margin-top: 0.1rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--accent);
+  cursor: pointer;
+}
+.trace-show-toggle:hover { text-decoration: underline; }
+.trace-show-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Light-theme investigation-legend swatches: no longer needed — swatch
+   colors are theme-resolved inline from colors.ts invPalette (Legends.tsx). */
+
+/* Chart iframe mount fade (ChartIframe.tsx) — replaces the pop-in when a
+   chart block completes inside a streamed answer. Mount-time CSS fade only:
+   NO onLoad gating (an opacity-0-until-load state risks a stuck-invisible
+   chart). panel-fade-motion comes from base.css. The admin entry does not
+   load this file, so admin-hosted charts simply appear unanimated. */
+.chart-iframe-enter {
+  animation: panel-fade-motion var(--motion-slow) var(--ease-standard) both;
+}
+
+/* Copy button on technical-detail <pre> blocks (chat/CopyButton.tsx) —
+   visible keyboard focus ring, consistent with the trace-toggle pattern. */
+.adt-copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.adt-copy-btn:hover { color: var(--text); border-color: var(--accent); }

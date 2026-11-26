@@ -1,0 +1,8 @@
+/* Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+   SPDX-License-Identifier: MIT-0 */
+/*
+ * Kept because base.css imports /css/fonts.css. The @font-face rules live in
+ * src/styles/fonts.css, which every page entry (main-app, main-admin,
+ * main-login) imports, so Vite bundles them with the font files from the
+ * pinned npm packages.
+ */

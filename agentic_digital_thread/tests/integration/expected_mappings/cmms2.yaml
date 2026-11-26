@@ -1,0 +1,113 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+# ─────────────────────────────────────────────────────────────────────────────
+# AUTHORED FROM DOMAIN MEANING — NEVER transcribed from observed LLM output.
+#
+# ADR-0012 integrity guardrail: this key encodes what each cmms2_maintenance
+# field MEANS in the real world (read from lambda-adt-seed/010_cmms2_synonyms.sql),
+# authored BLIND to what the mapper produced. A key written from model output is
+# a circular, self-fulfilling eval and is explicitly disallowed.
+#
+# NAME-INDEPENDENCE VARIANT (ADR-0012): cmms2_maintenance is a SYNONYM schema —
+# the SAME real-world meaning as cmms_maintenance but DELIBERATELY DIFFERENT
+# table/column names. This key carries the SAME acceptable concept sets, the SAME
+# 9-field must-map tracer set, and the SAME thresholds as cmms.yaml, but keyed on
+# the synonym field names. The must-map keys share ZERO column names with the
+# cmms.yaml must-map keys, so a passing score proves the mapper keys on MEANING,
+# not on memorized field names.
+#
+#   cmms must-map (cmms.yaml)        cmms2 synonym (this key)        concept
+#   assets.asset_tag             ->  equipment.tag_code           -> equipment-id
+#   assets.asset_type            ->  equipment.machine_class      -> asset-class
+#   assets.operational_status    ->  equipment.run_state          -> lifecycle-state
+#   assets.criticality           ->  equipment.crit_level         -> criticality
+#   work_orders.wo_number        ->  repair_tickets.ticket_no     -> work-order
+#   work_orders.failure_code     ->  repair_tickets.fault_code    -> failure-mode
+#   maintenance_schedules.maintenance_type -> pm_plan.pm_kind     -> maintenance-schedule
+#   spare_parts.part_number      ->  stockroom.sku                -> spare-part
+#   spare_parts.quantity_on_hand ->  stockroom.on_hand_qty        -> mro-inventory
+#
+# Concept ids below are validated at load time against
+# agents.catalog.CORE_CONCEPTS (load_key fails fast on any unknown id). All ids
+# used here exist in CORE_CONCEPT_DEFINITIONS — identical to the cmms key.
+#
+# Keys are "<bare-table>.<column>" because the eval reads se.name from the audit's
+# CYPHER_FIELD_CONCEPT (bare table name, e.g. `equipment`, `repair_tickets`).
+# 010_cmms2_synonyms.sql uses plain base tables (NO perpetual-freshness *_raw/view
+# pattern), so there are no view twins to deduplicate. Any live field not listed
+# in `fields` and not in `ignore` is treated as OUT-OF-KEY (reported separately,
+# excluded from the accuracy denominator) — e.g. the repair_tickets.equip_uid FK,
+# mirroring how the cmms key leaves work_orders.asset_id unlisted.
+# ─────────────────────────────────────────────────────────────────────────────
+system: cmms2
+schema: cmms2_maintenance
+
+# min fraction of scored (keyed, present, non-ignored) fields whose actual
+# concept must fall inside its acceptable set. SAME as cmms.yaml.
+overall_floor: 0.90
+# min r.confidence required on EVERY must-map tracer field. SAME as cmms.yaml.
+must_map_min_confidence: 0.60
+
+fields:
+  # ── equipment (synonym of assets) ───────────────────────────────────────────
+  # AUS-PRESS-01 — the cross-system identity anchor (≈ assets.asset_tag).
+  equipment.tag_code:        { acceptable: [equipment-id],            must_map: true }
+  # SERIAL surrogate-but-business id; equipment-id def lists asset_id (≈ assets.asset_id).
+  equipment.equip_uid:       { acceptable: [equipment-id] }
+  equipment.equip_desc:      { acceptable: [equipment-id, asset-class] }
+  # Equipment class (press/welder/lathe/...) ≈ assets.asset_type.
+  equipment.machine_class:   { acceptable: [asset-class],             must_map: true }
+  # running/down/maintenance — asset lifecycle ≈ assets.operational_status.
+  # RATIFIED 2026-07-30 (steward): machine-state added. The key
+  # predates the machine-state concept, whose description explicitly claims the
+  # live running/stopped state of equipment — a field literally named run_state on
+  # a table named equipment. Evidence: baseline control on the pre-T1.2 catalog
+  # reproduced the same verdict (2026-07-30); this is a
+  # key correction, not an accommodation of model output (ADR-0012 integrity rule).
+  equipment.run_state:       { acceptable: [lifecycle-state, machine-state], must_map: true }
+  # critical/high/medium/low ≈ assets.criticality.
+  equipment.crit_level:      { acceptable: [criticality],             must_map: true }
+  equipment.plant_site:      { acceptable: [facility, site] }
+  # Stamping-C1 / Weld-C2 — the canonical cross-system production-line link;
+  # `location` is a defensible alternative reading (≈ assets.area).
+  equipment.cell:            { acceptable: [production-line, location] }
+  equipment.vendor:          { acceptable: [supplier, equipment-id] }
+  equipment.commissioned_on: { acceptable: [equipment-id, schedule] }
+
+  # ── repair_tickets (synonym of work_orders) ─────────────────────────────────
+  # TKT-AUS-5001 — maintenance work order number ≈ work_orders.wo_number.
+  repair_tickets.ticket_no:  { acceptable: [work-order, maintenance-event], must_map: true }
+  repair_tickets.ticket_class: { acceptable: [maintenance-event, work-order] }
+  repair_tickets.urgency:    { acceptable: [criticality] }
+  repair_tickets.state:      { acceptable: [order-status, lifecycle-state] }
+  # OVERCURRENT / BEARING-TEMP / TIP-WEAR — failure mode codes ≈ work_orders.failure_code.
+  repair_tickets.fault_code: { acceptable: [failure-mode],            must_map: true }
+  repair_tickets.tech:       { acceptable: [operator, personnel] }
+  repair_tickets.summary:    { acceptable: [work-order, maintenance-event] }
+
+  # ── pm_plan (synonym of maintenance_schedules) ──────────────────────────────
+  # preventive/calibration/inspection recurring schedule ≈ maintenance_schedules.maintenance_type.
+  pm_plan.pm_kind:           { acceptable: [maintenance-schedule, maintenance-event], must_map: true }
+  pm_plan.interval_days:     { acceptable: [maintenance-schedule, schedule] }
+  pm_plan.due_on:            { acceptable: [maintenance-schedule, schedule] }
+  pm_plan.crew:              { acceptable: [operator, personnel] }
+
+  # ── stockroom (synonym of spare_parts) ──────────────────────────────────────
+  # SK-RAM-PACK — spare part number ≈ spare_parts.part_number.
+  stockroom.sku:             { acceptable: [spare-part],             must_map: true }
+  stockroom.sku_desc:        { acceptable: [spare-part] }
+  stockroom.fits_class:      { acceptable: [asset-class, spare-part] }
+  # on_hand_qty — the synonym F9 MRO on-hand tracer ≈ spare_parts.quantity_on_hand.
+  stockroom.on_hand_qty:     { acceptable: [mro-inventory],         must_map: true }
+  stockroom.min_qty:         { acceptable: [mro-inventory] }
+  stockroom.unit_price:      { acceptable: [cost] }
+  stockroom.vendor:          { acceptable: [supplier] }
+  stockroom.lead_days:       { acceptable: [schedule, spare-part] }
+
+# Surrogate / duplicate PK fields — not scored (see README rationale). Mirrors the
+# cmms key's ignore of maintenance_schedules.schedule_id. 010 uses plain base
+# tables (no *_raw/view twins), so there is no perpetual-freshness noise to ignore.
+# Any live field neither in `fields` nor here is OUT-OF-KEY: reported separately
+# and excluded from the denominator (covers the repair_tickets.equip_uid FK).
+ignore:
+  - pm_plan.plan_id
